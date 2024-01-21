@@ -4,22 +4,29 @@
  do I need to make sure its between 0 and 100?
  delete function? 
  counting method?
+ what is the point of get; set;? 
  
  */
 
-/*
+
 Console.WriteLine("Input numbers seperated by space");
 string mystring = Console.ReadLine();
 string[] nums = mystring.Split(' ');
-Console.WriteLine(mystring);
-*/
-int[] tempNums = {1,2,0,5,6,4};
 
-BST<int> myClass = new BST<int>(); 
-for (int i = 0; i < tempNums.Length; i++)
+
+
+
+BST<int> myBST = new BST<int>(); 
+for (int i = 0; i < nums.Length; i++)
 {
-    myClass.insert(tempNums[i]);
+    myBST.insert(int.Parse(nums[i]));
 }
-myClass.inOrderTraversal();
-Console.WriteLine("Levels in Tree: " + myClass.countLevels());
-Console.WriteLine("exit");
+
+
+Console.Write("Nodes in Numerical order: ");
+myBST.inOrderTraversal();
+Console.WriteLine();
+Console.WriteLine("Tree Statistics:");
+Console.WriteLine("Number of Nodes: " + myBST.nodeCount());
+Console.WriteLine("Levels in Tree: " + myBST.countLevels());
+Console.WriteLine("Theoretical Levels in Tree: " + myBST.theoLevels());

@@ -3,11 +3,16 @@ using System;
 class BST<T>where T : IComparable<T>
 {
     private Node<T> root = null;
-    private int count;
+    private int count { get; set; }
 
     public BST()
     {
         count = 0;
+    }
+
+    public int nodeCount()
+    {
+        return count;
     }
 
     public void insert(T passedData)
@@ -43,5 +48,10 @@ class BST<T>where T : IComparable<T>
         }
 
         return root.checkLevels(1);
+    }
+
+    public int theoLevels()
+    {
+        return (int)Math.Ceiling(Math.Log2(this.count + 1)) - 1;
     }
 }
