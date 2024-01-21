@@ -22,7 +22,7 @@ class Node<T>where T : IComparable<T>
     }
     public bool insert(T passedData)
     {
-        if (this.equalTo(this.data, passedData)) // no douplicates
+        if (this.equalTo(this.data, passedData)) // no duplicates
         {
             return false;
         }
@@ -48,16 +48,42 @@ class Node<T>where T : IComparable<T>
 
     public void inOrderTraversal()
     {
-        if (this.left != null)
+        if (this.left != null)//check for lower val
         {
             this.left.inOrderTraversal();
         }
 
-        Console.Write(this.data + " ");
+        Console.Write(this.data + " ");//write val to console followed by space
 
-        if (this.right != null)
+        if (this.right != null)//move on to any higher val
         {
             this.right.inOrderTraversal();
         }
+    }
+
+    public int checkLevels(int curLevel)
+    {
+        if (this.left == null && this.right == null)
+        {
+            return curLevel;
+        }
+
+        
+
+        if (this.left != null)
+        {
+            if (this.right != null)
+            {
+                return Math.Max(this.left.checkLevels(curLevel + 1), this.right.checkLevels(curLevel + 1));
+                
+                
+                
+            }
+            return this.left.checkLevels(curLevel + 1);
+        }
+
+        return this.right.checkLevels(curLevel + 1);
+
+
     }
 }

@@ -34,4 +34,14 @@ class BST<T>where T : IComparable<T>
         }
         this.root.inOrderTraversal();
     }
+
+    public int countLevels()
+    {
+        if (root == null)
+        {
+            return 0;
+        }
+
+        return root.checkLevels(1);
+    }
 }

@@ -13,7 +13,7 @@ string mystring = Console.ReadLine();
 string[] nums = mystring.Split(' ');
 Console.WriteLine(mystring);
 */
-int[] tempNums = {1,2,4,753,1231,123,24,1,2,47};
+int[] tempNums = {1,2,0,5,6,4};
 
 BST<int> myClass = new BST<int>(); 
 for (int i = 0; i < tempNums.Length; i++)
@@ -21,4 +21,5 @@ for (int i = 0; i < tempNums.Length; i++)
     myClass.insert(tempNums[i]);
 }
 myClass.inOrderTraversal();
+Console.WriteLine("Levels in Tree: " + myClass.countLevels());
 Console.WriteLine("exit");
