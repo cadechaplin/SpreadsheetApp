@@ -86,4 +86,26 @@ class Node<T>where T : IComparable<T>
 
 
     }
+
+    public int count()
+    {
+        
+        if (left == null && right == null)
+        {
+            return 1;
+        }
+
+        else if (left == null)
+        {
+            return 1 + right.count();
+
+        }
+
+        else if (right == null)
+        {
+            return 1 + left.count();
+        }
+
+        return 1 + left.count() + right.count();
+    }
 }

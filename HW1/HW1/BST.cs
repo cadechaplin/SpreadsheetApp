@@ -52,6 +52,17 @@ class BST<T>where T : IComparable<T>
 
     public int theoLevels()
     {
-        return (int)Math.Ceiling(Math.Log2(this.count + 1)) - 1;
+        return (int)Math.Ceiling(Math.Log2(this.count + 1));
     }
+
+    public int nodeTraversalCount()
+    {
+        if (root == null)
+        {
+            return 0;
+        }
+
+        return root.count();
+    }
+    
 }

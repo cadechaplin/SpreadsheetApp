@@ -5,7 +5,8 @@
  delete function? 
  counting method?
  what is the point of get; set;? 
- 
+ empty project 
+ Homework should be built iteratively
  */
 
 
@@ -27,6 +28,6 @@ Console.Write("Nodes in Numerical order: ");
 myBST.inOrderTraversal();
 Console.WriteLine();
 Console.WriteLine("Tree Statistics:");
-Console.WriteLine("Number of Nodes: " + myBST.nodeCount());
+Console.WriteLine("Number of Nodes: " + myBST.nodeCount()+ " found by value stored in BST class, which should equal the same as counting by traversal" + myBST.nodeTraversalCount());
 Console.WriteLine("Levels in Tree: " + myBST.countLevels());
-Console.WriteLine("Theoretical Levels in Tree: " + myBST.theoLevels());
+Console.WriteLine("Theoretical least possible levels in Tree: " + myBST.theoLevels());
