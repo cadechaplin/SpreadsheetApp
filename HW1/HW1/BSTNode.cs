@@ -20,11 +20,11 @@ class Node<T>where T : IComparable<T>
     {
         return value1.CompareTo(value2) > 0;
     }
-    public bool insert(T passedData)
+    public void insert(T passedData)
     {
         if (this.equalTo(this.data, passedData)) // no duplicates
         {
-            return false;
+            return;
         }
 
         if (this.IsGreaterThan(this.data, passedData))
@@ -32,17 +32,18 @@ class Node<T>where T : IComparable<T>
             if (this.left == null)
             {
                 this.left = new Node<T>(passedData);
-                return true;
+                return;
             }
-            return this.left.insert(passedData);
+            this.left.insert(passedData);
+            return;
         }
         if (this.right == null)
         {
             this.right = new Node<T>(passedData);
-            return true;
+            return;
         }
-        return this.right.insert(passedData);
-        
+        this.right.insert(passedData);
+        return;
 
     }
 
