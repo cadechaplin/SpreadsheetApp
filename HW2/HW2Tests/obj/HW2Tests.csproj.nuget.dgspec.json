@@ -38,29 +38,25 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "dependencies": {
-            "Avalonia": {
+            "Microsoft.NET.Test.Sdk": {
               "target": "Package",
-              "version": "[11.0.6, )"
+              "version": "[17.6.0, )"
             },
-            "Avalonia.Desktop": {
+            "NUnit": {
               "target": "Package",
-              "version": "[11.0.6, )"
+              "version": "[3.13.3, )"
             },
-            "Avalonia.Diagnostics": {
+            "NUnit.Analyzers": {
               "target": "Package",
-              "version": "[11.0.6, )"
+              "version": "[3.6.1, )"
             },
-            "Avalonia.Fonts.Inter": {
+            "NUnit3TestAdapter": {
               "target": "Package",
-              "version": "[11.0.6, )"
+              "version": "[4.2.1, )"
             },
-            "Avalonia.ReactiveUI": {
+            "coverlet.collector": {
               "target": "Package",
-              "version": "[11.0.6, )"
-            },
-            "Avalonia.Themes.Fluent": {
-              "target": "Package",
-              "version": "[11.0.6, )"
+              "version": "[6.0.0, )"
             }
           },
           "imports": [
