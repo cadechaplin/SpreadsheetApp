@@ -10,6 +10,8 @@ public class MainWindowViewModel : ViewModelBase
 
     private string RunDistinctIntegers() // this is your method
     {
+        Program myProg;
+        
         return "Hello world";
     }
 
