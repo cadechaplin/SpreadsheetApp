@@ -1,5 +1,5 @@
 ﻿namespace HW2.ViewModels;
-
+using myfunctions;
 public class MainWindowViewModel : ViewModelBase
 {
 #pragma warning disable CA1822 // Mark members as static
@@ -10,9 +10,9 @@ public class MainWindowViewModel : ViewModelBase
 
     private string RunDistinctIntegers() // this is your method
     {
-        Program myProg;
+        HW2Prog goober = new HW2Prog();
         
-        return "Hello world";
+        return goober.run();
     }
 
     public string Greeting { get; set; }
