@@ -22,7 +22,7 @@ public class HW2Prog
         }
         
 
-        return "Method 1: " + method1(DeepCopy(numbers)) 
+        return "Method 1: " + method1(DeepCopy(numbers)) + "\nThe time complexity of this is n since "
                             + " \n" + "Method 2: " + method2(DeepCopy(numbers)) + " \n"
                             + "Method 3: " + method3(DeepCopy(numbers)) + "\n ";;; // return to output to screen
     }
