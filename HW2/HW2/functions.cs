@@ -22,25 +22,9 @@ public class HW2Prog
         }
         
 
-
-        // Accessing elements
-        Console.WriteLine("Elements in the list:");
-        foreach (int number in numbers)
-        {
-            Console.WriteLine(number);
-        }
-
-        // Removing an element
-        numbers.Remove(2);
-
-        // Accessing elements after removal
-        Console.WriteLine("Elements in the list after removal:");
-        foreach (int number in numbers)
-        {
-            Console.WriteLine(number);
-        }
-
-        return ""; // return to output to screen
+        return "Method 1: " + method1(DeepCopy(numbers)) 
+                            + " \n" + "Method 2: " + method2(DeepCopy(numbers)) + " \n"
+                            + "Method 3: " + method3(DeepCopy(numbers)) + "\n ";;; // return to output to screen
     }
     public int method1(List<int> curNums) // do not alter list and use hash set
     {
@@ -96,5 +80,16 @@ public class HW2Prog
         }
 
         return count;
+    }
+
+    public List<int> DeepCopy(List<int> ogList)
+    {
+        List<int> copy = new List<int>();
+        for (int i = 0; i < ogList.Count; i++)
+        {
+            copy.Add(ogList[i]);
+        }
+
+        return copy;
     }
 }
