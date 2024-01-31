@@ -22,46 +22,18 @@ public class HW2Prog
         }
         
 
-        return "Method 1: " + method1(DeepCopy(numbers)) + "\nThe time complexity of this is O(n) since "
-                            + " \n" + "Method 2: " + method2(DeepCopy(numbers)) + " \n"
+        return "Method 1: " + method1(numbers) + "\nThe time complexity of this is O(n) since there are n elements in the list and adding to the hashset is O(1) regardless of if it is a duplicate or not,\n we can just return the amount of elements in the hashset for the amount of unique elements."
+                            + " \n" + "Method 2: " + method2(numbers) + " \n"
                             + "Method 3: " + method3(DeepCopy(numbers)) + "\n ";;; // return to output to screen
     }
     public int method1(List<int> curNums) // do not alter list and use hash set
     {
-        HashSet<int> numberSet = new HashSet<int>();
-        for (int i = 0; i < curNums.Count; i++)
-        {
-            numberSet.Add(curNums[i]);
-        }
-
+        HashSet<int> numberSet = new HashSet<int>(curNums);
         return numberSet.Count;
     }
-    public int method2(List<int> curNums) // remove all duplicates from the list?
+    public int method2(List<int> curNums) // check all previous elements to see if unique
     {
-        /* incorrect method. Changes the list.
-        int i = 0;
-        int j;
-        while(i < curNums.Count)
-        {
-            j = i + 1;
-            while(j < curNums.Count)
-            {
-                if (curNums[i] == curNums[j])
-                {
-                    curNums.RemoveAt(j);
-                }
-                else
-                {
-                    j++;
-                }
-
-
-            }
-
-            i++;
-            
-        }
-    */
+        
         if (curNums.Count == 0) // return 0 if list empty
         {
             return 0;
