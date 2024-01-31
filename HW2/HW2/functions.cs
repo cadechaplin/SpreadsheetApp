@@ -22,7 +22,7 @@ public class HW2Prog
         }
         
 
-        return "Method 1: " + method1(DeepCopy(numbers)) + "\nThe time complexity of this is n since "
+        return "Method 1: " + method1(DeepCopy(numbers)) + "\nThe time complexity of this is O(n) since "
                             + " \n" + "Method 2: " + method2(DeepCopy(numbers)) + " \n"
                             + "Method 3: " + method3(DeepCopy(numbers)) + "\n ";;; // return to output to screen
     }
@@ -38,6 +38,7 @@ public class HW2Prog
     }
     public int method2(List<int> curNums) // remove all duplicates from the list?
     {
+        /* incorrect method. Changes the list.
         int i = 0;
         int j;
         while(i < curNums.Count)
@@ -58,9 +59,30 @@ public class HW2Prog
             }
 
             i++;
+            
+        }
+    */
+        if (curNums.Count == 0) // return 0 if list empty
+        {
+            return 0;
         }
 
-        return curNums.Count;
+        int uniqueNumsCount = 1; // first element must be unique since there is no predecessor
+        for (int i = 1; i < curNums.Count; i++)
+        {
+            for (int j = 0; j < i; j++)
+            {
+                if (curNums[i] == curNums[j]) //check all previous elements to see if this element has occured, once found leave loop
+                {
+                    j = i; //exits loop
+                }else if (j == i - 1) // last iteration reached and still unique
+                {
+                    uniqueNumsCount++;
+                }
+
+            }
+        }
+        return uniqueNumsCount;
     }
     public int method3(List<int> curNums) // use already implemented sorting algorithm
     {
