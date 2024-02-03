@@ -7,7 +7,7 @@
         x:Class="HW3AvaloniaApp.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
         Icon="/Assets/avalonia-logo.ico"
-        Title="HW3AvaloniaApp">
+        Title="HW3App">
 
     <Design.DataContext>
         <!-- This only sets the DataContext for the previewer in an IDE,
@@ -15,6 +15,17 @@
         <vm:MainWindowViewModel/>
     </Design.DataContext>
 
-    <TextBlock Text="{Binding Greeting}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-
+    <DockPanel>
+        <Menu DockPanel.Dock="Top">
+            <MenuItem Header="_File">
+                <MenuItem Header="_Load from file..."/>
+                <MenuItem Header="Fibonacci Numbers (First 50)"/>
+                <MenuItem Header="Fibonacci Numbers (First 100)"/>
+                <Separator/>
+                <MenuItem Header="_Exit"/>
+            </MenuItem>
+        </Menu>
+        <TextBlock Text="{Binding Display}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+        <!-- <TextBlock Text="{Binding Greeting}" HorizontalAlignment="Center" VerticalAlignment="Center"/> -->
+    </DockPanel>
 </Window>
