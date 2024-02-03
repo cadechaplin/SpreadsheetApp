@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AvaloniaProject">
+    <option name="projectPerEditor">
+      <map>
+        <entry key="HW3App/Views/MainWindow.axaml" value="HW3App/HW3App.csproj" />
+      </map>
+    </option>
+  </component>
+</project>

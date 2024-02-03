@@ -1,31 +1,32 @@
-﻿namespace HW3AvaloniaApp.ViewModels;
-
-/// <summary>
-/// Gets or sets the display value.
-/// </summary>
-/// <remarks>
-/// This property represents the display value used in the application.
-/// </remarks>
-public class MainWindowViewModel : ViewModelBase
+﻿namespace HW3AvaloniaApp.ViewModels
 {
-#pragma warning disable CA1822 // Mark members as static
     /// <summary>
-    /// Gets or sets the display value.
+    /// Represents the view model for the main window.
     /// </summary>
-    /// /// <remarks>
-    /// This property represents the display value used in the application.
-    /// </remarks>
-    public string Display { get; set; }
-
-    public MainWindowViewModel()
+    public class MainWindowViewModel : ViewModelBase
     {
-        Display = GetText();
-    }
+#pragma warning disable CA1822 // Mark members as static
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MainWindowViewModel"/> class.
+        /// </summary>
+        public MainWindowViewModel()
+        {
+            this.Display = GetText();
+        }
 
-    private static string GetText() // this is your method
-    {
-        return "Line 1 \nLine 2 \nLine 3 \nLine 4 \n";
-    }
+        /// <summary>
+        /// Gets or sets the display value.
+        /// </summary>
+        /// <remarks>
+        /// This property represents the display value used in the application.
+        /// </remarks>
+        public string Display { get; set; }
+
+        private static string GetText()
+        {
+            return "Line 1 \nLine 2 \nLine 3 \nLine 4 \n";
+        }
 
 #pragma warning restore CA1822 // Mark members as static
+    }
 }
