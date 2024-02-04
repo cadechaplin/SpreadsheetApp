@@ -1,6 +1,8 @@
 namespace HW3AvaloniaApp.Views
 {
     using Avalonia.Controls;
+    using HW3AvaloniaApp.ViewModels;
+
 
     /// <summary>
     /// Represents the main window of the application.
@@ -12,15 +14,9 @@ namespace HW3AvaloniaApp.Views
         /// </summary>
         public MainWindow()
         {
-            this.InitializeComponent();
+            InitializeComponent();
+            
         }
-    }
 
-    /// <summary>
-    /// Additional comments for partial class elements.
-    /// </summary>
-    public partial class MainWindow
-    {
-        // Additional comments for other partial class elements if needed.
     }
 }

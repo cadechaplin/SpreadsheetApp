@@ -19,10 +19,10 @@
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="_File">
                 <MenuItem Header="_Load from file..."/>
-                <MenuItem Header="Fibonacci Numbers (First 50)"/>
-                <MenuItem Header="Fibonacci Numbers (First 100)"/>
+                <MenuItem Header="Fibonacci Numbers (First 50)" Command="{Binding Fibonacci}" CommandParameter="50"/>
+                <MenuItem Header="Fibonacci Numbers (First 100)" Command="{Binding Fibonacci}" CommandParameter="100"/>
                 <Separator/>
-                <MenuItem Header="_Exit"/>
+                <MenuItem Header="_Save to file..."/>
             </MenuItem>
         </Menu>
         <TextBlock Text="{Binding Display}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
