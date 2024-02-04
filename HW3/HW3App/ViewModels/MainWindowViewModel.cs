@@ -1,12 +1,13 @@
-﻿
-using System.ComponentModel;
-
+﻿using System;
+using FibancciTextReader;
 namespace HW3AvaloniaApp.ViewModels
 {
-    using System.IO;
+    using System.Collections.Generic;
     using System.ComponentModel;
+    using System.IO;
+    using System.Numerics;
     using System.Runtime.CompilerServices;
-    
+
     /// <summary>
     /// Represents the view model for the main window.
     /// </summary>
@@ -18,18 +19,30 @@ namespace HW3AvaloniaApp.ViewModels
         /// </summary>
         public MainWindowViewModel()
         {
-            this.Display = GetText();
-        }
-
-        private void LoadText(TextReader sr)
-        {
-            this.Display = sr.ReadToEnd();
+             CurrentText = String.Empty;
         }
 
         public void Fibonacci(object parameter)
         {
             // Event handling logic goes here
-            this.Display = parameter.ToString();
+            
+            if (parameter is string passedString)
+            {
+                FibonacciTextReader myText = new FibonacciTextReader(int.Parse(passedString));
+                LoadText(myText);
+            }
+            else
+            {
+                return;
+            }
+
+            
+        }
+
+        public void run()
+        {
+            LoadText(new StringReader(CurrentText));
+            return;
         }
 
         /// <summary>
@@ -38,31 +51,23 @@ namespace HW3AvaloniaApp.ViewModels
         /// <remarks>
         /// This property represents the display value used in the application.
         /// </remarks>
-        private string _display; 
-        public string Display
+        public string CurrentText { get; set; }
+
+        public void LoadText(TextReader sr)
         {
-            get { return _display; }
-            set
-            {
-                if (_display != value)
-                {
-                    _display = value;
-                    OnPropertyChanged();
-                }
-            }
+            
+            CurrentText = sr.ReadToEnd();
+            OnPropertyChanged(nameof(CurrentText));
+
+
         }
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
-
-        private string GetText()
-        {
-            return "nothing";
-        }
-        
 
 #pragma warning restore CA1822 // Mark members as static
     }

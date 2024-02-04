@@ -25,7 +25,10 @@
                 <MenuItem Header="_Save to file..."/>
             </MenuItem>
         </Menu>
-        <TextBlock Text="{Binding Display}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+        <ScrollViewer VerticalScrollBarVisibility="Auto">
+            <TextBox Text="{Binding CurrentText}" HorizontalAlignment="Left" VerticalAlignment="Top" IsReadOnly="True"/>
+        </ScrollViewer>
+        
         <!-- <TextBlock Text="{Binding Greeting}" HorizontalAlignment="Center" VerticalAlignment="Center"/> -->
     </DockPanel>
 </Window>
