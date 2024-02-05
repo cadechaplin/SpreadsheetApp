@@ -25,12 +25,12 @@ namespace FibancciTextReader
 
         public override string ReadLine()
         {
-            if (currentLine == 0 && maxLines >= 0)
+            if (currentLine == 0 && maxLines > 0)//might need changing
             {
                 currentLine++;
                 return "1: 0";
             }
-            else if (currentLine == 1 && maxLines >= 1)
+            else if (currentLine == 1 && maxLines > 1)//might need changing
             {
                 currentLine++;
                 currentFibonacci = 1;

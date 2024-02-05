@@ -22,13 +22,24 @@
                 <MenuItem Header="Fibonacci Numbers (First 50)" Command="{Binding Fibonacci}" CommandParameter="50"/>
                 <MenuItem Header="Fibonacci Numbers (First 100)" Command="{Binding Fibonacci}" CommandParameter="100"/>
                 <Separator/>
-                <MenuItem Header="_Save to file..."/>
+                <MenuItem Header="_Save to file..." Command="{Binding SaveToFileBoxToggle}"/>
             </MenuItem>
         </Menu>
         <ScrollViewer VerticalScrollBarVisibility="Auto">
-            <TextBox Text="{Binding CurrentText}" HorizontalAlignment="Left" VerticalAlignment="Top" IsReadOnly="True"/>
+            <TextBox Text="{Binding CurrentText}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
         </ScrollViewer>
-        
-        <!-- <TextBlock Text="{Binding Greeting}" HorizontalAlignment="Center" VerticalAlignment="Center"/> -->
+        <StackPanel IsVisible="{Binding SaveFileBoxOpen}">
+            <!-- Header for SaveFileName -->
+            <TextBlock Text="Save file as..." FontWeight="Bold" FontSize="14"/>
+                
+            <!-- TextBox for SaveFileName -->
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <TextBox Text="{Binding SaveFileName}" HorizontalAlignment="Left"/>
+            </ScrollViewer>
+                
+            <!-- Buttons below the TextBox -->
+            <Button Content="Cancel" Command="{Binding SaveToFileBoxToggle}"/>
+            <Button Content="Save" Command="{Binding SaveToFile}"/>
+        </StackPanel>
     </DockPanel>
 </Window>

@@ -14,12 +14,20 @@ namespace HW3AvaloniaApp.ViewModels
     public class MainWindowViewModel : ViewModelBase, INotifyPropertyChanged
     {
 #pragma warning disable CA1822 // Mark members as static
+        public string CurrentText { get; set; }
+
+        public bool SaveFileBoxOpen { get; set; }
+
+        public string SaveFileName { get; set; }
         /// <summary>
         /// Initializes a new instance of the <see cref="MainWindowViewModel"/> class.
         /// </summary>
         public MainWindowViewModel()
         {
              CurrentText = String.Empty;
+             SaveFileName = String.Empty;
+             SaveFileBoxOpen = false;
+
         }
 
         public void Fibonacci(object parameter)
@@ -35,14 +43,35 @@ namespace HW3AvaloniaApp.ViewModels
             {
                 return;
             }
-
-            
         }
 
-        public void run()
+        public void SaveToFile()
         {
-            LoadText(new StringReader(CurrentText));
-            return;
+            
+
+            // Get the current directory
+            
+
+            // Provide the file name and extension
+            
+
+            // Combine the current directory with the file name to create the full path
+            string filePath = Path.Combine(Environment.CurrentDirectory, SaveFileName);
+
+            // Write the text to the file
+            File.WriteAllText(filePath, CurrentText);
+            SaveToFileBoxToggle();
+
+
+
+
+        }
+
+        public void SaveToFileBoxToggle()
+        {
+            SaveFileBoxOpen = !SaveFileBoxOpen;
+            OnPropertyChanged(nameof(SaveFileBoxOpen));
+            
         }
 
         /// <summary>
@@ -51,9 +80,9 @@ namespace HW3AvaloniaApp.ViewModels
         /// <remarks>
         /// This property represents the display value used in the application.
         /// </remarks>
-        public string CurrentText { get; set; }
+        
 
-        public void LoadText(TextReader sr)
+        private void LoadText(TextReader sr)
         {
             
             CurrentText = sr.ReadToEnd();
