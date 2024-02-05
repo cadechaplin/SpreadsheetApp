@@ -18,7 +18,7 @@
     <DockPanel>
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="_File">
-                <MenuItem Header="_Load from file..."/>
+                <MenuItem Header="_Load from file..." Command = "{Binding LoadFromFile}" />
                 <MenuItem Header="Fibonacci Numbers (First 50)" Command="{Binding Fibonacci}" CommandParameter="50"/>
                 <MenuItem Header="Fibonacci Numbers (First 100)" Command="{Binding Fibonacci}" CommandParameter="100"/>
                 <Separator/>

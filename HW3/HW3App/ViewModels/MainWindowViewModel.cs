@@ -66,7 +66,14 @@ namespace HW3AvaloniaApp.ViewModels
 
 
         }
+        public void LoadFromFile()//should it ask for file name?
+        {
 
+            StreamReader fileToLoad = new StreamReader("File.txt");//change File.txt?
+            LoadText(fileToLoad);
+
+
+        }
         public void SaveToFileBoxToggle()
         {
             SaveFileBoxOpen = !SaveFileBoxOpen;
