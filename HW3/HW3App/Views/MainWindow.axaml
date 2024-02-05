@@ -30,16 +30,16 @@
         </ScrollViewer>
         <StackPanel IsVisible="{Binding SaveFileBoxOpen}">
             <!-- Header for SaveFileName -->
-            <TextBlock Text="Save file as..." FontWeight="Bold" FontSize="14"/>
+            <TextBlock Text="Save file as..." FontWeight="Bold" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                 
             <!-- TextBox for SaveFileName -->
             <ScrollViewer VerticalScrollBarVisibility="Auto">
-                <TextBox Text="{Binding SaveFileName}" HorizontalAlignment="Left"/>
+                <TextBox Text="{Binding SaveFileName}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
             </ScrollViewer>
                 
             <!-- Buttons below the TextBox -->
-            <Button Content="Cancel" Command="{Binding SaveToFileBoxToggle}"/>
-            <Button Content="Save" Command="{Binding SaveToFile}"/>
+            <Button Content="Cancel" Command="{Binding SaveToFileBoxToggle}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            <Button Content="Save" Command="{Binding SaveToFile}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
         </StackPanel>
     </DockPanel>
 </Window>
