@@ -22,7 +22,9 @@ namespace HW3AvaloniaApp.ViewModels
     {
 #pragma warning disable CA1822 // Mark members as static
         public string CurrentText { get; set; }
+
         public Interaction<Unit, string?> AskForFileToLoad { get; }
+
         public bool SaveFileBoxOpen { get; set; }
 
         public string SaveFileName { get; set; }
