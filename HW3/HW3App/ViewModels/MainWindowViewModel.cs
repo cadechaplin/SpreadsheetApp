@@ -1,12 +1,19 @@
 ﻿using System;
 using FibancciTextReader;
+
 namespace HW3AvaloniaApp.ViewModels
+
 {
-    using System.Collections.Generic;
+    
     using System.ComponentModel;
     using System.IO;
-    using System.Numerics;
+    
     using System.Runtime.CompilerServices;
+    using System.IO;
+    using System.Reactive;
+    using System.Reactive.Linq;
+    using ReactiveUI;
+    
 
     /// <summary>
     /// Represents the view model for the main window.
@@ -15,7 +22,7 @@ namespace HW3AvaloniaApp.ViewModels
     {
 #pragma warning disable CA1822 // Mark members as static
         public string CurrentText { get; set; }
-
+        public Interaction<Unit, string?> AskForFileToLoad { get; }
         public bool SaveFileBoxOpen { get; set; }
 
         public string SaveFileName { get; set; }
@@ -27,9 +34,10 @@ namespace HW3AvaloniaApp.ViewModels
              CurrentText = String.Empty;
              SaveFileName = String.Empty;
              SaveFileBoxOpen = false;
+             AskForFileToLoad = new Interaction<Unit, string?>();
 
         }
-
+        
         public void Fibonacci(object parameter)
         {
             // Event handling logic goes here
@@ -66,6 +74,7 @@ namespace HW3AvaloniaApp.ViewModels
 
 
         }
+        /*
         public void LoadFromFile()//should it ask for file name?
         {
 
@@ -74,6 +83,19 @@ namespace HW3AvaloniaApp.ViewModels
 
 
         }
+        
+        */
+        public async void LoadFromFile()
+        {
+// Wait for the user to select the file to load from.
+            var filePath = await AskForFileToLoad.Handle(default);
+            if (filePath == null) return;
+// If the user selected a file, create the stream reader and load the text.
+            var textReader = new StreamReader(filePath);
+            LoadText(textReader);
+            textReader.Close();
+        }
+
         public void SaveToFileBoxToggle()
         {
             SaveFileBoxOpen = !SaveFileBoxOpen;
