@@ -1,4 +1,4 @@
-using Avalonia.Controls;
+
 
 namespace HW3.Views;
 using System.Collections.Generic;
@@ -33,6 +33,7 @@ public partial class MainWindow : ReactiveWindow<MainWindowViewModel>
         };
         fileDialog.Filters = fileDialogFilters;
         var filePath = await fileDialog.ShowAsync(this);
+        
         interaction.SetOutput(filePath is { Length: 1 } ? filePath[0] : null);
     }
     private async Task DoSaveFile(InteractionContext<Unit, string?> interaction)
