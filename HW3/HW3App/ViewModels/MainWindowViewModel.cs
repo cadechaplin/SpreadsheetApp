@@ -1,132 +1,73 @@
-﻿using System;
-using FibancciTextReader;
-
-namespace HW3AvaloniaApp.ViewModels
-
+﻿// <copyright file="MainWindow.axaml.cs" company="CptS 321 Instructor">
+// Copyright (c) CptS 321 Instructor. All rights reserved.
+// </copyright>
+namespace HW3AvaloniaApp.ViewModels;
+using System.IO;
+using System.Reactive;
+using System.Reactive.Linq;
+using ReactiveUI;
+using FibancciTextReaderClass;
+public class MainWindowViewModel : ViewModelBase
 {
-    
-    using System.ComponentModel;
-    using System.IO;
-    
-    using System.Runtime.CompilerServices;
-    using System.IO;
-    using System.Reactive;
-    using System.Reactive.Linq;
-    using ReactiveUI;
-    
+    private string _currentText;
+    public string CurrentText
+    {
+        get => _currentText;
+        set => this.RaiseAndSetIfChanged(ref _currentText,  value);
+    }
+
+    public MainWindowViewModel()
+    {
+// Create an interaction between the view model and the view for the file to be loaded:
+        AskForFileToLoad = new Interaction<Unit, string?>();
+        
+// Similarly to load, there is a need to create an interaction for saving into a file:
+// TODO: Your code goes here.
+        AskForFileToSave = new Interaction<Unit, string?>();
+    }
 
     /// <summary>
-    /// Represents the view model for the main window.
+    /// This method will be executed when the user wants to load content from a file.
     /// </summary>
-    public class MainWindowViewModel : ViewModelBase, INotifyPropertyChanged
+    public async void LoadFromFile()
     {
-#pragma warning disable CA1822 // Mark members as static
-        public string CurrentText { get; set; }
+        // Wait for the user to select the file to load from.
+        var filePath = await AskForFileToLoad.Handle(default);
+        if (filePath == null) return;
 
-        public Interaction<Unit, string?> AskForFileToLoad { get; }
-
-        public Interaction<Unit, string?> AskForFileToSave { get; }
-
-        public bool SaveFileBoxOpen { get; set; }
-
-        public string SaveFileName { get; set; }
-        /// <summary>
-        /// Initializes a new instance of the <see cref="MainWindowViewModel"/> class.
-        /// </summary>
-        public MainWindowViewModel()
-        {
-             CurrentText = String.Empty;
-             SaveFileName = String.Empty;
-             SaveFileBoxOpen = false;
-             AskForFileToLoad = new Interaction<Unit, string?>();
-
-        }
-        
-        public void Fibonacci(object parameter)
-        {
-            // Event handling logic goes here
-            
-            if (parameter is string passedString)
-            {
-                FibonacciTextReader myText = new FibonacciTextReader(int.Parse(passedString));
-                LoadText(myText);
-            }
-            else
-            {
-                return;
-            }
-        }
-
-        public async void SaveToFile()
-        {
-            
-
-            // Get the current directory
-            
-
-            // Provide the file name and extension
-            
-
-            // Combine the current directory with the file name to create the full path
-            string filePath = Path.Combine(Environment.CurrentDirectory, SaveFileName);
-
-            // Write the text to the file
-            File.WriteAllText(filePath, CurrentText);
-            SaveToFileBoxToggle();
-
-
-
-
-        }
-        /*
-        public void LoadFromFile()//should it ask for file name?
-        {
-
-            StreamReader fileToLoad = new StreamReader("File.txt");//change File.txt?
-            LoadText(fileToLoad);
-
-
-        }
-        
-        */
-        public async void LoadFromFile()
-        {
-// Wait for the user to select the file to load from.
-            var filePath = await AskForFileToLoad.Handle(default);
-            if (filePath == null) return;
-// If the user selected a file, create the stream reader and load the text.
-            var textReader = new StreamReader(filePath);
-            LoadText(textReader);
-            textReader.Close();
-        }
-
-        public void SaveToFileBoxToggle()
-        {
-            AskForFileToSave.RegisterHandler(default);
-            SaveFileBoxOpen = !SaveFileBoxOpen;
-            //OnPropertyChanged(nameof(SaveFileBoxOpen));
-            
-        }
-
-        /// <summary>
-        /// Gets or sets the display value.
-        /// </summary>
-        /// <remarks>
-        /// This property represents the display value used in the application.
-        /// </remarks>
-        
-
-        private void LoadText(TextReader sr)
-        {
-            
-            CurrentText = sr.ReadToEnd();
-            //OnPropertyChanged(nameof(CurrentText));
-
-
-        }
-
-        
-
-#pragma warning restore CA1822 // Mark members as static
+        // If the user selected a file, create the stream reader and load the text.
+        var textReader = new StreamReader(filePath);
+        LoadText(textReader);
+        textReader.Close();
     }
+
+    public async void SaveToFile()
+    {
+// TODO: Implement this method.
+// Wait for the user to select the file to load from.
+        var filePath = await AskForFileToSave.Handle(default);
+        File.WriteAllText(filePath, CurrentText);
+
+
+    }
+    private void LoadText(TextReader sr)
+    {
+            
+        CurrentText = sr.ReadToEnd();
+        
+
+
+    }
+
+    public void Fibonacci(int count)
+    {
+        FibonacciTextReader myFib = new FibonacciTextReader(count);
+        LoadText(myFib);
+
+    }
+
+    public Interaction<Unit, string?> AskForFileToLoad { get; }
+    public Interaction<Unit, string?> AskForFileToSave { get; }
+    
+// other code...
 }

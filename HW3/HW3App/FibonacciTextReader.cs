@@ -1,13 +1,15 @@
-using System.IO;
-using System.Numerics;
-using System.Text;
-
-namespace FibancciTextReader
+namespace FibancciTextReaderClass
 {
     using System.IO;
     using System.Numerics;
     using System.Text;
 
+    /// <summary>
+    /// Class that takes a integer in the constructor and then is able to return Fibonacci
+    /// numbers up until this number using ReadLine(), ReadToEnd() returns a string of all
+    /// numbers until limit set in constructor. This class inherets from a TextReader so that
+    /// it can be passed to a function accepting TextReader.
+    /// </summary>
     public class FibonacciTextReader : TextReader
     {
         private readonly int maxLines;
@@ -18,31 +20,39 @@ namespace FibancciTextReader
         public FibonacciTextReader(int maxLines)
         {
             this.maxLines = maxLines;
-            currentLine = 0;
-            currentFibonacci = 0;
-            previousFibonacci = 0;
+            this.currentLine = 0;
+            this.currentFibonacci = 0;
+            this.previousFibonacci = 0;
         }
 
-        public override string ReadLine()
+        /// <summary>
+        /// Calculates next Fibonacci Number.
+        /// </summary>
+        /// <returns>
+        /// Returns a single line in the form of a string containing the
+        /// currentLine number and the correlating Fibonacci Number. Returns null if
+        /// maxLines is reached.
+        /// </returns>
+        public override string? ReadLine()
         {
-            if (currentLine == 0 && maxLines > 0)//might need changing
+            if (this.currentLine == 0 && this.maxLines > 0)
             {
-                currentLine++;
+                this.currentLine++;
                 return "1: 0";
             }
-            else if (currentLine == 1 && maxLines > 1)//might need changing
+            else if (this.currentLine == 1 && this.maxLines > 1)
             {
-                currentLine++;
-                currentFibonacci = 1;
+                this.currentLine++;
+                this.currentFibonacci = 1;
                 return "2: 1";
             }
-            else if (currentLine < maxLines)
+            else if (this.currentLine < this.maxLines)
             {
-                currentFibonacci = currentFibonacci + previousFibonacci;
-                previousFibonacci = currentFibonacci - previousFibonacci;
-                currentLine++;
+                this.currentFibonacci = this.currentFibonacci + this.previousFibonacci;
+                this.previousFibonacci = this.currentFibonacci - this.previousFibonacci;
+                this.currentLine++;
 
-                return $"{currentLine}: {currentFibonacci}";
+                return $"{this.currentLine}: {this.currentFibonacci}";
             }
             else
             {
@@ -50,11 +60,18 @@ namespace FibancciTextReader
             }
         }
 
+        /// <summary>
+        /// Runs ReadLine() until null is returned, which means the max numbers has been reached.
+        /// </summary>
+        /// <returns>
+        /// Returns all string containing the currentLine and Fibonacci number for all remaining
+        /// lines from currentLine to maxLines.
+        /// </returns>
         public override string ReadToEnd()
         {
             StringBuilder myString = new StringBuilder();
             string line;
-            while ((line = ReadLine()) != null)
+            while ((line = this.ReadLine()) != null)
             {
                 myString.AppendLine(line);
             }

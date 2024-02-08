@@ -3,6 +3,7 @@
         xmlns:vm="using:HW3AvaloniaApp.ViewModels"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="HW3AvaloniaApp.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
@@ -18,28 +19,29 @@
     <DockPanel>
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="_File">
-                <MenuItem Header="_Load from file..." Command = "{Binding LoadFromFile}" />
-                <MenuItem Header="Fibonacci Numbers (First 50)" Command="{Binding Fibonacci}" CommandParameter="50"/>
-                <MenuItem Header="Fibonacci Numbers (First 100)" Command="{Binding Fibonacci}" CommandParameter="100"/>
+                <MenuItem Header="_Load from file..." Command = "{Binding LoadFromFile}"/>
+                <MenuItem Header="Fibonacci Numbers (First 50)" Command = "{Binding Fibonacci}" >
+                    <MenuItem.CommandParameter>
+                        <sys:Int32>
+                            50
+                        </sys:Int32>
+                    </MenuItem.CommandParameter>
+                </MenuItem>
+                <MenuItem Header="Fibonacci Numbers (First 100)" Command = "{Binding Fibonacci}" >
+                    <MenuItem.CommandParameter>
+                        <sys:Int32>
+                            100
+                        </sys:Int32>
+                    </MenuItem.CommandParameter>
+                </MenuItem>
                 <Separator/>
-                <MenuItem Header="_Save to file..." Command="{Binding SaveToFileBoxToggle}"/>
+                <MenuItem Header="_Save to file..." Command = "{Binding SaveToFile}"/>
             </MenuItem>
         </Menu>
         <ScrollViewer VerticalScrollBarVisibility="Auto">
             <TextBox Text="{Binding CurrentText}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
         </ScrollViewer>
-        <StackPanel IsVisible="{Binding SaveFileBoxOpen}">
-            <!-- Header for SaveFileName -->
-            <TextBlock Text="Save file as..." FontWeight="Bold" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                
-            <!-- TextBox for SaveFileName -->
-            <ScrollViewer VerticalScrollBarVisibility="Auto">
-                <TextBox Text="{Binding SaveFileName}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-            </ScrollViewer>
-                
-            <!-- Buttons below the TextBox -->
-            <Button Content="Cancel" Command="{Binding SaveToFileBoxToggle}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-            <Button Content="Save" Command="{Binding SaveToFile}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-        </StackPanel>
+
+        
     </DockPanel>
 </Window>

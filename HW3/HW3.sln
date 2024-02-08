@@ -2,6 +2,8 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HW3App", "HW3App\HW3App.csproj", "{CB4814DC-7E35-4E3A-B6E8-0ADFF2061B49}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HW3Tests", "HW3Tests\HW3Tests.csproj", "{D6359081-BB3E-46E4-B713-5024E20232EF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +14,9 @@ Global
 		{CB4814DC-7E35-4E3A-B6E8-0ADFF2061B49}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CB4814DC-7E35-4E3A-B6E8-0ADFF2061B49}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CB4814DC-7E35-4E3A-B6E8-0ADFF2061B49}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D6359081-BB3E-46E4-B713-5024E20232EF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D6359081-BB3E-46E4-B713-5024E20232EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D6359081-BB3E-46E4-B713-5024E20232EF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D6359081-BB3E-46E4-B713-5024E20232EF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
