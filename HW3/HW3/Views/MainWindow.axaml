@@ -15,6 +15,21 @@
         <vm:MainWindowViewModel/>
     </Design.DataContext>
 
-    <TextBlock Text="{Binding Greeting}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+    
+    <DockPanel>
+        <Menu DockPanel.Dock="Top">
+            <MenuItem Header="_File">
+                <MenuItem Header="_Load from file..."  Command="{Binding LoadFromFile}"/>
+                <MenuItem Header="Fibonacci Numbers (First 50)" />
+                <MenuItem Header="Fibonacci Numbers (First 100)" />
+                <Separator/>
+                <MenuItem Header="_Save to file..." />
+            </MenuItem>
+        </Menu>
+        <ScrollViewer VerticalScrollBarVisibility="Auto">
+            <TextBox Text="{Binding CurrentText}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+        </ScrollViewer>
+        
+    </DockPanel>
 
 </Window>
