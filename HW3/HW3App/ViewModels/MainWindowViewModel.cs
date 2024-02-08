@@ -25,6 +25,8 @@ namespace HW3AvaloniaApp.ViewModels
 
         public Interaction<Unit, string?> AskForFileToLoad { get; }
 
+        public Interaction<Unit, string?> AskForFileToSave { get; }
+
         public bool SaveFileBoxOpen { get; set; }
 
         public string SaveFileName { get; set; }
@@ -55,7 +57,7 @@ namespace HW3AvaloniaApp.ViewModels
             }
         }
 
-        public void SaveToFile()
+        public async void SaveToFile()
         {
             
 
@@ -100,8 +102,9 @@ namespace HW3AvaloniaApp.ViewModels
 
         public void SaveToFileBoxToggle()
         {
+            AskForFileToSave.RegisterHandler(default);
             SaveFileBoxOpen = !SaveFileBoxOpen;
-            OnPropertyChanged(nameof(SaveFileBoxOpen));
+            //OnPropertyChanged(nameof(SaveFileBoxOpen));
             
         }
 
@@ -117,17 +120,12 @@ namespace HW3AvaloniaApp.ViewModels
         {
             
             CurrentText = sr.ReadToEnd();
-            OnPropertyChanged(nameof(CurrentText));
+            //OnPropertyChanged(nameof(CurrentText));
 
 
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
+        
 
 #pragma warning restore CA1822 // Mark members as static
     }

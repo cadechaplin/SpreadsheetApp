@@ -24,6 +24,8 @@ public MainWindow()
     DataContext = new MainWindowViewModel();
     this.WhenActivated(d =>
         d(ViewModel!.AskForFileToLoad.RegisterHandler(DoOpenFile)));
+    this.WhenActivated(d =>
+        d(ViewModel!.AskForFileToSave.RegisterHandler(DoOpenFile)));
     // TODO: add code for saving
 }
 /// <summary>
@@ -38,10 +40,12 @@ private async Task DoOpenFile(InteractionContext<Unit, string?> interaction)
     var fileDialog = new OpenFileDialog
     {
         AllowMultiple = false,
+        
     };
     var txtFiler = new FileDialogFilter
     {
         Extensions = { ".txt" },
+        
     };
     var fileDialogFilters = new List<FileDialogFilter>
     {
@@ -60,6 +64,23 @@ private async Task DoOpenFile(InteractionContext<Unit, string?> interaction)
     ///operation.</returns>
     private async Task DoSaveFile(InteractionContext<Unit, string?> interaction)
     {
-    // TODO: your code goes here.
+    // 
+    var fileDialog = new OpenFileDialog
+    {
+        AllowMultiple = false,
+        
+    };
+    var txtFiler = new FileDialogFilter
+    {
+        Extensions = { ".txt" },
+        
+    };
+    var fileDialogFilters = new List<FileDialogFilter>
+    {
+        txtFiler,
+    };
+    fileDialog.Filters = fileDialogFilters;
+    var filePath = await fileDialog.ShowAsync(this);
+    interaction.SetOutput(filePath is { Length: 1 } ? filePath[0] : null);
     }
 }
