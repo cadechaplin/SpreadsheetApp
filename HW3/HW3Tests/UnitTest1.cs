@@ -2,43 +2,44 @@ namespace HW3Tests;
 
 public class Tests
 {
-    private FibonacciTextReader myFib;
+    private FibonacciTextReader? myFib;
     [SetUp]
     public void Setup()
     {
-        myFib = new FibonacciTextReader(1);
+        
     }
 
     [Test]
     public void FibTestNegativeVal()
     {
         myFib = new FibonacciTextReader(-1);
-        Assert.AreEqual("",myFib.ReadToEnd());
+        Assert.That(myFib.ReadToEnd(),Is.EqualTo(""));
+        
     }
     [Test]
     public void FibTestsSpecialCase0()
     {
         myFib = new FibonacciTextReader(0);
-        Assert.AreEqual("",myFib.ReadToEnd());
+        Assert.That(myFib.ReadToEnd(),Is.EqualTo(""));
     }
     [Test]
     public void FibTestsSpecialCase1()
     {
         myFib = new FibonacciTextReader(1);
-        Assert.AreEqual("1: 0\n",myFib.ReadToEnd());
+        Assert.That(myFib.ReadToEnd(),Is.EqualTo("1: 0\n"));
     }
     [Test]
     public void FibTestGreaterThanSpecialCases()
     {
         myFib = new FibonacciTextReader(5);
-        Assert.AreEqual("1: 0\n2: 1\n3: 1\n4: 2\n5: 3\n",myFib.ReadToEnd());
+        Assert.That(myFib.ReadToEnd(),Is.EqualTo("1: 0\n2: 1\n3: 1\n4: 2\n5: 3\n"));
     }
     [Test]
     public void FibTestReadLine()
     {
         myFib = new FibonacciTextReader(5);
-        Assert.AreEqual("1: 0",myFib.ReadLine());
-        Assert.AreEqual("2: 1",myFib.ReadLine());
+        Assert.That(myFib.ReadLine(),Is.EqualTo("1: 0"));
+        Assert.That(myFib.ReadLine(),Is.EqualTo("2: 1"));
     }
     [Test]
     public void FibTestBigNumber()
@@ -48,7 +49,6 @@ public class Tests
         {
             myFib.ReadLine();
         }
-        
-        Assert.AreEqual("100: 218922995834555169026",myFib.ReadLine());
+        Assert.That(myFib.ReadLine(),Is.EqualTo("100: 218922995834555169026"));
     }
 }

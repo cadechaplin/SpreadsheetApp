@@ -1,4 +1,4 @@
-namespace FibancciTextReaderClass
+namespace HW3AvaloniaApp
 {
     using System.IO;
     using System.Numerics;
@@ -12,11 +12,16 @@ namespace FibancciTextReaderClass
     /// </summary>
     public class FibonacciTextReader : TextReader
     {
+        // ReSharper disable InconsistentNaming
         private readonly int maxLines;
         private int currentLine;
         private BigInteger currentFibonacci;
         private BigInteger previousFibonacci;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FibonacciTextReader"/> class.
+        /// </summary>
+        /// /// <param name="maxLines">Determines how many fibonacci numbers will be able to be returned.</param>
         public FibonacciTextReader(int maxLines)
         {
             this.maxLines = maxLines;
@@ -70,9 +75,14 @@ namespace FibancciTextReaderClass
         public override string ReadToEnd()
         {
             StringBuilder myString = new StringBuilder();
-            string line;
-            while ((line = this.ReadLine()) != null)
+            while (true)
             {
+                string? line = this.ReadLine();
+                if (line == null)
+                {
+                    break;
+                }
+
                 myString.AppendLine(line);
             }
 

@@ -1,2 +1,2 @@
 global using NUnit.Framework;
-global using FibancciTextReaderClass;
+global using HW3AvaloniaApp;
