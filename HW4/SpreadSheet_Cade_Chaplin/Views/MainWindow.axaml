@@ -14,7 +14,10 @@
              to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
         <vm:MainWindowViewModel/>
     </Design.DataContext>
-
-    <TextBlock Text="{Binding Greeting}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-
+    <Grid>
+        <DataGrid Name="SpreadsheetDataGrid" AutoGenerateColumns="False">
+            
+        </DataGrid>
+    </Grid>
+    
 </Window>
