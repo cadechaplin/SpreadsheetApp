@@ -4,6 +4,7 @@
     <option name="projectPerEditor">
       <map>
         <entry key="SpreadSheet_Cade_Chaplin/App.axaml" value="SpreadSheet_Cade_Chaplin/SpreadSheet_Cade_Chaplin.csproj" />
+        <entry key="SpreadSheet_Cade_Chaplin/Views/MainWindow.axaml" value="SpreadSheet_Cade_Chaplin/SpreadSheet_Cade_Chaplin.csproj" />
       </map>
     </option>
   </component>

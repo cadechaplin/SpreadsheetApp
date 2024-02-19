@@ -1,11 +1,13 @@
-﻿namespace SpreadsheetEngine;
+﻿using System.ComponentModel;
 
-public abstract class Cell
+namespace SpreadsheetEngine;
+
+public abstract class Cell : INotifyPropertyChanged
 {
     private readonly int _rowIndex;
     private readonly int columnIndex;
-    
-    public string cellValue;
+    protected string cellText;
+    protected string cellValue;
 
     // Constructor to set the RowIndex value
     public Cell(int setRowIndex, int setColumnIndex)
@@ -15,7 +17,39 @@ public abstract class Cell
 
     }
 
+    protected string cellTextProperty
+    {
+        get
+        {
+            return cellText;
+        }
+
+        set
+        {
+            if (cellText != value)
+            {
+                cellText = value;
+                OnPropertyChanged(nameof(cellTextProperty));
+            }
+        }
+
+    }
+
     // Public read-only property to expose the RowIndex value
     public int RowIndex => _rowIndex;
     public int ColumnIndex => columnIndex;
+    
+    public event PropertyChangedEventHandler PropertyChanged;
+    protected virtual void OnPropertyChanged(string propertyName)
+    {
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    }
+}
+
+public class ConcreteCell : Cell
+{
+    public ConcreteCell(int rowIndex, int columnIndex) : base(rowIndex, columnIndex)
+    {
+    }
+
 }
