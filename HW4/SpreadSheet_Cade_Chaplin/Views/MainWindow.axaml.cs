@@ -14,6 +14,8 @@ using System;
 using System.Drawing.Printing;
 using Avalonia.Controls.Templates;
 using Avalonia.Controls.Primitives;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace SpreadSheet_Cade_Chaplin.Views
 {
@@ -22,10 +24,13 @@ namespace SpreadSheet_Cade_Chaplin.Views
 
     {
         private Cell myCell;
+        private Spreadsheet _spreadsheet;
+        private List<List<Cell>> _spreadsheetData;
         public MainWindow()
         {
             //Cell myCell;
             InitializeComponent();
+            InitializeSpreadsheet();
             this.WhenAnyValue(x => x.DataContext)
                 .Where(dataContext => dataContext != null)
                 .Subscribe(dataContext =>
@@ -38,6 +43,26 @@ namespace SpreadSheet_Cade_Chaplin.Views
             
         }
 
+        private void InitializeSpreadsheet()
+        {
+            const int rowCount = 50;//Hard coded
+            const int columnCount = 'Z' - 'A' + 1;
+
+            _spreadsheet = new Spreadsheet( rowCount, columnCount);
+
+            _spreadsheetData = new List<List<Cell>>(rowCount);
+            foreach (var rowIndex in Enumerable.Range(0, rowCount))
+            {
+                var columns = new List<Cell>(columnCount);
+                foreach (var columnIndex in Enumerable.Range(0, columnCount))
+                {
+                    columns.Add(_spreadsheet.Cells[rowIndex][columnIndex]);
+                }
+
+                _spreadsheetData.Add(columns);
+            }
+        }
+
         private void InitializeComponent()
         {
             AvaloniaXamlLoader.Load(this);
@@ -48,7 +73,7 @@ namespace SpreadSheet_Cade_Chaplin.Views
             Console.Write("work");
             var dataGrid = this.FindControl<DataGrid>("SpreadsheetDataGrid");
             Console.Write("work");
-            SpreadSheet mySheet = new SpreadSheet(10,15);
+            
             
             for (char column = 'A'; column <= 'Z'; column++)
             {
@@ -72,13 +97,9 @@ namespace SpreadSheet_Cade_Chaplin.Views
                         {
                             Text = str
                         };
-                    })
-                    
-                    
+                    }),
                 };
-                
                 dataGrid.Columns.Add(templateColumn);
-                
             }
             
             

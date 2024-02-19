@@ -1,22 +1,22 @@
 namespace SpreadsheetEngine;
 
-public class SpreadSheet
+public class Spreadsheet
 {
-    Cell[][] myCells;
-    public SpreadSheet(int col, int row)
+    public Cell[][] Cells;
+    public Spreadsheet(int col, int row)
     {
-        myCells = new Cell[col][];
+        Cells = new Cell[col][];
 
         // Initialize each inner array separately
         for (int i = 0; i < col; i++)
         {
            
-            myCells[i] = new Cell[row];
+            Cells[i] = new Cell[row];
             for (int j = 0; j < row; j++)
             {
                 // Pass row and column indices to the Cell constructor
                 // TODO:possibly wrong approach??
-                myCells[i][j] = new ConcreteCell(i, j);
+                Cells[i][j] = new ConcreteCell(i, j);
             }
         }
 

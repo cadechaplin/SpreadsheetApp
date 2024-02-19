@@ -45,7 +45,7 @@ public abstract class Cell : INotifyPropertyChanged
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 }
-
+//TODO: Move this ? Maybe shouldnt exist.
 public class ConcreteCell : Cell
 {
     public ConcreteCell(int rowIndex, int columnIndex) : base(rowIndex, columnIndex)
