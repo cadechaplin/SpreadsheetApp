@@ -1,8 +1,9 @@
 namespace SpreadsheetEngine;
-
-public class Spreadsheet
+using System.ComponentModel;
+public class Spreadsheet 
 {
     public Cell[][] Cells;
+    public event PropertyChangedEventHandler CellPropertyChanged;
     public Spreadsheet(int col, int row)
     {
         Cells = new Cell[col][];
@@ -21,5 +22,9 @@ public class Spreadsheet
         }
 
 
+    }
+    protected virtual void OnPropertyChanged(string propertyName)
+    {
+        CellPropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 }

@@ -16,7 +16,18 @@
         <vm:MainWindowViewModel/>
     </Design.DataContext>
     <Grid>
-        <DataGrid Name="SpreadsheetDataGrid" AutoGenerateColumns="False">
+        <DataGrid Name="SpreadsheetDataGrid" AutoGenerateColumns="False" IsReadOnly="False">
+            <DataGrid.Styles>
+                <!-- Add bottom lines to row headers -->
+                <Style Selector="DataGridRowHeader">
+                    <Setter Property="AreSeparatorsVisible" Value="True" />
+                </Style>
+                <!-- Add bottom and right lines to grid cells-->
+                <Style Selector="DataGridCell /template/ ContentPresenter">
+                    <Setter Property="BorderThickness" Value="0,0,1,1" />
+                    <Setter Property="BorderBrush" Value="#33000000" />
+                </Style>
+            </DataGrid.Styles>
             
         </DataGrid>
     </Grid>

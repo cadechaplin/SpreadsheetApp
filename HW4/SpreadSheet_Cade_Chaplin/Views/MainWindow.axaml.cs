@@ -70,38 +70,29 @@ namespace SpreadSheet_Cade_Chaplin.Views
 
         private void InitializeDataGrid()
         {
-            Console.Write("work");
             var dataGrid = this.FindControl<DataGrid>("SpreadsheetDataGrid");
-            Console.Write("work");
-            
-            
+
+            // Set the ItemsSource to the _spreadsheetData
+            dataGrid.ItemsSource = _spreadsheetData;
+
+            // Clear existing columns
+            dataGrid.Columns.Clear();
+
+            // Iterate over each column in the spreadsheet
             for (char column = 'A'; column <= 'Z'; column++)
             {
-                var templateColumn = new DataGridTemplateColumn()
+                // Create a DataGridTextColumn for each column
+                var textColumn = new DataGridTextColumn
                 {
                     Header = column.ToString(),
-                    // Define the template for the column
-                    CellTemplate = new FuncDataTemplate<string>((str, _) =>
-                    {
-                        // Create a TextBlock and bind its Text property to the current column's data
-                        return new TextBlock
-                        {
-                            Text = str
-                        };
-                    }),
-                    // Define the template for editing the column (optional)
-                    CellEditingTemplate = new FuncDataTemplate<string>((str, _) =>
-                    {
-                        // Create a TextBox for editing and bind its Text property to the current column's data
-                        return new TextBox
-                        {
-                            Text = str
-                        };
-                    }),
+                    // Bind the Text property to the corresponding column data
+                    
                 };
-                dataGrid.Columns.Add(templateColumn);
+
+                // Add the column to the DataGrid
+                dataGrid.Columns.Add(textColumn);
             }
-            
+            dataGrid.IsReadOnly = false;
             
         }
     }

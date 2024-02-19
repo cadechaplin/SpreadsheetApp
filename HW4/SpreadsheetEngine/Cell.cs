@@ -29,6 +29,12 @@ public abstract class Cell : INotifyPropertyChanged
             if (cellText != value)
             {
                 cellText = value;
+                if (value[0] == '=')
+                {
+                    //change cell to Value evaluation.
+                    
+                }
+
                 OnPropertyChanged(nameof(cellTextProperty));
             }
         }
