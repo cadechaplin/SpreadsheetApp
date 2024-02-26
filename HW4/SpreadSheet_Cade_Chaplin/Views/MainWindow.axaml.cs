@@ -15,22 +15,25 @@ using System.Drawing.Printing;
 using Avalonia.Controls.Templates;
 using Avalonia.Controls.Primitives;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Dynamic;
 using System.Linq;
+using System.Reflection.Metadata.Ecma335;
+using Avalonia.Automation.Peers;
+using Avalonia.Layout;
+using Avalonia.Media;
+
 
 namespace SpreadSheet_Cade_Chaplin.Views
 {
 
     public partial class MainWindow : ReactiveWindow<MainWindowViewModel>
-
     {
-        private Cell myCell;
-        private Spreadsheet _spreadsheet;
-        private List<List<Cell>> _spreadsheetData;
         public MainWindow()
         {
-            //Cell myCell;
+            
             InitializeComponent();
-            InitializeSpreadsheet();
+            //InitializeDataGrid();
             this.WhenAnyValue(x => x.DataContext)
                 .Where(dataContext => dataContext != null)
                 .Subscribe(dataContext =>
@@ -40,45 +43,16 @@ namespace SpreadSheet_Cade_Chaplin.Views
                         InitializeDataGrid();
                     }
                 });
-            
+
         }
 
-        private void InitializeSpreadsheet()
+        public void InitializeDataGrid()
         {
-            const int rowCount = 50;//Hard coded
-            const int columnCount = 'Z' - 'A' + 1;
-
-            _spreadsheet = new Spreadsheet( rowCount, columnCount);
-
-            _spreadsheetData = new List<List<Cell>>(rowCount);
-            foreach (var rowIndex in Enumerable.Range(0, rowCount))
+            if (myDataGrid == null)
             {
-                var columns = new List<Cell>(columnCount);
-                foreach (var columnIndex in Enumerable.Range(0, columnCount))
-                {
-                    columns.Add(_spreadsheet.Cells[rowIndex][columnIndex]);
-                }
-
-                _spreadsheetData.Add(columns);
+                throw new Exception("data grid null");
             }
-        }
 
-        private void InitializeComponent()
-        {
-            AvaloniaXamlLoader.Load(this);
-        }
-
-        private void InitializeDataGrid()
-        {
-            var dataGrid = this.FindControl<DataGrid>("SpreadsheetDataGrid");
-
-            // Set the ItemsSource to the _spreadsheetData
-            dataGrid.ItemsSource = _spreadsheetData;
-
-            // Clear existing columns
-            dataGrid.Columns.Clear();
-
-            // Iterate over each column in the spreadsheet
             for (char column = 'A'; column <= 'Z'; column++)
             {
                 // Create a DataGridTextColumn for each column
@@ -90,10 +64,17 @@ namespace SpreadSheet_Cade_Chaplin.Views
                 };
 
                 // Add the column to the DataGrid
-                dataGrid.Columns.Add(textColumn);
+                
+                myDataGrid.Columns.Add(textColumn);
             }
-            dataGrid.IsReadOnly = false;
-            
+
         }
+
+
+
+
+
+
     }
+    
 }
