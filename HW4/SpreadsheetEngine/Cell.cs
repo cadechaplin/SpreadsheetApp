@@ -7,10 +7,10 @@ public abstract class Cell : INotifyPropertyChanged
     private readonly int _rowIndex;
     private readonly int columnIndex;
     
-    private string _Text;
-    private string _Value;
+    protected string _Text;
+    protected string _Value;
 
-    protected string Text
+    public string Text
     {
         get { return _Text; }
 
@@ -19,20 +19,38 @@ public abstract class Cell : INotifyPropertyChanged
             if (_Text != value)
             {
                 _Text = value;
-                if (value[0] == '=')
-                {
-                    //change cell to Value evaluation.TODO: change::
-                    _Text = "Value"; 
-                }
-
-
                 OnPropertyChanged(nameof(_Text));
             }
         }
 
     }
 
-    protected string Value;
+    public string Value{
+        get { return _Value; }
+        internal set { _Value = value; }
+        /*
+        set
+        {
+            if (value.Length < 1 || value == _Value)
+            {
+                return;
+            }
+
+            _Value = value;
+            if (value[0] == '=')
+            {
+                //change cell to Value evaluation.TODO: change::
+                _Value = Evalutate(value.Substring(1));
+            }
+            else
+            {
+                _Value = _Text;
+            }
+
+
+        }
+        */
+    }
     // Public read-only property to expose the RowIndex value
     public int RowIndex => _rowIndex;
     public int ColumnIndex => columnIndex;
@@ -45,10 +63,13 @@ public abstract class Cell : INotifyPropertyChanged
 
     }
 
-    
 
-    
-    
+    private string Evalutate(string formula)
+    {
+        return formula;
+    }
+
+
     public event PropertyChangedEventHandler PropertyChanged = delegate { };
     protected virtual void OnPropertyChanged(string propertyName)
     {
@@ -58,9 +79,9 @@ public abstract class Cell : INotifyPropertyChanged
 //TODO: Move this ? Maybe shouldnt exist.
 public class ConcreteCell : Cell
 {
-    public ConcreteCell(int rowIndex, int columnIndex, string text = "Uhh") : base(rowIndex, columnIndex)
+    public ConcreteCell(int rowIndex, int columnIndex, string text = "") : base(rowIndex, columnIndex)
     {
-        Text = text;
+        Value = text;
     }
-
+    
 }

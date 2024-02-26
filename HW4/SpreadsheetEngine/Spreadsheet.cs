@@ -11,7 +11,7 @@ public class Spreadsheet
 
     public int RowCount => _RowCount;
     
-    public event PropertyChangedEventHandler CellPropertyChanged = delegate { };
+    
     public Spreadsheet(int row, int col)
     {
         Cells = new Cell[row,col];
@@ -25,6 +25,7 @@ public class Spreadsheet
             {
                 // Pass row and column indices to the Cell constructor
                 Cells[i,j] = new ConcreteCell(i, j);
+                Cells[i, j].PropertyChanged += OnCellPropertyChanged;
             }
         }
 
@@ -32,10 +33,40 @@ public class Spreadsheet
     }
     public Cell GetCell(int row, int col)
     {
+        if (row > this._RowCount || col > ColumnCount)
+        {
+            return null;
+        }
+
         return this.Cells[row,col];
     }
-    protected virtual void OnPropertyChanged(string propertyName)
+
+    public void EvaluateCellValue(Cell ChangeCell)
     {
-        CellPropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        if ((ChangeCell.Text.Length < 3))
+        {
+            ChangeCell.Value = ChangeCell.Text;
+            return;
+        }
+
+        if (ChangeCell.Text[0] == '=')
+        {
+            Cell refrenced = GetCell(int.Parse(ChangeCell.Text.Substring(2)) - 1,ChangeCell.Text[1] - 'A');
+            ChangeCell.Value = refrenced.Value;
+        }
+        else
+        {
+            ChangeCell.Value = ChangeCell.Text;
+        }
+
+
+    }
+
+    protected virtual void OnCellPropertyChanged(object sender,
+        PropertyChangedEventArgs e)
+    {
+
+        EvaluateCellValue((Cell)sender);
+        
     }
 }
