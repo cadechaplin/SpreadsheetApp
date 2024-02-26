@@ -11,15 +11,17 @@ public class Spreadsheet
 
     public int RowCount => _RowCount;
     
-    public event PropertyChangedEventHandler CellPropertyChanged;
-    public Spreadsheet(int col, int row)
+    public event PropertyChangedEventHandler CellPropertyChanged = delegate { };
+    public Spreadsheet(int row, int col)
     {
-        Cells = new Cell[col,row];
+        Cells = new Cell[row,col];
+        _ColumnCount = col;
+        _RowCount = row;
 
         // Initialize each inner array separately
-        for (int i = 0; i < col; i++)
+        for (int i = 0; i < row; i++)
         {
-            for (int j = 0; j < row; j++)
+            for (int j = 0; j < col; j++)
             {
                 // Pass row and column indices to the Cell constructor
                 Cells[i,j] = new ConcreteCell(i, j);

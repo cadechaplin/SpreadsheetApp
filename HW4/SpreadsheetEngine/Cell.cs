@@ -12,7 +12,7 @@ public abstract class Cell : INotifyPropertyChanged
 
     protected string Text
     {
-        get { return Text; }
+        get { return _Text; }
 
         set
         {
@@ -49,7 +49,7 @@ public abstract class Cell : INotifyPropertyChanged
 
     
     
-    public event PropertyChangedEventHandler PropertyChanged;
+    public event PropertyChangedEventHandler PropertyChanged = delegate { };
     protected virtual void OnPropertyChanged(string propertyName)
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));

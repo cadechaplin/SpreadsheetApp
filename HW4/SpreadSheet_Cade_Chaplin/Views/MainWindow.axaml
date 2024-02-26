@@ -16,7 +16,7 @@
         <vm:MainWindowViewModel/>
     </Design.DataContext>
     <Grid>
-        <DataGrid Name="myDataGrid" IsReadOnly="False" ItemsSource = "{Binding SpreadsheetData}">
+        <DataGrid Name="myDataGrid" IsReadOnly="False">
             <DataGrid.Styles>
                 <!-- Add bottom lines to row headers -->
                 <Style Selector="DataGridRowHeader">
