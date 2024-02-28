@@ -1,36 +1,26 @@
-using Avalonia.Controls;
+namespace SpreadSheet_Cade_Chaplin.Views;
 
-using SpreadSheet_Cade_Chaplin.ViewModels;
 using Avalonia.ReactiveUI;
-using ReactiveUI;
-using System.Reactive.Linq;
-using System;
+using SpreadSheet_Cade_Chaplin.ViewModels;
 
-namespace SpreadSheet_Cade_Chaplin.Views
+/// <summary>
+/// Joins a first name and a last name together into a single string.
+/// </summary>
+public partial class MainWindow : ReactiveWindow<MainWindowViewModel>
 {
-
-    public partial class MainWindow : ReactiveWindow<MainWindowViewModel>
+    /// <summary>
+    /// Initializes a new instance of the <see cref="MainWindow"/> class.
+    /// </summary>
+    public MainWindow()
     {
-        public MainWindow()
+        this.InitializeComponent();
+        DataContext = new MainWindowViewModel();//works without. 
+        this.DataContextChanged += (sender, args) =>
         {
-            
-            InitializeComponent();
-
-            DataContextChanged += (sender, args) =>
+            if (this.DataContext is MainWindowViewModel viewModel)
             {
-                if (DataContext is MainWindowViewModel viewModel)
-                    viewModel.InitializeDataGrid(myDataGrid);
-            };
-
-        }
-
-        
-
-
-
-
-
-
+                viewModel.InitializeDataGrid(this.MyDataGrid);
+            }
+        };
     }
-    
 }

@@ -6,7 +6,6 @@ public abstract class Cell : INotifyPropertyChanged
 {
     private readonly int _rowIndex;
     private readonly int columnIndex;
-    
     protected string _Text;
     protected string _Value;
 
@@ -19,7 +18,7 @@ public abstract class Cell : INotifyPropertyChanged
             if (_Text != value)
             {
                 _Text = value;
-                OnPropertyChanged(nameof(_Text));
+                OnPropertyChanged(nameof(Text));
             }
         }
 
@@ -27,30 +26,13 @@ public abstract class Cell : INotifyPropertyChanged
 
     public string Value{
         get { return _Value; }
-        internal set { _Value = value; }
-        /*
-        set
+        internal set
         {
-            if (value.Length < 1 || value == _Value)
-            {
-                return;
-            }
-
             _Value = value;
-            if (value[0] == '=')
-            {
-                //change cell to Value evaluation.TODO: change::
-                _Value = Evalutate(value.Substring(1));
-            }
-            else
-            {
-                _Value = _Text;
-            }
-
-
+            OnValuePropertyChanged(nameof(Value));
         }
-        */
     }
+
     // Public read-only property to expose the RowIndex value
     public int RowIndex => _rowIndex;
     public int ColumnIndex => columnIndex;
@@ -60,17 +42,17 @@ public abstract class Cell : INotifyPropertyChanged
     {
         _rowIndex = setRowIndex;
         columnIndex = setColumnIndex;
-
     }
 
-
-    private string Evalutate(string formula)
-    {
-        return formula;
-    }
+    
 
 
     public event PropertyChangedEventHandler PropertyChanged = delegate { };
+    public event PropertyChangedEventHandler ValuePropertyChanged = delegate { };
+    protected virtual void OnValuePropertyChanged(string propertyName)
+    {
+        ValuePropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    }
     protected virtual void OnPropertyChanged(string propertyName)
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
@@ -79,9 +61,9 @@ public abstract class Cell : INotifyPropertyChanged
 //TODO: Move this ? Maybe shouldnt exist.
 public class ConcreteCell : Cell
 {
-    public ConcreteCell(int rowIndex, int columnIndex, string text = "") : base(rowIndex, columnIndex)
+    public ConcreteCell(int rowIndex, int columnIndex) : base(rowIndex, columnIndex)
     {
-        Value = text;
+        
     }
     
 }

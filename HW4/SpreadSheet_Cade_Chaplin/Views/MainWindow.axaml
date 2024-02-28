@@ -15,8 +15,17 @@
              to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
         <vm:MainWindowViewModel/>
     </Design.DataContext>
+    
+        
+    
     <Grid>
-        <DataGrid Name="myDataGrid" IsReadOnly="False">
+        <DockPanel>
+        <Menu DockPanel.Dock="Top">
+            <MenuItem Header="_Demo" Command ="{Binding RunDemo}">
+                
+            </MenuItem>
+        </Menu>
+        <DataGrid Name="MyDataGrid" HeadersVisibility="All">
             <DataGrid.Styles>
                 <!-- Add bottom lines to row headers -->
                 <Style Selector="DataGridRowHeader">
@@ -30,6 +39,7 @@
             </DataGrid.Styles>
             
         </DataGrid>
+            </DockPanel>
     </Grid>
     
 </Window>
