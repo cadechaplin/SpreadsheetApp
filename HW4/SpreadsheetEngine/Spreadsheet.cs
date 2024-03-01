@@ -1,3 +1,7 @@
+// <copyright file="Spreadsheet.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+
 namespace SpreadsheetEngine;
 
 using System.ComponentModel;
@@ -9,7 +13,13 @@ using System.ComponentModel;
 /// </summary>
 public class Spreadsheet
 {
-    public Cell[,] Cells;
+    /// <summary>
+    /// Cells contained by the spreadsheet.
+    /// </summary>
+    #pragma warning disable SA1401
+    // Want to be able to access this from outside the class.
+    public readonly Cell[,] Cells;
+    #pragma warning restore SA1401
     private readonly int _columnCount;
     private readonly int _rowCount;
 
@@ -20,6 +30,11 @@ public class Spreadsheet
     /// <param name="col"> Amount of columns to initiate.</param>
     public Spreadsheet(int row, int col)
     {
+        if (row <= 0 || col <= 0)
+        {
+            throw new IndexOutOfRangeException("Row and column counts must be greater than zero.");
+        }
+
         this.Cells = new Cell[row, col];
         this._columnCount = col;
         this._rowCount = row;
@@ -31,10 +46,15 @@ public class Spreadsheet
             {
                 // Pass row and column indices to the Cell constructor
                 this.Cells[i, j] = new ConcreteCell(i, j);
-                this.Cells[i, j].PropertyChanged += OnCellPropertyChanged;
+                this.Cells[i, j].PropertyChanged += this.OnCellPropertyChanged;
             }
         }
     }
+
+    /// <summary>
+    /// Event to fire when a Cell is changed.
+    /// </summary>
+    public event PropertyChangedEventHandler CellPropertyChanged = (sender, e) => { };
 
     /// <summary>
     /// Gets the column count.
@@ -51,10 +71,10 @@ public class Spreadsheet
     /// </summary>
     /// <param name="sender"> Integer to use for indexing the Cell row.</param>
     /// <param name="e"> Integer to use for indexing the Cell .</param>
-    
     protected virtual void OnCellPropertyChanged(object sender, PropertyChangedEventArgs e)
     {
         this.EvaluateCellValue((Cell)sender);
+        this.CellPropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(sender)));
     }
 
     private void EvaluateCellValue(Cell changeCell)
@@ -85,6 +105,8 @@ public class Spreadsheet
             int colFind = changeCell.Text[1] - 'A';
             if (colFind < 0 || colFind > this._columnCount || rowFind > this._rowCount)
             {
+                changeCell.Value = "Cell referenced out of range.";
+
                 // index out of range
                 return;
             }
