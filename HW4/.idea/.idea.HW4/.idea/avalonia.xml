@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AvaloniaProject">
+    <option name="projectPerEditor">
+      <map>
+        <entry key="SpreadSheet_Cade_Chaplin/App.axaml" value="SpreadSheet_Cade_Chaplin/SpreadSheet_Cade_Chaplin.csproj" />
+        <entry key="SpreadSheet_Cade_Chaplin/Views/MainWindow.axaml" value="SpreadSheet_Cade_Chaplin/SpreadSheet_Cade_Chaplin.csproj" />
+      </map>
+    </option>
+  </component>
+</project>
