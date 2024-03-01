@@ -2,6 +2,8 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
+using System.ComponentModel;
+
 namespace SpreadsheetEngine;
 
 /// <summary>
@@ -17,5 +19,19 @@ public class ConcreteCell : Cell
     public ConcreteCell(int rowIndex, int columnIndex)
         : base(rowIndex, columnIndex)
     {
+    }
+
+    public event PropertyChangedEventHandler? ValuePropertyChanged = (sender, e) => { };
+
+    private string _value;
+    public override string Value
+    {
+        get => _value;
+        protected internal set
+        {
+            _value = value;
+            this.ValuePropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Value)));
+
+        }
     }
 }

@@ -65,17 +65,7 @@ public abstract class Cell : INotifyPropertyChanged
     /// <summary>
     /// Gets StoredValue.
     /// </summary>
-    public string Value
-    {
-        get => this.StoredValue;
-
-        internal set
-        {
-            this.StoredValue = value;
-
-            // OnValuePropertyChanged(nameof(_Value));
-        }
-    }
+    abstract public string? Value { get; protected internal set; }
 
     /// <summary>
     /// Gets _rowIndex.

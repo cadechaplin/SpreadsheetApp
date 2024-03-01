@@ -109,8 +109,7 @@ public class MainWindowViewModel : ViewModelBase
             this._spreadsheet.Cells[i, 0].Text = "=B" + (i + 1).ToString();
         }
 
-        this._myGrid.ItemsSource = null; // Temp fix to refresh datagrid
-        this._myGrid.ItemsSource = this.Rows;
+        
     }
 
     /// <summary>
