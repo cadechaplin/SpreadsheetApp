@@ -3,7 +3,7 @@ using SpreadsheetEngine;
 
 bool quit = false;
 string expStr = string.Empty;
-Dictionary<string, int> varDict = new Dictionary<string, int>();
+Dictionary<string, double> varDict = new Dictionary<string, double>();
 string curKey = String.Empty;
 string curVal = String.Empty;
 while (!quit)
@@ -30,8 +30,8 @@ while (!quit)
             curKey = Console.ReadLine();
             Console.WriteLine("Enter variable value:");
             curVal = Console.ReadLine();
-            int value;
-            if (int.TryParse(curVal, out value))
+            double value;
+            if (double.TryParse(curVal, out value))
             {
                 varDict[curKey] = value;
                 Console.WriteLine($"Variable '{curKey}' set to {value}");
