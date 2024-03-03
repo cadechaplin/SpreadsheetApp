@@ -1,11 +1,12 @@
-﻿// See https://aka.ms/new-console-template for more information
+﻿// <copyright file="Program.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+
 using SpreadsheetEngine;
 
-bool quit = false;
-string expStr = string.Empty;
-Dictionary<string, double> varDict = new Dictionary<string, double>();
-string curKey = String.Empty;
-string curVal = String.Empty;
+var quit = false;
+var expStr = string.Empty;
+var varDict = new Dictionary<string, double>();
 while (!quit)
 {
     Console.WriteLine($"Menu: (Current Expression: {expStr} )");
@@ -14,9 +15,7 @@ while (!quit)
     Console.WriteLine("3. Evaluate");
     Console.WriteLine("4. Quit");
     Console.WriteLine("Enter your choice (1-4) or type 'quit' to exit: ");
-    
-    string choice = Console.ReadLine();
-    
+    string? choice = Console.ReadLine();
     switch (choice)
     {
         case "1":
@@ -24,41 +23,45 @@ while (!quit)
             Console.WriteLine("Enter new expression:");
             expStr = Console.ReadLine();
             break;
-        case "2": // not sure if I should have a dictionary of my variables here.
-            // Add code for Option 2 here
+        case "2": // TODO: not sure if I should have a dictionary of my variables here.
             Console.WriteLine("Enter new Variable name:");
-            curKey = Console.ReadLine();
+            var curKey = Console.ReadLine();
             Console.WriteLine("Enter variable value:");
-            curVal = Console.ReadLine();
-            double value;
-            if (double.TryParse(curVal, out value))
+            var curVal = Console.ReadLine();
+            if (double.TryParse(curVal, out var value))
             {
-                varDict[curKey] = value;
-                Console.WriteLine($"Variable '{curKey}' set to {value}");
+                if (curKey != null)
+                {
+                    varDict[curKey] = value;
+                    Console.WriteLine($"Variable '{curKey}' set to {value}");
+                }
             }
             else
             {
                 Console.WriteLine("Invalid input for variable value. Please enter an integer.");
             }
+
             break;
         case "3":
-            // Add code for Option 3 here
-            ExpressionTree temp = new ExpressionTree(expStr);
-            foreach (var key in varDict.Keys)
+            if (expStr != null)
             {
-                temp.SetVariable(key, varDict[key]);
+                ExpressionTree temp = new ExpressionTree(expStr);
+                foreach (var key in varDict.Keys)
+                {
+                    temp.SetVariable(key, varDict[key]);
+                }
+
+                Console.WriteLine(temp.Evaluate());
             }
-            Console.WriteLine(temp.Evaluate());
+
             break;
         case "4":
-            Console.WriteLine("You chose Option 4");
-            // Add code for Option 4 here
             quit = true;
             break;
         default:
             Console.WriteLine("Invalid choice. Please enter a number between 1 and 4, or type 'quit' to exit.");
             break;
     }
-    
+
     Console.WriteLine();
 }

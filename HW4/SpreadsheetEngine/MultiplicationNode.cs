@@ -1,10 +1,23 @@
 namespace SpreadsheetEngine;
 
+/// <summary>
+/// Node for multiplication.
+/// </summary>
 internal class MultiplicationNode : OperatorNode
 {
-    public override double evaluate()
+    /// <inheritdoc/>
+    public override double Evaluate()
     {
-        return Left.evaluate() * Right.evaluate();
+        var left = this.Left;
+        var right = this.Right;
+        if (left != null && right != null)
+        {
+            return left.Evaluate() * right.Evaluate();
+        }
+        else
+        {
+            throw new InvalidOperationException("Cannot evaluate subtraction: missing operands.");
+        }
     }
 
 }

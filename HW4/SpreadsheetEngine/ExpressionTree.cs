@@ -1,18 +1,31 @@
-using System.Runtime.CompilerServices;
+// <copyright file="ExpressionTree.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
 
 namespace SpreadsheetEngine;
 
+/// <summary>
+/// ExpressionTree Class creates expression trees from a string and can evaluate them.
+/// </summary>
 public class ExpressionTree
 {
-    private ExpressionNode root;
-    private Dictionary<string, double> variableDictionary;
-    
-    private Dictionary<char, Type> nodeTypes;
+    // ReSharper disable InconsistentNaming
+    private readonly ExpressionNode? root;
+    private readonly Dictionary<char, Type> nodeTypes;
+    private readonly Dictionary<string, double> variableDictionary;
 
+    // ReSharper restore InconsistentNaming
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ExpressionTree"/> class.
+    /// </summary>
+    /// <param name="expression">String of expression that will be used to construct expression tree.</param>
     public ExpressionTree(string expression)
     {
-        variableDictionary = new Dictionary<string, double>();
-        nodeTypes = new Dictionary<char, Type>
+        this.variableDictionary = new Dictionary<string, double>();
+
+        // Order here defines precedence.
+        this.nodeTypes = new Dictionary<char, Type>
         {
             { '+', typeof(AdditionNode) },
             { '-', typeof(SubtractionNode) },
@@ -21,87 +34,72 @@ public class ExpressionTree
 
             // Add mappings for other operators as needed
         };
-        root = Compile(expression);
+        this.root = this.Compile(expression);
     }
-    //method for setting a single variable.
+
+    // method for setting a single variable.
+
+    /// <summary>
+    /// Set a variable in the variable dictionary.
+    /// </summary>
+    /// <param name="variableName">Key for dictionary entry.</param>
+    /// <param name="variableValue">Value for dictionary entry.</param>
     public void SetVariable(string variableName, double variableValue)
     {
-        variableDictionary[variableName] = variableValue;
+        this.variableDictionary[variableName] = variableValue;
     }
 
-    // Can use this method to set all variables if you already have the dictionary.
-    public void SetVariable(Dictionary<string, double> preset)
-    {
-        variableDictionary = preset;
-    }
-
+    /// <summary>
+    /// Initiates evaluation of the tree.
+    /// </summary>
+    /// <returns> Returns the evaluation of the tree.</returns>
     public double Evaluate()
     {
-        return root.evaluate();
-    }
-
-    internal ExpressionNode Compile(string partition)
-    {
-        if (string.IsNullOrEmpty(partition))
+        if (this.root == null)
         {
-            return null;
+            return 0;
         }
-        // Remove spaces, since all they are is whitespace.
-        partition = partition.Replace(" ", string.Empty);
-        return CompileHelper(partition);
-        //char[] operators = { '+', '-', '*', '/' };
-        //throw new NotImplementedException();
+
+        return this.root.Evaluate();
     }
 
-    internal ExpressionNode CompileHelper(string partition)
+    private ExpressionNode? Compile(string partition)
     {
-        double number;
-        // a constant
-        if (double.TryParse(partition, out number))
+        return string.IsNullOrEmpty(partition) ? null : this.CompileHelper(partition);
+    }
+
+    private ExpressionNode CompileHelper(string partition)
+    {
+        if (double.TryParse(partition, out var number))
         {
             // We need a ConstantNode
             return new ConstantNode()
             {
-                Value = number
+                Value = number,
             };
         }
 
-        foreach (char operation in nodeTypes.Keys)
+        foreach (char operation in this.nodeTypes.Keys)
         {
             if (partition.Contains(operation))
             {
-                OperatorNode temp;
-                //temp = new 
-                Type cur = nodeTypes[operation];
-                temp = (OperatorNode)Activator.CreateInstance(cur);
-                int index = partition.IndexOf(operation);
-                temp.Left = CompileHelper(partition.Substring(0, index));
-                temp.Right = CompileHelper(partition.Substring(index + 1));
+                var temp = (OperatorNode)Activator.CreateInstance(this.nodeTypes[operation])!;
+                int index = partition.LastIndexOf(operation);
+                temp.Left = this.CompileHelper(partition.Substring(0, index));
+                temp.Right = this.CompileHelper(partition.Substring(index + 1));
                 return temp;
-                // create instance of new cur.
             }
         }
 
-        return null;
-    }
+        if (this.variableDictionary.TryAdd(partition, 0))
+        {
+            // TODO: Not sure I should set to 0. Avoids errors.
+        }
 
-    /*
-    internal ExpressionNode CreateAdditionNode()
-    {
-        throw new NotImplementedException();
+        return new VariableNode()
+        {
+            Name = partition,
+            RefrenceDictionary = this.variableDictionary,
+        };
     }
-    internal ExpressionNode CreateSubtractionNode()
-    {
-        throw new NotImplementedException();
-    }
-    internal ExpressionNode CreateDivisionNode()
-    {
-        throw new NotImplementedException();
-    }
-    internal ExpressionNode CreateDivisionNode()
-    {
-        throw new NotImplementedException();
-    }
-    */
-    
 }

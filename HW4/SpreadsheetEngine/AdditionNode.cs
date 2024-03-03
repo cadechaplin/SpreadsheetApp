@@ -1,9 +1,9 @@
 namespace SpreadsheetEngine;
 internal class AdditionNode : OperatorNode
 {
-    public override double evaluate()
+    public override double Evaluate()
     {
-        return Left.evaluate() + Right.evaluate();
+        return Left.Evaluate() + Right.Evaluate();
     }
 
 }
