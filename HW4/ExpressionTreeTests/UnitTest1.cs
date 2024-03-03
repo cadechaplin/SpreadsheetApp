@@ -14,7 +14,7 @@ public class Tests
     public void GeneralExpressionTest()
     {
         ExpressionTree exp = new ExpressionTree("3*3*3");
-        Assert.That(27, Is.EqualTo(exp.Evaluate()));
+        Assert.That(exp.Evaluate(), Is.EqualTo(27));
     }
 
     [Test]
@@ -27,8 +27,9 @@ public class Tests
     [TestCase("((((((2+3)-(4+5))))))", ExpectedResult = -4.0)]
     [TestCase("2*3+5", ExpectedResult = 11.0)]
     [TestCase("2+3*5", ExpectedResult = 17.0)]
-    [TestCase("2 * 3 * 5", ExpectedResult = 17.0)]
+    [TestCase("2 * 3 * 5", ExpectedResult = 30.0)]
     [TestCase("5/0", ExpectedResult = double.PositiveInfinity)]
+    [TestCase("5", ExpectedResult =5.0)]
     public double Test(string exp)
     {
         ExpressionTree expTree = new ExpressionTree(exp);
