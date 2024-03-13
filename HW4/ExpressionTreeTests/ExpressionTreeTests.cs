@@ -45,6 +45,14 @@ public class ExpressionTreeTests
     [TestCase("5+5+6*3-28", ExpectedResult =0.0)]
     [TestCase("5+5*6+3*2", ExpectedResult =41.0)]
     [TestCase("42-12-20", ExpectedResult =10.0)]
+
+    // Tests for Homework 5:
+    [TestCase("42-12+20", ExpectedResult =50.0)]
+    [TestCase("2*4/2", ExpectedResult =4.0)]
+    [TestCase("2+4/2", ExpectedResult =4.0)]
+    [TestCase("4/2+5", ExpectedResult =7.0)]
+    [TestCase("5+6/3+2*4/2", ExpectedResult =11.0)]
+    [TestCase("(6+6)/(3+3)*4/2", ExpectedResult =6.0)]
     public double Test(string exp)
     {
         ExpressionTree expTree = new ExpressionTree(exp);
