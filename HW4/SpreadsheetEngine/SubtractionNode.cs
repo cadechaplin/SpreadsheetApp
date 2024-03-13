@@ -5,6 +5,21 @@ namespace SpreadsheetEngine;
 /// </summary>
 internal class SubtractionNode : OperatorNode
 {
+    /// <summary>
+    /// Operator character stored for reference.
+    /// </summary>
+    public static string Operator = "-";
+
+    /// <summary>
+    /// Precedence stored for reference.
+    /// </summary>
+    public static int Precedence = 0;
+
+    /// <summary>
+    /// Associativity stored for reference.
+    /// </summary>
+    public static Associativity A = Associativity.Left;
+
     /// <inheritdoc/>
     public override double Evaluate()
     {

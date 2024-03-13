@@ -83,7 +83,7 @@ public class ExpressionTree
         {
             if (partition.Contains(operation))
             {
-                var temp = (OperatorNode)Activator.CreateInstance(this.nodeTypes[operation])!;
+                var temp = OperatorNodeFactory.createNode(operation);
                 int index = partition.LastIndexOf(operation);
                 temp.Left = this.CompileHelper(partition.Substring(0, index));
                 temp.Right = this.CompileHelper(partition.Substring(index + 1));

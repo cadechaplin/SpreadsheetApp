@@ -1,13 +1,23 @@
 namespace SpreadsheetEngine;
 
-public class OperatorNodeFactory
+public static class OperatorNodeFactory
 {
-    public OperatorNodeFactory()
-    {
-    }
+    // ReSharper disable InconsistentNaming
+    private static Dictionary<char, Type> nodeTypes =
+        new Dictionary<char, Type>
+        {
+            { '+', typeof(AdditionNode) },
+            { '-', typeof(SubtractionNode) },
+            { '*', typeof(MultiplicationNode) },
+            { '/', typeof(DivisionNode) },
 
-    internal OperatorNode createNode(string op)
+            // Add mappings for other operators as needed
+        };
+
+    internal static OperatorNode createNode(char op)
     {
-        throw new NotImplementedException("Not implemented");
+        return (OperatorNode)Activator.CreateInstance(nodeTypes[op])!;
+
+        // Throw new NotImplementedException("Not implemented");
     }
 }
