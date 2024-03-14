@@ -5,6 +5,7 @@
 namespace ExpressionTreeTests;
 
 using SpreadsheetEngine;
+using System.Reflection;
 
 /// <summary>
 /// Tests for expression tree.
@@ -58,4 +59,23 @@ public class ExpressionTreeTests
         ExpressionTree expTree = new ExpressionTree(exp);
         return expTree.Evaluate();
     }
+
+    [Test]
+    [TestCase("3+5", ExpectedResult = "3 5 +")]
+    public string ShuntingTest(string exp)
+    {
+        ShuntingYard alg = new ShuntingYard();
+        
+        
+        string postfixExpression = ShuntingYard.ConvertToPostfix(exp);
+
+        // Evaluate the postfix expression or perform other operations
+        // For example:
+        // double result = EvaluatePostfixExpression(postfixExpression);
+
+
+        return postfixExpression;
+    }
+    
+    
 }

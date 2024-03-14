@@ -3,7 +3,7 @@ namespace SpreadsheetEngine;
 public static class OperatorNodeFactory
 {
     // ReSharper disable InconsistentNaming
-    private static Dictionary<char, Type> nodeTypes =
+    public static Dictionary<char, Type> nodeTypes =
         new Dictionary<char, Type>
         {
             { '+', typeof(AdditionNode) },

@@ -13,7 +13,7 @@ internal class SubtractionNode : OperatorNode
     /// <summary>
     /// Precedence stored for reference.
     /// </summary>
-    public static int Precedence = 0;
+    public static int Precedence = 1;
 
     /// <summary>
     /// Associativity stored for reference.

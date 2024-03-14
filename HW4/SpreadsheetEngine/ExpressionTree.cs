@@ -68,6 +68,15 @@ public class ExpressionTree
         return string.IsNullOrEmpty(partition) ? null : this.CompileHelper(partition);
     }
 
+    private ExpressionNode CompileHelper(string infix, string overload)
+    {
+        
+        string ans = ShuntingYard.ConvertToPostfix(infix);
+        ans = ans;
+        
+        return null;
+    }
+
     private ExpressionNode CompileHelper(string partition)
     {
         if (double.TryParse(partition, out var number))
