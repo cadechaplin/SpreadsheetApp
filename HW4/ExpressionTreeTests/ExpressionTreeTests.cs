@@ -42,18 +42,18 @@ public class ExpressionTreeTests
     [TestCase("2*3*5", ExpectedResult = 30.0)]
     [TestCase("5/0", ExpectedResult = double.PositiveInfinity)]
     [TestCase("125/5/5", ExpectedResult = 5)]
-    [TestCase("5", ExpectedResult =5.0)]
-    [TestCase("5+5+6*3-28", ExpectedResult =0.0)]
-    [TestCase("5+5*6+3*2", ExpectedResult =41.0)]
-    [TestCase("42-12-20", ExpectedResult =10.0)]
+    [TestCase("5", ExpectedResult = 5.0)]
+    [TestCase("5+5+6*3-28", ExpectedResult = 0.0)]
+    [TestCase("5+5*6+3*2", ExpectedResult = 41.0)]
+    [TestCase("42-12-20", ExpectedResult = 10.0)]
 
     // Tests for Homework 5:
-    [TestCase("42-12+20", ExpectedResult =50.0)]
-    [TestCase("2*4/2", ExpectedResult =4.0)]
-    [TestCase("2+4/2", ExpectedResult =4.0)]
-    [TestCase("4/2+5", ExpectedResult =7.0)]
-    [TestCase("5+6/3+2*4/2", ExpectedResult =11.0)]
-    [TestCase("(6+6)/(3+3)*4/2", ExpectedResult =6.0)]
+    [TestCase("42-12+20", ExpectedResult = 50.0)]
+    [TestCase("2*4/2", ExpectedResult = 4.0)]
+    [TestCase("2+4/2", ExpectedResult = 4.0)]
+    [TestCase("4/2+5", ExpectedResult = 7.0)]
+    [TestCase("5+6/3+2*4/2", ExpectedResult = 11.0)]
+    [TestCase("(6+6)/(3+3)*4/2", ExpectedResult = 6.0)]
     public double Test(string exp)
     {
         ExpressionTree expTree = new ExpressionTree(exp);
@@ -61,20 +61,39 @@ public class ExpressionTreeTests
     }
 
     [Test]
-    [TestCase("3+5", ExpectedResult = "3 5 +")]
-    public string ShuntingTest(string exp)
+    public void ShuntingTest_Addition()
     {
-        ShuntingYard alg = new ShuntingYard();
-        
-        
-        string postfixExpression = ShuntingYard.ConvertToPostfix(exp);
+        Assert.That(ShuntingYard.ConvertToPostfix("3+5"), Is.EquivalentTo(new List<string> { "3", "5", "+" }));
+    }
 
-        // Evaluate the postfix expression or perform other operations
-        // For example:
-        // double result = EvaluatePostfixExpression(postfixExpression);
+    [Test]
+    public void ShuntingTest_AdditionAndDivision()
+    {
+        Assert.That(ShuntingYard.ConvertToPostfix("3+5/5"), Is.EquivalentTo(new List<string> { "3", "5", "5", "/", "+" }));
+    }
 
+    [Test]
+    public void ShuntingTest_MultipleOperators()
+    {
+        Assert.That(ShuntingYard.ConvertToPostfix("3+5*4"), Is.EquivalentTo(new List<string> { "3", "5", "4", "*", "+" }));
+    }
+    
+    [Test]
+    public void ShuntingTest_MultipleCharLengthNums()
+    {
+        Assert.That(ShuntingYard.ConvertToPostfix("36+5*4"), Is.EquivalentTo(new List<string> { "36", "5", "4", "*", "+" }));
+    }
 
-        return postfixExpression;
+    [Test]
+    public void ShuntingTest_Parentheses()
+    {
+        Assert.That(ShuntingYard.ConvertToPostfix("(3+5)*4"), Is.EquivalentTo(new List<string> { "3", "5", "+", "4", "*" }));
+    }
+
+    [Test]
+    public void ShuntingTest_MissingOperand()
+    {
+        Assert.That(() => ShuntingYard.ConvertToPostfix("3+"), Throws.ArgumentException.With.Message.EqualTo("Invalid expression: missing operand."));
     }
     
     

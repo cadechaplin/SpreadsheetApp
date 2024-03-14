@@ -2,53 +2,70 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using SpreadsheetEngine;
-
 public class ShuntingYard
 {
-    public static string ConvertToPostfix(string infix)
+    public static List<string> ConvertToPostfix(string infix)
     {
-        StringBuilder postfix = new StringBuilder();
+        List<string> postfix = new List<string>();
         Stack<char> operatorStack = new Stack<char>();
+
+        StringBuilder currentToken = new StringBuilder();
 
         foreach (char token in infix)
         {
             if (char.IsDigit(token))
             {
-                postfix.Append(token);
-                postfix.Append(' ');
+                currentToken.Append(token);
             }
             else if (token == '(')
             {
+                if (currentToken.Length > 0)
+                {
+                    postfix.Add(currentToken.ToString());
+                    currentToken.Clear();
+                }
                 operatorStack.Push(token);
             }
             else if (token == ')')
             {
+                if (currentToken.Length > 0)
+                {
+                    postfix.Add(currentToken.ToString());
+                    currentToken.Clear();
+                }
                 while (operatorStack.Count > 0 && operatorStack.Peek() != '(')
                 {
-                    postfix.Append(operatorStack.Pop());
-                    postfix.Append(' ');
+                    postfix.Add(operatorStack.Pop().ToString());
                 }
                 operatorStack.Pop(); // Discard the '('
             }
             else if (IsOperator(token))
             {
+                if (currentToken.Length > 0)
+                {
+                    postfix.Add(currentToken.ToString());
+                    currentToken.Clear();
+                }
                 while (operatorStack.Count > 0 && ShouldPopOperator(operatorStack.Peek(), token))
                 {
-                    postfix.Append(operatorStack.Pop());
-                    postfix.Append(' ');
+                    postfix.Add(operatorStack.Pop().ToString());
                 }
                 operatorStack.Push(token);
             }
         }
 
+        if (currentToken.Length > 0)
+        {
+            postfix.Add(currentToken.ToString());
+        }
+
         // Pop remaining operators from the stack
         while (operatorStack.Count > 0)
         {
-            postfix.Append(operatorStack.Pop());
-            postfix.Append(' ');
+            postfix.Add(operatorStack.Pop().ToString());
         }
 
-        return postfix.ToString().Trim();
+        return postfix;
     }
 
     // Check if a character is an operator
