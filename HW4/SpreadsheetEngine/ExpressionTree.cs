@@ -23,17 +23,6 @@ public class ExpressionTree
     public ExpressionTree(string expression)
     {
         this.variableDictionary = new Dictionary<string, double>();
-
-        // Order here defines precedence.
-        this.nodeTypes = new Dictionary<char, Type>
-        {
-            { '+', typeof(AdditionNode) },
-            { '-', typeof(SubtractionNode) },
-            { '*', typeof(MultiplicationNode) },
-            { '/', typeof(DivisionNode) },
-
-            // Add mappings for other operators as needed
-        };
         this.root = this.Compile(expression);
     }
 
@@ -57,7 +46,7 @@ public class ExpressionTree
     {
         if (this.root == null)
         {
-            return 0;
+            return 0.0;
         }
 
         return this.root.Evaluate();
@@ -65,16 +54,54 @@ public class ExpressionTree
 
     private ExpressionNode? Compile(string partition)
     {
-        return string.IsNullOrEmpty(partition) ? null : this.CompileHelper(partition);
+        return string.IsNullOrEmpty(partition) ? null : this.CompileHelper(ShuntingYard.ConvertToPostfix(partition));
     }
 
-    private ExpressionNode CompileHelper(string infix, string overload)
+    private ExpressionNode CompileHelper(List<string> postfix)
     {
-        
-        //string ans = ShuntingYard.ConvertToPostfix(infix);
-        //ans = ans;
-        
-        return null;
+        Stack<ExpressionNode> pStack = new Stack<ExpressionNode>();
+        foreach (string arg in postfix)
+        {
+            ExpressionNode temp = nodify(arg);
+
+            if (temp is OperatorNode op)
+            {
+                op.Right = pStack.Pop();
+                op.Left = pStack.Pop();
+            }
+            pStack.Push(temp);
+        }
+
+        return pStack.Pop();
+    }
+
+    private ExpressionNode nodify(string arg)
+    {
+        if (int.TryParse(arg, out int result))
+        {
+            // Parsing successful, create a ConstantNode with the parsed integer
+            ConstantNode constantNode = new ConstantNode(){
+                Value = result,
+            };
+
+            // Now you can use the constantNode object
+            // For example: return constantNode;
+
+            // If you want to return the constantNode directly, you can do:
+            return constantNode;
+        }
+
+        if (arg.Length is 1 && OperatorNodeFactory.nodeTypes.ContainsKey(arg[0]))
+        {
+            return OperatorNodeFactory.createNode(arg[0]);
+        }
+
+        return new VariableNode()
+        {
+            Name = arg,
+            RefrenceDictionary = this.variableDictionary,
+        };
+
     }
 
     private ExpressionNode CompileHelper(string partition)

@@ -53,11 +53,18 @@ public class ExpressionTreeTests
     [TestCase("2+4/2", ExpectedResult = 4.0)]
     [TestCase("4/2+5", ExpectedResult = 7.0)]
     [TestCase("5+6/3+2*4/2", ExpectedResult = 11.0)]
-    [TestCase("(6+6)/(3+3)*4/2", ExpectedResult = 6.0)]
-    public double Test(string exp)
+    [TestCase("(6+6)/(3+3)*4/2", ExpectedResult = 4.0)]
+    [TestCase("(6*6)/(3*3)*4/2*(5*(2+4))", ExpectedResult = 240.0)]
+    public double EtTests(string exp)
     {
         ExpressionTree expTree = new ExpressionTree(exp);
         return expTree.Evaluate();
+    }
+
+    [Test]
+    public void ExpressionTree_MissingOperand()
+    {
+        Assert.That(() => new ExpressionTree("3+"), Throws.InvalidOperationException);
     }
 
     [Test]
@@ -77,7 +84,7 @@ public class ExpressionTreeTests
     {
         Assert.That(ShuntingYard.ConvertToPostfix("3+5*4"), Is.EquivalentTo(new List<string> { "3", "5", "4", "*", "+" }));
     }
-    
+
     [Test]
     public void ShuntingTest_MultipleCharLengthNums()
     {
@@ -91,10 +98,15 @@ public class ExpressionTreeTests
     }
 
     [Test]
-    public void ShuntingTest_MissingOperand()
+    public void ShuntingTest_Variable()
     {
-        Assert.That(() => ShuntingYard.ConvertToPostfix("3+"), Throws.ArgumentException.With.Message.EqualTo("Invalid expression: missing operand."));
+        Assert.That(ShuntingYard.ConvertToPostfix("(3+a3b)*4"), Is.EquivalentTo(new List<string> { "3", "a3b", "+", "4", "*" }));
     }
     
+    [Test]
+    public void ShuntingTest_Variable2()
+    {
+        Assert.That(ShuntingYard.ConvertToPostfix("((3+a3b)*4)"), Is.EquivalentTo(new List<string> { "3", "a3b", "+", "4", "*" }));
+    }
     
 }

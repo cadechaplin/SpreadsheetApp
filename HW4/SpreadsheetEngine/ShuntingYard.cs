@@ -2,22 +2,19 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using SpreadsheetEngine;
+
+
 public class ShuntingYard
 {
     public static List<string> ConvertToPostfix(string infix)
     {
         List<string> postfix = new List<string>();
         Stack<char> operatorStack = new Stack<char>();
-
         StringBuilder currentToken = new StringBuilder();
 
         foreach (char token in infix)
-        {
-            if (char.IsDigit(token))
-            {
-                currentToken.Append(token);
-            }
-            else if (token == '(')
+        { 
+            if (token == '(')
             {
                 if (currentToken.Length > 0)
                 {
@@ -51,6 +48,10 @@ public class ShuntingYard
                     postfix.Add(operatorStack.Pop().ToString());
                 }
                 operatorStack.Push(token);
+            }
+            else
+            {
+                currentToken.Append(token);
             }
         }
 
@@ -96,20 +97,37 @@ public class ShuntingYard
         return precedenceOp1 > precedenceOp2;
     }
 
-    // Get the precedence of an operator
+    // Get the precedence of an operator TODO Needs work
     private static int GetPrecedence(char op)
     {
-        switch (op)
+        if (OperatorNodeFactory.nodeTypes.ContainsKey(op))
         {
-            case '+':
-            case '-':
-                return 1;
-            case '*':
-            case '/':
-                return 2;
-            default:
-                throw new ArgumentException("Invalid operator: " + op);
+            //var temp = OperatorNodeFactory.nodeTypes[op];
+
+            if (OperatorNodeFactory.nodeTypes[op] == typeof(AdditionNode))
+            {
+                return AdditionNode.Precedence;
+                //(AdditionNode)(OperatorNodeFactory.nodeTypes[op]).Precedence
+            }
+            if (OperatorNodeFactory.nodeTypes[op] == typeof(SubtractionNode))
+            {
+                return SubtractionNode.Precedence;
+                //(AdditionNode)(OperatorNodeFactory.nodeTypes[op]).Precedence
+            }
+            if (OperatorNodeFactory.nodeTypes[op] == typeof(DivisionNode))
+            {
+                return DivisionNode.Precedence;
+                //(AdditionNode)(OperatorNodeFactory.nodeTypes[op]).Precedence
+            }
+            if (OperatorNodeFactory.nodeTypes[op] == typeof(MultiplicationNode))
+            {
+                return MultiplicationNode.Precedence;
+                //(AdditionNode)(OperatorNodeFactory.nodeTypes[op]).Precedence
+            }
+            //return OperatorNodeFactory.nodeTypes[op].Precedence;
         }
+
+        return 0; //nodeType.Precedence;
     }
 
     // Determine if an operator is left-associative
@@ -121,3 +139,5 @@ public class ShuntingYard
         return true;
     }
 }
+
+
