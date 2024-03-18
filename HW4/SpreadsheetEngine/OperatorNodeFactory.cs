@@ -65,4 +65,17 @@ public class OperatorNodeFactory
 
         // Throw new NotImplementedException("Not implemented");
     }
+
+    public int GetPrecedence(char op)
+    {
+        // TODO probably the wrong place to handle this.
+        if (op == '(' || op == ')')
+        {
+            return 0;
+        }
+
+        Type node = nodeTypes[op];
+        FieldInfo operatorField = node.GetField("Precedence");
+        return (int)operatorField.GetValue(node);
+    }
 }

@@ -102,34 +102,7 @@ public class ShuntingYard
     // Get the precedence of an operator TODO Needs work
     private int GetPrecedence(char op)
     {
-        if (myFactory.nodeTypes.ContainsKey(op))
-        {
-            //var temp = OperatorNodeFactory.nodeTypes[op];
-
-            if (myFactory.nodeTypes[op] == typeof(AdditionNode))
-            {
-                return AdditionNode.Precedence;
-                //(AdditionNode)(OperatorNodeFactory.nodeTypes[op]).Precedence
-            }
-            if (myFactory.nodeTypes[op] == typeof(SubtractionNode))
-            {
-                return SubtractionNode.Precedence;
-                //(AdditionNode)(OperatorNodeFactory.nodeTypes[op]).Precedence
-            }
-            if (myFactory.nodeTypes[op] == typeof(DivisionNode))
-            {
-                return DivisionNode.Precedence;
-                //(AdditionNode)(OperatorNodeFactory.nodeTypes[op]).Precedence
-            }
-            if (myFactory.nodeTypes[op] == typeof(MultiplicationNode))
-            {
-                return MultiplicationNode.Precedence;
-                //(AdditionNode)(OperatorNodeFactory.nodeTypes[op]).Precedence
-            }
-            //return OperatorNodeFactory.nodeTypes[op].Precedence;
-        }
-
-        return 0; //nodeType.Precedence;
+        return myFactory.GetPrecedence(op);
     }
 
     // Determine if an operator is left-associative
