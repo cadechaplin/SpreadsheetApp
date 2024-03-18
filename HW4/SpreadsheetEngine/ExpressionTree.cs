@@ -13,6 +13,7 @@ public class ExpressionTree
     private readonly ExpressionNode? root;
     private readonly Dictionary<char, Type> nodeTypes;
     private readonly Dictionary<string, double> variableDictionary;
+    private OperatorNodeFactory myfactory = new OperatorNodeFactory();
 
     // ReSharper restore InconsistentNaming
 
@@ -54,7 +55,8 @@ public class ExpressionTree
 
     private ExpressionNode? Compile(string partition)
     {
-        return string.IsNullOrEmpty(partition) ? null : this.CompileHelper(ShuntingYard.ConvertToPostfix(partition));
+        ShuntingYard alg = new ShuntingYard();
+        return string.IsNullOrEmpty(partition) ? null : this.CompileHelper(alg.ConvertToPostfix(partition));
     }
 
     private ExpressionNode CompileHelper(List<string> postfix)
@@ -91,9 +93,9 @@ public class ExpressionTree
             return constantNode;
         }
 
-        if (arg.Length is 1 && OperatorNodeFactory.nodeTypes.ContainsKey(arg[0]))
+        if (arg.Length is 1 && myfactory.nodeTypes.ContainsKey(arg[0]))
         {
-            return OperatorNodeFactory.createNode(arg[0]);
+            return myfactory.createNode(arg[0]);
         }
 
         return new VariableNode()
@@ -119,7 +121,7 @@ public class ExpressionTree
         {
             if (partition.Contains(operation))
             {
-                var temp = OperatorNodeFactory.createNode(operation);
+                var temp = myfactory.createNode(operation);
                 int index = partition.LastIndexOf(operation);
                 temp.Left = this.CompileHelper(partition.Substring(0, index));
                 temp.Right = this.CompileHelper(partition.Substring(index + 1));

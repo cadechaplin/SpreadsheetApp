@@ -8,7 +8,7 @@ internal class MultiplicationNode : OperatorNode
     /// <summary>
     /// Operator character stored for reference.
     /// </summary>
-    public static string Operator = "*";
+    public static char Operator = '*';
 
     /// <summary>
     /// Precedence stored for reference.

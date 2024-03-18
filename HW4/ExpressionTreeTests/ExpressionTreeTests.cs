@@ -70,43 +70,50 @@ public class ExpressionTreeTests
     [Test]
     public void ShuntingTest_Addition()
     {
-        Assert.That(ShuntingYard.ConvertToPostfix("3+5"), Is.EquivalentTo(new List<string> { "3", "5", "+" }));
+        ShuntingYard test = new ShuntingYard();
+        Assert.That(test.ConvertToPostfix("3+5"), Is.EquivalentTo(new List<string> { "3", "5", "+" }));
     }
 
     [Test]
     public void ShuntingTest_AdditionAndDivision()
     {
-        Assert.That(ShuntingYard.ConvertToPostfix("3+5/5"), Is.EquivalentTo(new List<string> { "3", "5", "5", "/", "+" }));
+        ShuntingYard test = new ShuntingYard();
+        Assert.That(test.ConvertToPostfix("3+5/5"), Is.EquivalentTo(new List<string> { "3", "5", "5", "/", "+" }));
     }
 
     [Test]
     public void ShuntingTest_MultipleOperators()
     {
-        Assert.That(ShuntingYard.ConvertToPostfix("3+5*4"), Is.EquivalentTo(new List<string> { "3", "5", "4", "*", "+" }));
+        ShuntingYard test = new ShuntingYard();
+        Assert.That(test.ConvertToPostfix("3+5*4"), Is.EquivalentTo(new List<string> { "3", "5", "4", "*", "+" }));
     }
 
     [Test]
     public void ShuntingTest_MultipleCharLengthNums()
     {
-        Assert.That(ShuntingYard.ConvertToPostfix("36+5*4"), Is.EquivalentTo(new List<string> { "36", "5", "4", "*", "+" }));
+        ShuntingYard test = new ShuntingYard();
+        Assert.That(test.ConvertToPostfix("36+5*4"), Is.EquivalentTo(new List<string> { "36", "5", "4", "*", "+" }));
     }
 
     [Test]
     public void ShuntingTest_Parentheses()
     {
-        Assert.That(ShuntingYard.ConvertToPostfix("(3+5)*4"), Is.EquivalentTo(new List<string> { "3", "5", "+", "4", "*" }));
+        ShuntingYard test = new ShuntingYard();
+        Assert.That(test.ConvertToPostfix("(3+5)*4"), Is.EquivalentTo(new List<string> { "3", "5", "+", "4", "*" }));
     }
 
     [Test]
     public void ShuntingTest_Variable()
     {
-        Assert.That(ShuntingYard.ConvertToPostfix("(3+a3b)*4"), Is.EquivalentTo(new List<string> { "3", "a3b", "+", "4", "*" }));
+        ShuntingYard test = new ShuntingYard();
+        Assert.That(test.ConvertToPostfix("(3+a3b)*4"), Is.EquivalentTo(new List<string> { "3", "a3b", "+", "4", "*" }));
     }
     
     [Test]
     public void ShuntingTest_Variable2()
     {
-        Assert.That(ShuntingYard.ConvertToPostfix("((3+a3b)*4)"), Is.EquivalentTo(new List<string> { "3", "a3b", "+", "4", "*" }));
+        ShuntingYard test = new ShuntingYard();
+        Assert.That(test.ConvertToPostfix("((3+a3b)*4)"), Is.EquivalentTo(new List<string> { "3", "a3b", "+", "4", "*" }));
     }
     
 }

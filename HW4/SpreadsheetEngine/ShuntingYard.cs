@@ -6,11 +6,13 @@ using SpreadsheetEngine;
 
 public class ShuntingYard
 {
-    public static List<string> ConvertToPostfix(string infix)
+    OperatorNodeFactory myFactory = new OperatorNodeFactory();
+    public List<string> ConvertToPostfix(string infix)
     {
         List<string> postfix = new List<string>();
         Stack<char> operatorStack = new Stack<char>();
         StringBuilder currentToken = new StringBuilder();
+        
 
         foreach (char token in infix)
         { 
@@ -70,9 +72,9 @@ public class ShuntingYard
     }
 
     // Check if a character is an operator
-    private static bool IsOperator(char c)
+    private bool IsOperator(char c)
     {
-        if (OperatorNodeFactory.nodeTypes.ContainsKey(c))
+        if (myFactory.nodeTypes.ContainsKey(c))
         {
             return true;
         }
@@ -81,7 +83,7 @@ public class ShuntingYard
     }
 
     // Determine whether to pop the top operator from the stack based on precedence and associativity
-    private static bool ShouldPopOperator(char op1, char op2)
+    private bool ShouldPopOperator(char op1, char op2)
     {
         // You can access precedence, associativity, and operator character from your node classes
         int precedenceOp1 = GetPrecedence(op1);
@@ -98,28 +100,28 @@ public class ShuntingYard
     }
 
     // Get the precedence of an operator TODO Needs work
-    private static int GetPrecedence(char op)
+    private int GetPrecedence(char op)
     {
-        if (OperatorNodeFactory.nodeTypes.ContainsKey(op))
+        if (myFactory.nodeTypes.ContainsKey(op))
         {
             //var temp = OperatorNodeFactory.nodeTypes[op];
 
-            if (OperatorNodeFactory.nodeTypes[op] == typeof(AdditionNode))
+            if (myFactory.nodeTypes[op] == typeof(AdditionNode))
             {
                 return AdditionNode.Precedence;
                 //(AdditionNode)(OperatorNodeFactory.nodeTypes[op]).Precedence
             }
-            if (OperatorNodeFactory.nodeTypes[op] == typeof(SubtractionNode))
+            if (myFactory.nodeTypes[op] == typeof(SubtractionNode))
             {
                 return SubtractionNode.Precedence;
                 //(AdditionNode)(OperatorNodeFactory.nodeTypes[op]).Precedence
             }
-            if (OperatorNodeFactory.nodeTypes[op] == typeof(DivisionNode))
+            if (myFactory.nodeTypes[op] == typeof(DivisionNode))
             {
                 return DivisionNode.Precedence;
                 //(AdditionNode)(OperatorNodeFactory.nodeTypes[op]).Precedence
             }
-            if (OperatorNodeFactory.nodeTypes[op] == typeof(MultiplicationNode))
+            if (myFactory.nodeTypes[op] == typeof(MultiplicationNode))
             {
                 return MultiplicationNode.Precedence;
                 //(AdditionNode)(OperatorNodeFactory.nodeTypes[op]).Precedence
