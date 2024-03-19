@@ -68,14 +68,14 @@ public class OperatorNodeFactory
 
     public int GetPrecedence(char op)
     {
-        // TODO probably the wrong place to handle this.
-        if (op == '(' || op == ')')
-        {
-            return 0;
-        }
-
         Type node = nodeTypes[op];
         FieldInfo operatorField = node.GetField("Precedence");
         return (int)operatorField.GetValue(node);
+    }
+    public Associativity GetAssociativity(char op)
+    {
+        Type node = nodeTypes[op];
+        FieldInfo operatorField = node.GetField("A");
+        return (Associativity)operatorField.GetValue(node);
     }
 }

@@ -1,15 +1,15 @@
 namespace SpreadsheetEngine;
-internal class AdditionNode : OperatorNode
+internal class PowerNode : OperatorNode
 {
     /// <summary>
     /// Operator character stored for reference.
     /// </summary>
-    public static char Operator = '+';
+    public static char Operator = '^';
 
     /// <summary>
     /// Precedence stored for reference.
     /// </summary>
-    public static int Precedence = 1;
+    public static int Precedence = 2;
 
     /// <summary>
     /// Associativity stored for reference.
@@ -23,11 +23,11 @@ internal class AdditionNode : OperatorNode
         var right = this.Right;
         if (left != null && right != null)
         {
-            return left.Evaluate() + right.Evaluate();
+            return Math.Pow(left.Evaluate(), right.Evaluate());
         }
         else
         {
-            throw new InvalidOperationException("Cannot evaluate addition: missing operands.");
+            throw new InvalidOperationException("Cannot evaluate power: missing operands.");
         }
     }
 

@@ -55,6 +55,7 @@ public class ExpressionTreeTests
     [TestCase("5+6/3+2*4/2", ExpectedResult = 11.0)]
     [TestCase("(6+6)/(3+3)*4/2", ExpectedResult = 4.0)]
     [TestCase("(6*6)/(3*3)*4/2*(5*(2+4))", ExpectedResult = 240.0)]
+    [TestCase("2^2", ExpectedResult = 4.0)]
     public double EtTests(string exp)
     {
         ExpressionTree expTree = new ExpressionTree(exp);

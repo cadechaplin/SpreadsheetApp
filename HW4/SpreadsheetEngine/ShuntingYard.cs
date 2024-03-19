@@ -102,16 +102,26 @@ public class ShuntingYard
     // Get the precedence of an operator TODO Needs work
     private int GetPrecedence(char op)
     {
+        // TODO probably the wrong place to handle this.
+        if (op == '(' | op == ')')
+        {
+            return 0;
+        }
         return myFactory.GetPrecedence(op);
     }
 
     // Determine if an operator is left-associative
-    private static bool IsLeftAssociative(char op)
+    private bool IsLeftAssociative(char op)
     {
+        if (myFactory.GetAssociativity(op) == Associativity.Left)
+        {
+            return true;
+        }
+
         // Implement your logic to check associativity
         // You can use the Associativity property from your node classes
         // For demonstration purposes, let's assume all operators are left-associative
-        return true;
+        return false;
     }
 }
 
