@@ -1,4 +1,14 @@
+// <copyright file="AdditionNode.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+
+#pragma warning disable CS0414 // Field is assigned but its value is never used
+#pragma warning disable SA1401
 namespace SpreadsheetEngine;
+
+/// <summary>
+/// Node for addition.
+/// </summary>
 internal class AdditionNode : OperatorNode
 {
     /// <summary>
@@ -30,5 +40,4 @@ internal class AdditionNode : OperatorNode
             throw new InvalidOperationException("Cannot evaluate addition: missing operands.");
         }
     }
-
 }

@@ -2,6 +2,9 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
+#pragma warning disable CS0414 // Field is assigned but its value is never used
+#pragma warning disable SA1401
+
 namespace SpreadsheetEngine;
 
 /// <summary>
@@ -9,7 +12,10 @@ namespace SpreadsheetEngine;
 /// </summary>
 internal class VariableNode : ExpressionNode
 {
-    internal Dictionary<string, double> RefrenceDictionary;
+    /// <summary>
+    /// Dictionary for storing variable values.
+    /// </summary>
+    internal Dictionary<string, double>? ReferenceDictionary;
 
     /// <summary>
     /// Gets variable name.
@@ -22,7 +28,7 @@ internal class VariableNode : ExpressionNode
         var name = this.Name;
         if (name != null)
         {
-            return this.RefrenceDictionary[name];
+            return this.ReferenceDictionary[name];
         }
 
         return 0;

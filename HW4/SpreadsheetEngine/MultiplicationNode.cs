@@ -1,3 +1,9 @@
+// <copyright file="MultiplicationNode.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+#pragma warning disable CS0414 // Field is assigned but its value is never used
+#pragma warning disable SA1401
+
 namespace SpreadsheetEngine;
 
 /// <summary>
@@ -19,6 +25,7 @@ internal class MultiplicationNode : OperatorNode
     /// Associativity stored for reference.
     /// </summary>
     public static Associativity A = Associativity.Left;
+
     /// <inheritdoc/>
     public override double Evaluate()
     {
@@ -33,5 +40,4 @@ internal class MultiplicationNode : OperatorNode
             throw new InvalidOperationException("Cannot evaluate subtraction: missing operands.");
         }
     }
-
 }

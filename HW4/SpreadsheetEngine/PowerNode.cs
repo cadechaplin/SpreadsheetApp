@@ -1,4 +1,15 @@
+// <copyright file="PowerNode.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+
+#pragma warning disable CS0414 // Field is assigned but its value is never used
+#pragma warning disable SA1401
+
 namespace SpreadsheetEngine;
+
+/// <summary>
+/// Node for power.
+/// </summary>
 internal class PowerNode : OperatorNode
 {
     /// <summary>
@@ -14,7 +25,7 @@ internal class PowerNode : OperatorNode
     /// <summary>
     /// Associativity stored for reference.
     /// </summary>
-    public static Associativity A = Associativity.Left;
+    public static Associativity A = Associativity.Right;
 
     /// <inheritdoc/>
     public override double Evaluate()
@@ -30,5 +41,4 @@ internal class PowerNode : OperatorNode
             throw new InvalidOperationException("Cannot evaluate power: missing operands.");
         }
     }
-
 }

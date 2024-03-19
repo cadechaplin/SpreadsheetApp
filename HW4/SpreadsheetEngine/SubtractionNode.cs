@@ -1,3 +1,10 @@
+// <copyright file="SubtractionNode.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+
+#pragma warning disable CS0414 // Field is assigned but its value is never used
+#pragma warning disable SA1401
+
 namespace SpreadsheetEngine;
 
 /// <summary>
@@ -34,5 +41,4 @@ internal class SubtractionNode : OperatorNode
             throw new InvalidOperationException("Cannot evaluate subtraction: missing operands.");
         }
     }
-
 }

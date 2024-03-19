@@ -1,4 +1,11 @@
+// <copyright file="DivisionNode.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+
 namespace SpreadsheetEngine;
+
+#pragma warning disable CS0414 // Field is assigned but its value is never used
+#pragma warning disable SA1401
 
 /// <summary>
 /// Node for Division.
@@ -34,5 +41,4 @@ internal class DivisionNode : OperatorNode
             throw new InvalidOperationException("Cannot evaluate subtraction: missing operands.");
         }
     }
-
 }

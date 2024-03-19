@@ -11,7 +11,7 @@ public class ExpressionTree
 {
     // ReSharper disable InconsistentNaming
     private readonly ExpressionNode? root;
-    private readonly Dictionary<char, Type> nodeTypes;
+    private readonly Dictionary<char, Type> NodeTypes;
     private readonly Dictionary<string, double> variableDictionary;
     private OperatorNodeFactory myfactory = new OperatorNodeFactory();
 
@@ -93,15 +93,15 @@ public class ExpressionTree
             return constantNode;
         }
 
-        if (arg.Length is 1 && myfactory.nodeTypes.ContainsKey(arg[0]))
+        if (arg.Length is 1 && myfactory.NodeTypes.ContainsKey(arg[0]))
         {
-            return myfactory.createNode(arg[0]);
+            return myfactory.CreateNode(arg[0]);
         }
 
         return new VariableNode()
         {
             Name = arg,
-            RefrenceDictionary = this.variableDictionary,
+            ReferenceDictionary = this.variableDictionary,
         };
 
     }
@@ -117,11 +117,11 @@ public class ExpressionTree
             };
         }
 
-        foreach (char operation in this.nodeTypes.Keys)
+        foreach (char operation in this.NodeTypes.Keys)
         {
             if (partition.Contains(operation))
             {
-                var temp = myfactory.createNode(operation);
+                var temp = myfactory.CreateNode(operation);
                 int index = partition.LastIndexOf(operation);
                 temp.Left = this.CompileHelper(partition.Substring(0, index));
                 temp.Right = this.CompileHelper(partition.Substring(index + 1));
@@ -129,15 +129,11 @@ public class ExpressionTree
             }
         }
 
-        if (this.variableDictionary.TryAdd(partition, 0))
-        {
-            // TODO: Not sure I should set to 0. Avoids errors.
-        }
-
+        this.variableDictionary.TryAdd(partition, 0);
         return new VariableNode()
         {
             Name = partition,
-            RefrenceDictionary = this.variableDictionary,
+            ReferenceDictionary = this.variableDictionary,
         };
     }
 }

@@ -1,21 +1,43 @@
-using System;
-using System.Collections.Generic;
+// <copyright file="ShuntingYard.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+
+namespace SpreadsheetEngine;
+
 using System.Text;
-using SpreadsheetEngine;
 
-
+/// <summary>
+/// Shunting Yard class for evaluating expressions.
+/// </summary>
 public class ShuntingYard
 {
-    OperatorNodeFactory myFactory = new OperatorNodeFactory();
+    /// <summary>
+    /// Factory instant for checking operator info.
+    /// </summary>
+    // ReSharper disable once InconsistentNaming
+    private readonly OperatorNodeFactory myFactory;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ShuntingYard"/> class.
+    /// </summary>
+    public ShuntingYard()
+    {
+        this.myFactory = new OperatorNodeFactory();
+    }
+
+    /// <summary>
+    /// Factory instant for checking operator info.
+    /// </summary>
+    /// <returns> List of strings containing what should be used to create each node.</returns>
+    /// <param name="infix"> String that will be used to create post fix notation.</param>
     public List<string> ConvertToPostfix(string infix)
     {
         List<string> postfix = new List<string>();
         Stack<char> operatorStack = new Stack<char>();
         StringBuilder currentToken = new StringBuilder();
-        
 
         foreach (char token in infix)
-        { 
+        {
             if (token == '(')
             {
                 if (currentToken.Length > 0)
@@ -23,6 +45,7 @@ public class ShuntingYard
                     postfix.Add(currentToken.ToString());
                     currentToken.Clear();
                 }
+
                 operatorStack.Push(token);
             }
             else if (token == ')')
@@ -32,23 +55,27 @@ public class ShuntingYard
                     postfix.Add(currentToken.ToString());
                     currentToken.Clear();
                 }
+
                 while (operatorStack.Count > 0 && operatorStack.Peek() != '(')
                 {
                     postfix.Add(operatorStack.Pop().ToString());
                 }
+
                 operatorStack.Pop(); // Discard the '('
             }
-            else if (IsOperator(token))
+            else if (this.IsOperator(token))
             {
                 if (currentToken.Length > 0)
                 {
                     postfix.Add(currentToken.ToString());
                     currentToken.Clear();
                 }
-                while (operatorStack.Count > 0 && ShouldPopOperator(operatorStack.Peek(), token))
+
+                while (operatorStack.Count > 0 && this.ShouldPopOperator(operatorStack.Peek(), token))
                 {
                     postfix.Add(operatorStack.Pop().ToString());
                 }
+
                 operatorStack.Push(token);
             }
             else
@@ -74,7 +101,7 @@ public class ShuntingYard
     // Check if a character is an operator
     private bool IsOperator(char c)
     {
-        if (myFactory.nodeTypes.ContainsKey(c))
+        if (this.myFactory.NodeTypes.ContainsKey(c))
         {
             return true;
         }
@@ -86,13 +113,13 @@ public class ShuntingYard
     private bool ShouldPopOperator(char op1, char op2)
     {
         // You can access precedence, associativity, and operator character from your node classes
-        int precedenceOp1 = GetPrecedence(op1);
-        int precedenceOp2 = GetPrecedence(op2);
+        int precedenceOp1 = this.GetPrecedence(op1);
+        int precedenceOp2 = this.GetPrecedence(op2);
 
         // If operators have the same precedence, pop left-associative operators
         if (precedenceOp1 == precedenceOp2)
         {
-            return IsLeftAssociative(op1);
+            return this.IsLeftAssociative(op1);
         }
 
         // Pop if precedence of op1 is greater than op2
@@ -107,13 +134,14 @@ public class ShuntingYard
         {
             return 0;
         }
-        return myFactory.GetPrecedence(op);
+
+        return this.myFactory.GetPrecedence(op);
     }
 
     // Determine if an operator is left-associative
     private bool IsLeftAssociative(char op)
     {
-        if (myFactory.GetAssociativity(op) == Associativity.Left)
+        if (this.myFactory.GetAssociativity(op) == Associativity.Left)
         {
             return true;
         }
@@ -124,5 +152,3 @@ public class ShuntingYard
         return false;
     }
 }
-
-
