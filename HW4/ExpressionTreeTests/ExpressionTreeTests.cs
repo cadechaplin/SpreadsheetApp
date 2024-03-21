@@ -5,7 +5,6 @@
 namespace ExpressionTreeTests;
 
 using SpreadsheetEngine;
-using System.Reflection;
 
 /// <summary>
 /// Tests for expression tree.
@@ -46,6 +45,8 @@ public class ExpressionTreeTests
     [TestCase("5+5+6*3-28", ExpectedResult = 0.0)]
     [TestCase("5+5*6+3*2", ExpectedResult = 41.0)]
     [TestCase("42-12-20", ExpectedResult = 10.0)]
+    [TestCase("4.2-1.2-2.0", ExpectedResult = 1.0)]
+    [TestCase(".5*10*.5", ExpectedResult = 2.5)]
 
     // Tests for Homework 5:
     [TestCase("42-12+20", ExpectedResult = 50.0)]
@@ -62,12 +63,28 @@ public class ExpressionTreeTests
         return expTree.Evaluate();
     }
 
+    /// <summary>
+    /// Tests correct exception is thrown when missing an operand.
+    /// </summary>
     [Test]
     public void ExpressionTree_MissingOperand()
     {
         Assert.That(() => new ExpressionTree("3+"), Throws.InvalidOperationException);
     }
 
+    /// <summary>
+    /// Tests for correct exception when a variable does not have a value.
+    /// </summary>
+    [Test]
+    public void ExpressionTree_NoVarValue()
+    {
+        ExpressionTree test = new ExpressionTree("A+1");
+        Assert.Throws<KeyNotFoundException>(() => test.Evaluate());
+    }
+
+    /// <summary>
+    /// Tests addition.
+    /// </summary>
     [Test]
     public void ShuntingTest_Addition()
     {
@@ -75,6 +92,9 @@ public class ExpressionTreeTests
         Assert.That(test.ConvertToPostfix("3+5"), Is.EquivalentTo(new List<string> { "3", "5", "+" }));
     }
 
+    /// <summary>
+    /// Tests addition and division.
+    /// </summary>
     [Test]
     public void ShuntingTest_AdditionAndDivision()
     {
@@ -82,6 +102,9 @@ public class ExpressionTreeTests
         Assert.That(test.ConvertToPostfix("3+5/5"), Is.EquivalentTo(new List<string> { "3", "5", "5", "/", "+" }));
     }
 
+    /// <summary>
+    /// Tests for multiple operators.
+    /// </summary>
     [Test]
     public void ShuntingTest_MultipleOperators()
     {
@@ -89,6 +112,9 @@ public class ExpressionTreeTests
         Assert.That(test.ConvertToPostfix("3+5*4"), Is.EquivalentTo(new List<string> { "3", "5", "4", "*", "+" }));
     }
 
+    /// <summary>
+    /// Tests number with more than one digit.
+    /// </summary>
     [Test]
     public void ShuntingTest_MultipleCharLengthNums()
     {
@@ -96,6 +122,9 @@ public class ExpressionTreeTests
         Assert.That(test.ConvertToPostfix("36+5*4"), Is.EquivalentTo(new List<string> { "36", "5", "4", "*", "+" }));
     }
 
+    /// <summary>
+    /// Tests an expression with parentheses.
+    /// </summary>
     [Test]
     public void ShuntingTest_Parentheses()
     {
@@ -103,18 +132,23 @@ public class ExpressionTreeTests
         Assert.That(test.ConvertToPostfix("(3+5)*4"), Is.EquivalentTo(new List<string> { "3", "5", "+", "4", "*" }));
     }
 
+    /// <summary>
+    /// Tests using a variable.
+    /// </summary>
     [Test]
     public void ShuntingTest_Variable()
     {
         ShuntingYard test = new ShuntingYard();
         Assert.That(test.ConvertToPostfix("(3+a3b)*4"), Is.EquivalentTo(new List<string> { "3", "a3b", "+", "4", "*" }));
     }
-    
+
+    /// <summary>
+    /// Another test for variable, surrounding parenthesis.
+    /// </summary>
     [Test]
     public void ShuntingTest_Variable2()
     {
         ShuntingYard test = new ShuntingYard();
         Assert.That(test.ConvertToPostfix("((3+a3b)*4)"), Is.EquivalentTo(new List<string> { "3", "a3b", "+", "4", "*" }));
     }
-    
 }

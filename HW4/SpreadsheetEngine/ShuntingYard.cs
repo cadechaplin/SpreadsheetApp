@@ -130,7 +130,7 @@ public class ShuntingYard
     private int GetPrecedence(char op)
     {
         // TODO probably the wrong place to handle this.
-        if (op == '(' | op == ')')
+        if (op == '(' || op == ')')
         {
             return 0;
         }

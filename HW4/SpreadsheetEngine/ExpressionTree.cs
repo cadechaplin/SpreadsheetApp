@@ -79,7 +79,7 @@ public class ExpressionTree
 
     private ExpressionNode nodify(string arg)
     {
-        if (int.TryParse(arg, out int result))
+        if (double.TryParse(arg, out double result))
         {
             // Parsing successful, create a ConstantNode with the parsed integer
             ConstantNode constantNode = new ConstantNode(){
