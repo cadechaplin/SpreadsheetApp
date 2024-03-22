@@ -86,38 +86,12 @@ public class Spreadsheet
             ExpressionTree tree = new ExpressionTree(changeCell.Text.Substring(1));
             foreach (var item in tree.variableDictionary.Keys)
             {
-                //tree.variableDictionary[item] = GetCell(item[0]-'A', int.Parse(item.Substring(1))).Value;
+                Cell ab = GetCell( int.Parse(item.Substring(1)) - 1,item[0] - 'A');
+                string test = ab.Value;
+                tree.variableDictionary[item] = double.Parse(test);
             }
 
-            if (changeCell.Text.Length < 2)
-            {
-                return;
-            }
-
-            int rowFind;
-            if (int.TryParse(changeCell.Text.Substring(2), out rowFind))
-            {
-                rowFind -= 1;
-            }
-            else
-            {
-                return;
-            }
-
-            int colFind = changeCell.Text[1] - 'A';
-            if (colFind < 0 || colFind > this._columnCount || rowFind > this._rowCount)
-            {
-                changeCell.Value = "Cell referenced out of range.";
-
-                // index out of range
-                return;
-            }
-
-            Cell? found = this.GetCell(rowFind, colFind);
-            if (found != null)
-            {
-                changeCell.Value = found.Value;
-            }
+            changeCell.Value = tree.Evaluate().ToString();
         }
         else
         {

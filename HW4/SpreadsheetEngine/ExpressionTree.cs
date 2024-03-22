@@ -98,6 +98,7 @@ public class ExpressionTree
             return myfactory.CreateNode(arg[0]);
         }
 
+        this.variableDictionary[arg] = 0;
         return new VariableNode()
         {
             Name = arg,
