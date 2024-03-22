@@ -48,32 +48,22 @@ public abstract class Cell : INotifyPropertyChanged
     /// <summary>
     /// Gets or Sets property StoredText.
     /// </summary>
+    public abstract string Value { get; set; }
+
+
+
+    
+    /// <summary>
+    /// Gets StoreText.
+    /// </summary>
     public string Text
     {
         get => this.StoredText;
 
         set
         {
-            if (this.StoredText != value)
-            {
-                this.StoredText = value;
-                this.OnPropertyChanged(nameof(this.Text));
-            }
-        }
-    }
-
-    /// <summary>
-    /// Gets StoredValue.
-    /// </summary>
-    public string Value
-    {
-        get => this.StoredValue;
-
-        internal set
-        {
-            this.StoredValue = value;
-
-            // OnValuePropertyChanged(nameof(_Value));
+            this.StoredText = value;
+            OnPropertyChanged(nameof(Text));
         }
     }
 

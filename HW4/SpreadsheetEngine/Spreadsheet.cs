@@ -16,10 +16,10 @@ public class Spreadsheet
     /// <summary>
     /// Cells contained by the spreadsheet.
     /// </summary>
-    #pragma warning disable SA1401
+#pragma warning disable SA1401
     // Want to be able to access this from outside the class.
     public readonly Cell[,] Cells;
-    #pragma warning restore SA1401
+#pragma warning restore SA1401
     private readonly int _columnCount;
     private readonly int _rowCount;
 
@@ -51,10 +51,7 @@ public class Spreadsheet
         }
     }
 
-    /// <summary>
-    /// Event to fire when a Cell is changed.
-    /// </summary>
-    public event PropertyChangedEventHandler CellPropertyChanged = (sender, e) => { };
+    
 
     /// <summary>
     /// Gets the column count.
@@ -74,7 +71,6 @@ public class Spreadsheet
     protected virtual void OnCellPropertyChanged(object sender, PropertyChangedEventArgs e)
     {
         this.EvaluateCellValue((Cell)sender);
-        this.CellPropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(sender)));
     }
 
     private void EvaluateCellValue(Cell changeCell)
@@ -137,5 +133,39 @@ public class Spreadsheet
         }
 
         return this.Cells[row, col];
+    }
+
+
+    /// <summary>
+    /// Cell that can be used to create an instance of Cell.
+    /// </summary>
+    private class ConcreteCell : Cell
+    {
+        /// <summary>
+        /// Event to fire when changing a property.
+        /// </summary>
+        public override string Value
+        {
+            get => this.StoredValue;
+
+            set
+            {
+                if (this.StoredValue != value)
+                {
+                    this.StoredValue = value;
+                    this.OnPropertyChanged(nameof(this.Value));
+                }
+            }
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ConcreteCell"/> class.
+        /// </summary>
+        /// <param name="rowIndex">Integer that sets the row Index.</param>
+        /// <param name="columnIndex">Integer that sets the column Index.</param>
+        public ConcreteCell(int rowIndex, int columnIndex)
+            : base(rowIndex, columnIndex)
+        {
+        }
     }
 }

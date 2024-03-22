@@ -33,7 +33,7 @@ public class MainWindowViewModel : ViewModelBase
     public MainWindowViewModel()
     {
         this._spreadsheet = new Spreadsheet(50, 'Z' - 'A' + 1);
-        this._spreadsheet.CellPropertyChanged += this.SpreedSheetChanged;
+        
         var rowCount = this._spreadsheet.RowCount;
         var columnCount = this._spreadsheet.ColumnCount;
         this.Rows = Enumerable.Range(0, rowCount)
@@ -69,7 +69,7 @@ public class MainWindowViewModel : ViewModelBase
                 CellTemplate = new FuncDataTemplate<IEnumerable<Cell>>((value, namescope) =>
                     new TextBlock
                     {
-                        [!TextBlock.TextProperty] = new Binding($"[{columnIndex}].Value", BindingMode.TwoWay),
+                        [!TextBlock.TextProperty] = new Binding($"[{columnIndex}].Value"),
                         TextAlignment = TextAlignment.Left,
                         VerticalAlignment = VerticalAlignment.Center,
                         Padding = Thickness.Parse("5,0,5,0"),
@@ -77,7 +77,7 @@ public class MainWindowViewModel : ViewModelBase
                 CellEditingTemplate = new FuncDataTemplate<IEnumerable<Cell>>((value, namescope) =>
                     new TextBox
                     {
-                        [!TextBox.TextProperty] = new Binding($"[{columnIndex}].Text", BindingMode.TwoWay),
+                        [!TextBox.TextProperty] = new Binding($"[{columnIndex}].Text"),
                     }),
             };
             dataGrid.Columns.Add(columnTemplate);
@@ -108,9 +108,6 @@ public class MainWindowViewModel : ViewModelBase
         {
             this._spreadsheet.Cells[i, 0].Text = "=B" + (i + 1).ToString();
         }
-
-        this._myGrid.ItemsSource = null; // Temp fix to refresh datagrid
-        this._myGrid.ItemsSource = this.Rows;
     }
 
     /// <summary>
