@@ -83,6 +83,12 @@ public class Spreadsheet
 
         if (changeCell.Text[0] == '=')
         {
+            ExpressionTree tree = new ExpressionTree(changeCell.Text.Substring(1));
+            foreach (var item in tree.variableDictionary.Keys)
+            {
+                //tree.variableDictionary[item] = GetCell(item[0]-'A', int.Parse(item.Substring(1))).Value;
+            }
+
             if (changeCell.Text.Length < 2)
             {
                 return;

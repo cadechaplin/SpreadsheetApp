@@ -12,7 +12,7 @@ public class ExpressionTree
     // ReSharper disable InconsistentNaming
     private readonly ExpressionNode? root;
     private readonly Dictionary<char, Type> NodeTypes;
-    private readonly Dictionary<string, double> variableDictionary;
+    public readonly Dictionary<string, double> variableDictionary;
     private OperatorNodeFactory myfactory = new OperatorNodeFactory();
 
     // ReSharper restore InconsistentNaming
