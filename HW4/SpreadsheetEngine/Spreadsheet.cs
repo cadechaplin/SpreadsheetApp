@@ -2,6 +2,8 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
+using System.Linq.Expressions;
+
 namespace SpreadsheetEngine;
 
 using System.ComponentModel;
@@ -73,6 +75,23 @@ public class Spreadsheet
         this.EvaluateCellValue((Cell)sender);
     }
 
+    /// <summary>
+    /// Gets the column count.
+    /// </summary>
+    /// <param name="sender"> Integer to use for indexing the Cell row.</param>
+    /// <param name="e"> Integer to use for indexing the Cell .</param>
+    protected virtual void CellReferenceChange(object sender, PropertyChangedEventArgs e)
+    {
+        if (sender is ConcreteCell referencedCell)
+        {
+            // Update the cell's value when a referenced cell changes
+            foreach (Cell item in referencedCell.refrencedBy)
+            {
+                EvaluateCellValue(item);
+            }
+        }
+    }
+
     private void EvaluateCellValue(Cell changeCell)
     {
         if (changeCell.Text.Length == 0)
@@ -86,12 +105,31 @@ public class Spreadsheet
             ExpressionTree tree = new ExpressionTree(changeCell.Text.Substring(1));
             foreach (var item in tree.variableDictionary.Keys)
             {
-                Cell ab = GetCell( int.Parse(item.Substring(1)) - 1,item[0] - 'A');
-                string test = ab.Value;
-                tree.variableDictionary[item] = double.Parse(test);
+                try
+                {
+                    Cell ab = GetCell( int.Parse(item.Substring(1)) - 1,item[0] - 'A');
+                    string test = ab.Value;
+                    //event for updating if refrence cell 
+                    if (ab is ConcreteCell ex)
+                    {
+                        ex.refrencedBy.Add(changeCell);
+                    }
+                    tree.variableDictionary[item] = double.Parse(test);
+                }
+                catch (Exception e)
+                {
+                    return;
+                }
             }
 
-            changeCell.Value = tree.Evaluate().ToString();
+            try
+            {
+                changeCell.Value = tree.Evaluate().ToString();
+            }
+            catch (InvalidOperationException)
+            {
+                changeCell.Value = "##";
+            }
         }
         else
         {
@@ -121,6 +159,7 @@ public class Spreadsheet
     /// </summary>
     private class ConcreteCell : Cell
     {
+        internal List<Cell> refrencedBy = new List<Cell>();
         /// <summary>
         /// Event to fire when changing a property.
         /// </summary>

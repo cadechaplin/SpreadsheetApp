@@ -50,9 +50,6 @@ public abstract class Cell : INotifyPropertyChanged
     /// </summary>
     public abstract string Value { get; set; }
 
-
-
-    
     /// <summary>
     /// Gets StoreText.
     /// </summary>

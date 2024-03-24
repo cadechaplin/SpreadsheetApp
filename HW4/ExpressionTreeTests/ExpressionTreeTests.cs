@@ -79,7 +79,7 @@ public class ExpressionTreeTests
     public void ExpressionTree_NoVarValue()
     {
         ExpressionTree test = new ExpressionTree("A+1");
-        Assert.Throws<KeyNotFoundException>(() => test.Evaluate());
+        Assert.That(test.Evaluate(), Is.EqualTo(1));
     }
 
     /// <summary>
