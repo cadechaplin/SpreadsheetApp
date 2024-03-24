@@ -12,7 +12,7 @@ public class Tests
     {
         _testSheet = new Spreadsheet(10,10);
         _testSheet.Cells[0,0].Text = "=ABC";
-        Assert.That( _testSheet.Cells[0,0].Value, Is.EqualTo("###"));
+        Assert.That( _testSheet.Cells[0,0].Value, Is.EqualTo("Cell Reference Error"));
     }
 
     [Test]

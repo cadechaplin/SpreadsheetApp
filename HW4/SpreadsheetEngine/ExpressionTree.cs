@@ -47,7 +47,7 @@ public class ExpressionTree
     {
         if (this.root == null)
         {
-            return 0.0;
+            return double.NaN;
         }
 
         return this.root.Evaluate();

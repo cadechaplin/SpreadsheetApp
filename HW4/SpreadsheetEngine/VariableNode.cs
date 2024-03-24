@@ -28,9 +28,15 @@ internal class VariableNode : ExpressionNode
         var name = this.Name;
         if (name != null)
         {
+            double val = this.ReferenceDictionary[name];
+            if (val == double.NaN)
+            {
+                throw new ArgumentException("Variable has no value (NaN).", nameof(val));
+            }
+
             return this.ReferenceDictionary[name];
         }
 
-        return 0;
+        return double.NaN;
     }
 }

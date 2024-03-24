@@ -90,7 +90,17 @@ public class Spreadsheet
 
         if (changeCell.Text[0] == '=')
         {
-            ExpressionTree tree = new ExpressionTree(changeCell.Text[1..]);
+            ExpressionTree tree;
+            try
+            {
+                tree = new ExpressionTree(changeCell.Text[1..]);
+            }
+            catch (Exception e)
+            {
+                // Error in expression tree creation, must be operand missing since there is no other error that can occur here.
+                changeCell.Value = "Operator Error";
+                return;
+            }
             foreach (var item in tree.variableDictionary.Keys)
             {
                 try
@@ -110,7 +120,8 @@ public class Spreadsheet
                 }
                 catch (Exception e)
                 {
-                    changeCell.Value = "###";
+                    // Error in finding the cell, cell reference must be wrong or some string is input that is not a cell.
+                    changeCell.Value = "Cell Reference Error";
                     return;
                 }
             }
@@ -152,6 +163,8 @@ public class Spreadsheet
     /// </summary>
     private class ConcreteCell : Cell
     {
+        public event PropertyChangedEventHandler? ValueChanged = (sender, e) => { };
+
         internal List<Cell> refrencedBy = new List<Cell>();
         /// <summary>
         /// Event to fire when changing a property.
@@ -165,6 +178,7 @@ public class Spreadsheet
                 if (this.StoredValue != value)
                 {
                     this.StoredValue = value;
+                    //this.ValueChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.Value)));
                     this.OnPropertyChanged(nameof(this.Value));
                 }
             }
