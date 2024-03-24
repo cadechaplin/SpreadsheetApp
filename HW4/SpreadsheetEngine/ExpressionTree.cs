@@ -98,43 +98,12 @@ public class ExpressionTree
             return myfactory.CreateNode(arg[0]);
         }
 
-        this.variableDictionary[arg] = 0;
+        this.variableDictionary[arg] = double.NaN;
         return new VariableNode()
         {
             Name = arg,
             ReferenceDictionary = this.variableDictionary,
         };
 
-    }
-
-    private ExpressionNode CompileHelper(string partition)
-    {
-        if (double.TryParse(partition, out var number))
-        {
-            // We need a ConstantNode
-            return new ConstantNode()
-            {
-                Value = number,
-            };
-        }
-
-        foreach (char operation in this.NodeTypes.Keys)
-        {
-            if (partition.Contains(operation))
-            {
-                var temp = myfactory.CreateNode(operation);
-                int index = partition.LastIndexOf(operation);
-                temp.Left = this.CompileHelper(partition.Substring(0, index));
-                temp.Right = this.CompileHelper(partition.Substring(index + 1));
-                return temp;
-            }
-        }
-
-        this.variableDictionary.TryAdd(partition, 0);
-        return new VariableNode()
-        {
-            Name = partition,
-            ReferenceDictionary = this.variableDictionary,
-        };
     }
 }

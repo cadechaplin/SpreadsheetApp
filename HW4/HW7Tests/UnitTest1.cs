@@ -7,6 +7,13 @@ public class Tests
     public void Setup()
     {
     }
+    [Test]
+    public void TestInvalidVar()
+    {
+        _testSheet = new Spreadsheet(10,10);
+        _testSheet.Cells[0,0].Text = "=ABC";
+        Assert.That( _testSheet.Cells[0,0].Value, Is.EqualTo("###"));
+    }
 
     [Test]
     public void TestFormula()
@@ -30,7 +37,7 @@ public class Tests
         _testSheet.Cells[0,0].Text = "=1+1";
         _testSheet.Cells[1,0].Text = "=A1+1";
         _testSheet.Cells[0,0].Text = "=1+2";
-        Assert.That( _testSheet.Cells[0,0].Value, Is.EqualTo("4"));
+        Assert.That( _testSheet.Cells[1,0].Value, Is.EqualTo("4"));
     }
     [Test]
     public void TestMultipleCell()
@@ -38,7 +45,7 @@ public class Tests
         _testSheet = new Spreadsheet(10,10);
         _testSheet.Cells[0,0].Text = "=1+1";
         _testSheet.Cells[0,1].Text = "=1+1";
-        _testSheet.Cells[0,2].Text = "=A1+A2";
+        _testSheet.Cells[0,2].Text = "=A1+B1";
         Assert.That( _testSheet.Cells[0,2].Value, Is.EqualTo("4"));
     }
     [Test]

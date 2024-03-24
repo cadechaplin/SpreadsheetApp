@@ -53,8 +53,6 @@ public class Spreadsheet
         }
     }
 
-    
-
     /// <summary>
     /// Gets the column count.
     /// </summary>
@@ -73,21 +71,11 @@ public class Spreadsheet
     protected virtual void OnCellPropertyChanged(object sender, PropertyChangedEventArgs e)
     {
         this.EvaluateCellValue((Cell)sender);
-    }
-
-    /// <summary>
-    /// Gets the column count.
-    /// </summary>
-    /// <param name="sender"> Integer to use for indexing the Cell row.</param>
-    /// <param name="e"> Integer to use for indexing the Cell .</param>
-    protected virtual void CellReferenceChange(object sender, PropertyChangedEventArgs e)
-    {
-        if (sender is ConcreteCell referencedCell)
+        if (sender is ConcreteCell cell)
         {
-            // Update the cell's value when a referenced cell changes
-            foreach (Cell item in referencedCell.refrencedBy)
+            foreach (var item in cell.refrencedBy)
             {
-                EvaluateCellValue(item);
+                    this.EvaluateCellValue(item);
             }
         }
     }
@@ -102,7 +90,7 @@ public class Spreadsheet
 
         if (changeCell.Text[0] == '=')
         {
-            ExpressionTree tree = new ExpressionTree(changeCell.Text.Substring(1));
+            ExpressionTree tree = new ExpressionTree(changeCell.Text[1..]);
             foreach (var item in tree.variableDictionary.Keys)
             {
                 try
@@ -112,12 +100,17 @@ public class Spreadsheet
                     //event for updating if refrence cell 
                     if (ab is ConcreteCell ex)
                     {
-                        ex.refrencedBy.Add(changeCell);
+                        if (!ex.refrencedBy.Contains(changeCell))
+                        {
+                            ex.refrencedBy.Add(changeCell);
+                        }
                     }
+
                     tree.variableDictionary[item] = double.Parse(test);
                 }
                 catch (Exception e)
                 {
+                    changeCell.Value = "###";
                     return;
                 }
             }
