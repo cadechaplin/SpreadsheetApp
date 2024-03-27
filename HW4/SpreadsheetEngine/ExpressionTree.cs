@@ -11,8 +11,7 @@ public class ExpressionTree
 {
     // ReSharper disable InconsistentNaming
     private readonly ExpressionNode? root;
-    private readonly Dictionary<char, Type> NodeTypes;
-    public readonly Dictionary<string, double> variableDictionary;
+    private readonly Dictionary<string, double> variableDictionary;
     private OperatorNodeFactory myfactory = new OperatorNodeFactory();
 
     // ReSharper restore InconsistentNaming
@@ -53,6 +52,15 @@ public class ExpressionTree
         return this.root.Evaluate();
     }
 
+    /// <summary>
+    /// Initiates evaluation of the tree.
+    /// </summary>
+    /// <returns> Returns all variables in the tree.</returns>
+    public List<string> GetVariables()
+    {
+        return new List<string>(this.variableDictionary.Keys);
+    }
+
     private ExpressionNode? Compile(string partition)
     {
         ShuntingYard alg = new ShuntingYard();
@@ -64,25 +72,27 @@ public class ExpressionTree
         Stack<ExpressionNode> pStack = new Stack<ExpressionNode>();
         foreach (string arg in postfix)
         {
-            ExpressionNode temp = nodify(arg);
+            ExpressionNode temp = this.Nodify(arg);
 
             if (temp is OperatorNode op)
             {
                 op.Right = pStack.Pop();
                 op.Left = pStack.Pop();
             }
+
             pStack.Push(temp);
         }
 
         return pStack.Pop();
     }
 
-    private ExpressionNode nodify(string arg)
+    private ExpressionNode Nodify(string arg)
     {
         if (double.TryParse(arg, out double result))
         {
             // Parsing successful, create a ConstantNode with the parsed integer
-            ConstantNode constantNode = new ConstantNode(){
+            ConstantNode constantNode = new ConstantNode()
+            {
                 Value = result,
             };
 
@@ -93,9 +103,9 @@ public class ExpressionTree
             return constantNode;
         }
 
-        if (arg.Length is 1 && myfactory.NodeTypes.ContainsKey(arg[0]))
+        if (arg.Length is 1 && this.myfactory.NodeTypes.ContainsKey(arg[0]))
         {
-            return myfactory.CreateNode(arg[0]);
+            return this.myfactory.CreateNode(arg[0]);
         }
 
         this.variableDictionary[arg] = double.NaN;
@@ -104,6 +114,5 @@ public class ExpressionTree
             Name = arg,
             ReferenceDictionary = this.variableDictionary,
         };
-
     }
 }

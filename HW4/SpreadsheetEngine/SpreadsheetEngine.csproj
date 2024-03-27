@@ -13,4 +13,13 @@
       </PackageReference>
     </ItemGroup>
 
+    
+    
+    <ItemGroup>
+        <InternalsVisibleTo Include="HW7Tests"/>
+    </ItemGroup>
+    <ItemGroup>
+        <InternalsVisibleTo Include="HW4Tests"/>
+    </ItemGroup>
+
 </Project>

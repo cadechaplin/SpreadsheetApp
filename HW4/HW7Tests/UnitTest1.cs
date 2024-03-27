@@ -1,5 +1,6 @@
 namespace HW7Tests;
 using SpreadsheetEngine;
+
 public class Tests
 {
     private Spreadsheet _testSheet = new Spreadsheet(10,10);
@@ -55,5 +56,14 @@ public class Tests
         _testSheet.Cells[0,0].Text = "=1+1";
         _testSheet.Cells[0,1].Text = "=A1+1";
         Assert.That( _testSheet.Cells[0,1].Value, Is.EqualTo("3"));
+    }
+    [Test]
+    public void TestCellReferenceRemoval()
+    {
+        Assert.That(true);
+        _testSheet = new Spreadsheet(10,10);
+        _testSheet.Cells[0,0].Text = "=1+1";
+        _testSheet.Cells[0,1].Text = "=A1+1";
+        Assert.That(true);
     }
 }

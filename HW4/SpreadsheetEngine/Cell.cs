@@ -48,7 +48,7 @@ public abstract class Cell : INotifyPropertyChanged
     /// <summary>
     /// Gets or Sets property StoredText.
     /// </summary>
-    public abstract string Value { get; set; }
+    internal abstract string Value { get; set; }
 
     /// <summary>
     /// Gets StoreText.

@@ -1,12 +1,10 @@
 // <copyright file="Spreadsheet.cs" company="PlaceholderCompany">
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
-
-using System.Linq.Expressions;
-
 namespace SpreadsheetEngine;
 
 using System.ComponentModel;
+using System.Globalization;
 
 // disabling underscore warnings
 #pragma warning disable SA1309
@@ -22,8 +20,6 @@ public class Spreadsheet
     // Want to be able to access this from outside the class.
     public readonly Cell[,] Cells;
 #pragma warning restore SA1401
-    private readonly int _columnCount;
-    private readonly int _rowCount;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Spreadsheet"/> class.
@@ -38,8 +34,8 @@ public class Spreadsheet
         }
 
         this.Cells = new Cell[row, col];
-        this._columnCount = col;
-        this._rowCount = row;
+        this.ColumnCount = col;
+        this.RowCount = row;
 
         // Initialize each inner array separately
         for (int i = 0; i < row; i++)
@@ -56,32 +52,33 @@ public class Spreadsheet
     /// <summary>
     /// Gets the column count.
     /// </summary>
-    public int ColumnCount => this._columnCount;
+    public int ColumnCount { get; }
 
     /// <summary>
     /// Gets the row count.
     /// </summary>
-    public int RowCount => this._rowCount;
+    public int RowCount { get; }
 
     /// <summary>
     /// Gets the column count.
     /// </summary>
     /// <param name="sender"> Integer to use for indexing the Cell row.</param>
     /// <param name="e"> Integer to use for indexing the Cell .</param>
-    protected virtual void OnCellPropertyChanged(object sender, PropertyChangedEventArgs e)
+    protected virtual void OnCellPropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
         this.EvaluateCellValue((Cell)sender);
         if (sender is ConcreteCell cell)
         {
-            foreach (var item in cell.refrencedBy)
+            foreach (var item in cell.ReferencedBy)
             {
                     this.EvaluateCellValue(item);
             }
         }
     }
 
-    private void EvaluateCellValue(Cell changeCell)
+    private void EvaluateCellValue(Cell a)
     {
+        ConcreteCell changeCell = (ConcreteCell)a;
         if (changeCell.Text.Length == 0)
         {
             changeCell.Value = changeCell.Text;
@@ -95,30 +92,55 @@ public class Spreadsheet
             {
                 tree = new ExpressionTree(changeCell.Text[1..]);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 // Error in expression tree creation, must be operand missing since there is no other error that can occur here.
                 changeCell.Value = "Operator Error";
                 return;
             }
-            foreach (var item in tree.variableDictionary.Keys)
+
+            // Remove no longer referenced.
+            foreach (var item in changeCell.RefrencedTo.ToList())
+            {
+                if (!tree.GetVariables().Contains((char)(item.ColumnIndex + 'A') + (item.RowIndex + 1).ToString()))
+                {
+                    // Remove the reference from the refrencedTo list of changeCell
+                    changeCell.RefrencedTo.Remove(item);
+
+                    // Remove changeCell from the refrencedBy list of the item in the tree
+                    if (item is ConcreteCell concreteItem)
+                    {
+                        concreteItem.ReferencedBy.Remove(changeCell);
+                    }
+                }
+            }
+
+            foreach (var item in tree.GetVariables())
             {
                 try
                 {
-                    Cell ab = GetCell( int.Parse(item.Substring(1)) - 1,item[0] - 'A');
+                    Cell? ab = this.GetCell(int.Parse(item.Substring(1)) - 1, item[0] - 'A') ?? null;
+                    if (ab == null)
+                    {
+                        throw new Exception();
+                    }
+
                     string test = ab.Value;
-                    //event for updating if refrence cell 
                     if (ab is ConcreteCell ex)
                     {
-                        if (!ex.refrencedBy.Contains(changeCell))
+                        if (!ex.ReferencedBy.Contains(changeCell))
                         {
-                            ex.refrencedBy.Add(changeCell);
+                            ex.ReferencedBy.Add(changeCell);
+                            changeCell.RefrencedTo.Add(ex);
                         }
                     }
 
-                    tree.variableDictionary[item] = double.Parse(test);
+                    if (double.TryParse(test, out var value))
+                    {
+                        tree.SetVariable(item, value);
+                    }
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     // Error in finding the cell, cell reference must be wrong or some string is input that is not a cell.
                     changeCell.Value = "Cell Reference Error";
@@ -128,7 +150,7 @@ public class Spreadsheet
 
             try
             {
-                changeCell.Value = tree.Evaluate().ToString();
+                changeCell.Value = tree.Evaluate().ToString(CultureInfo.InvariantCulture);
             }
             catch (InvalidOperationException)
             {
@@ -149,7 +171,7 @@ public class Spreadsheet
     /// <returns> Returns the cell corresponding to the index.</returns>
     private Cell? GetCell(int row, int col)
     {
-        if (row > this._rowCount || col > this.ColumnCount)
+        if (row > this.RowCount || col > this.ColumnCount)
         {
             return null;
         }
@@ -157,32 +179,21 @@ public class Spreadsheet
         return this.Cells[row, col];
     }
 
-
     /// <summary>
     /// Cell that can be used to create an instance of Cell.
     /// </summary>
     private class ConcreteCell : Cell
     {
-        public event PropertyChangedEventHandler? ValueChanged = (sender, e) => { };
-
-        internal List<Cell> refrencedBy = new List<Cell>();
+        #pragma warning disable SA1401
         /// <summary>
-        /// Event to fire when changing a property.
+        /// List of Cells that reference this cell.
         /// </summary>
-        public override string Value
-        {
-            get => this.StoredValue;
+        internal readonly List<Cell> ReferencedBy = new List<Cell>();
 
-            set
-            {
-                if (this.StoredValue != value)
-                {
-                    this.StoredValue = value;
-                    //this.ValueChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.Value)));
-                    this.OnPropertyChanged(nameof(this.Value));
-                }
-            }
-        }
+        /// <summary>
+        /// CList of Cells that this cell references.
+        /// </summary>
+        internal List<Cell> RefrencedTo = new List<Cell>();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ConcreteCell"/> class.
@@ -192,6 +203,25 @@ public class Spreadsheet
         public ConcreteCell(int rowIndex, int columnIndex)
             : base(rowIndex, columnIndex)
         {
+        }
+
+        /// <summary>
+        /// Gets or Sets value.
+        /// </summary>
+        internal override string Value
+        {
+            get => this.StoredValue;
+
+            set
+            {
+                if (this.StoredValue == value)
+                {
+                    return;
+                }
+
+                this.StoredValue = value;
+                this.OnPropertyChanged(nameof(this.Value));
+            }
         }
     }
 }

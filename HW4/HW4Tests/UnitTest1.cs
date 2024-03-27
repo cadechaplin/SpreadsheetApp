@@ -19,9 +19,9 @@ public class Tests
     [Test]
     public void CellValueTest()
     {
-        _testSheet.Cells[0,0].Text = "testing";
+        _testSheet.Cells[0,0].Text = "5";
         _testSheet.Cells[1,1].Text = "=A1";
-        Assert.That( _testSheet.Cells[1,1].Value, Is.EqualTo("testing"));
+        Assert.That( _testSheet.Cells[1,1].Value, Is.EqualTo("5"));
     }
     [Test]
     public void CellValueTestReference()
@@ -39,7 +39,7 @@ public class Tests
     public void SpreadsheetCellReferenceOutOfRange()
     {
         _testSheet.Cells[1, 1].Text = "=A12";
-        Assert.That("Cell referenced out of range." == _testSheet.Cells[1, 1].Value);
+        Assert.That("Cell Reference Error" == _testSheet.Cells[1, 1].Value);
         
     }
     [Test]
