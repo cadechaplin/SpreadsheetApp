@@ -2,6 +2,8 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
+using Spreadsheet_GettingStarted.ViewModels;
+
 namespace SpreadSheet_Cade_Chaplin.ViewModels;
 
 using System;
@@ -18,108 +20,74 @@ using SpreadsheetEngine;
 // disabling underscore warnings
 #pragma warning disable SA1309
 
-/// <summary>
-/// Joins a first name and a last name together into a single string.
-/// </summary>
 public class MainWindowViewModel : ViewModelBase
 {
-    private readonly Spreadsheet _spreadsheet;
-    private bool _isInitialized;
-    private DataGrid _myGrid;
-
+    private List<RowViewModel> _spreadsheetData = null;
+    private readonly List<CellViewModel> _selectedCells = new();
+    public Spreadsheet mySheet;
     /// <summary>
     /// Initializes a new instance of the <see cref="MainWindowViewModel"/> class.
     /// </summary>
     public MainWindowViewModel()
     {
-        this._spreadsheet = new Spreadsheet(50, 'Z' - 'A' + 1);
+        mySheet = new Spreadsheet(50, 'Z' - 'A' + 1);
+    }
+
+    public void InitializeSpreadsheet()
+    {
         
-        var rowCount = this._spreadsheet.RowCount;
-        var columnCount = this._spreadsheet.ColumnCount;
-        this.Rows = Enumerable.Range(0, rowCount)
-            .Select(row => Enumerable.Range(0, columnCount)
-                .Select(column => this._spreadsheet.Cells[row, column]).ToArray())
-            .ToArray();
     }
 
-    private Cell[][] Rows { get; }
-
-    /// <summary>
-    /// Initializes the data grid with cells.
-    /// </summary>
-    /// <param name="dataGrid">Data grid that will be initialized.</param>
-    public void InitializeDataGrid(DataGrid dataGrid)
+    public void SelectCell(int rowIndex, int columnIndex)
     {
-        this._myGrid = dataGrid;
-        if (this._isInitialized)
-        {
-            return;
-        }
-
-        // initialize A to Z columns headers since these are indexed this is not a behavior supported by default
-        var columnCount = 'Z' - 'A' + 1;
-        foreach (var columnIndex in Enumerable.Range(0, columnCount))
-        {
-            // for each column we will define the header text and
-            // the binding to use
-            var columnHeader = (char)('A' + columnIndex);
-            var columnTemplate = new DataGridTemplateColumn
-            {
-                Header = columnHeader,
-                CellTemplate = new FuncDataTemplate<IEnumerable<Cell>>((value, namescope) =>
-                    new TextBlock
-                    {
-                        [!TextBlock.TextProperty] = new Binding($"[{columnIndex}].Value"),
-                        TextAlignment = TextAlignment.Left,
-                        VerticalAlignment = VerticalAlignment.Center,
-                        Padding = Thickness.Parse("5,0,5,0"),
-                    }),
-                CellEditingTemplate = new FuncDataTemplate<IEnumerable<Cell>>((value, namescope) =>
-                    new TextBox
-                    {
-                        [!TextBox.TextProperty] = new Binding($"[{columnIndex}].Text"),
-                    }),
-            };
-            dataGrid.Columns.Add(columnTemplate);
-        }
-
-        dataGrid.ItemsSource = this.Rows;
-        dataGrid.LoadingRow += (sender, args) => { args.Row.Header = (args.Row.GetIndex() + 1).ToString(); };
-        this._isInitialized = true;
+        var clickedCell = GetCell(rowIndex, columnIndex);
+        var shouldEditCell = clickedCell.IsSelected;
+        ResetSelection();
+// add the pressed cell back to the list
+        _selectedCells.Add(clickedCell);
+        clickedCell.IsSelected = true;
+        if (shouldEditCell)
+            clickedCell.CanEdit = true;
     }
 
-    /// <summary>
-    /// Runs a demo.
-    /// </summary>
-    public void RunDemo()
+    public void ToggleCellSelection(int rowIndex, int columnIndex)
     {
-        Random random = new Random();
-        for (int i = 0; i < 50; i++)
+        var clickedCell = GetCell(rowIndex, columnIndex);
+        if (false == clickedCell.IsSelected)
         {
-            this._spreadsheet.Cells[random.Next(0, 49), random.Next(0, 26)].Text = "Hello world!!";
+            _selectedCells.Add(clickedCell);
+            clickedCell.IsSelected = true;
         }
-
-        for (int i = 0; i < 50; i++)
+        else
         {
-            this._spreadsheet.Cells[i, 1].Text = "This is Cell B" + (this.Rows[i][1].RowIndex + 1);
-        }
-
-        for (int i = 0; i < 50; i++)
-        {
-            this._spreadsheet.Cells[i, 0].Text = "=B" + (i + 1).ToString();
+            _selectedCells.Remove(clickedCell);
+            clickedCell.IsSelected = false;
         }
     }
 
-    /// <summary>
-    /// Function called when spreadsheet has any change. TODO: Doesn't actually do anything. Fix applied in demo causes issues for normal functionality.
-    /// </summary>
-    /// <param name="sender">Object that called the function.</param>
-    /// <param name="e">Changed arguments.</param>
-    protected virtual void SpreedSheetChanged(object sender, object e) // update the cell
+    public void ResetSelection()
     {
-        if (sender is Spreadsheet changed)
+// clear current selection
+        foreach (var cell in _selectedCells)
         {
-            // Fix for updating UI should go here.
+            cell.IsSelected = false;
+            cell.CanEdit = false;
         }
+
+        _selectedCells.Clear();
     }
+
+    public CellViewModel GetCell(int row, int col)
+    {
+        throw new Exception("Not implemented");
+    }
+    public string GetCellText(int row, int col)
+    {
+        throw new Exception("Not implemented");
+    }
+    public string SetCellText(int row, int col, string val)
+    {
+        throw new Exception("Not implemented");
+    }
+
 }

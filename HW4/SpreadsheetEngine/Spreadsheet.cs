@@ -204,11 +204,18 @@ public class Spreadsheet
             : base(rowIndex, columnIndex)
         {
         }
-
+        /*
+        public event PropertyChangedEventHandler? ValuePropertyChanged = (sender, e) => { };
+        
+        protected virtual void OnValuePropertyChanged(string propertyName)
+        {
+            this.ValuePropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+        */
         /// <summary>
         /// Gets or Sets value.
         /// </summary>
-        internal override string Value
+        public override string Value
         {
             get => this.StoredValue;
 

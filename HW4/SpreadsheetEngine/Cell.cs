@@ -13,6 +13,7 @@ public abstract class Cell : INotifyPropertyChanged
 {
 #pragma warning disable SA1306
 #pragma warning disable SA1401
+    public uint BackgroundColor;
     /// <summary>
     /// Stores the data of Text.
     /// </summary>
@@ -48,7 +49,7 @@ public abstract class Cell : INotifyPropertyChanged
     /// <summary>
     /// Gets or Sets property StoredText.
     /// </summary>
-    internal abstract string Value { get; set; }
+    public abstract string Value { get; set; }
 
     /// <summary>
     /// Gets StoreText.
