@@ -45,7 +45,8 @@ public abstract class Cell : INotifyPropertyChanged
     /// Event to fire when changing a property.
     /// </summary>
     public event PropertyChangedEventHandler? PropertyChanged = (sender, e) => { };
-
+    
+    
     /// <summary>
     /// Gets or Sets property StoredText.
     /// </summary>

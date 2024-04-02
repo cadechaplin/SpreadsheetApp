@@ -19,6 +19,8 @@ public class Spreadsheet
 #pragma warning disable SA1401
     // Want to be able to access this from outside the class.
     public readonly Cell[,] Cells;
+    private Stack<Command> redo;
+    private Stack<Command> undo;
 #pragma warning restore SA1401
 
     /// <summary>
@@ -76,6 +78,14 @@ public class Spreadsheet
         }
     }
 
+    public void Undo()
+    {
+        throw new Exception("Not implemented");
+    }
+    public void Redo()
+    {
+        throw new Exception("Not implemented");
+    }
     private void EvaluateCellValue(Cell a)
     {
         ConcreteCell changeCell = (ConcreteCell)a;
