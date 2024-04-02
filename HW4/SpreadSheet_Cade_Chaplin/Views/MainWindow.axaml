@@ -26,13 +26,13 @@
         <DockPanel>
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="File" >
-                <MenuItem Header="Open" Command = "{Binding LoadFromFile}"/>
-                <MenuItem Header="Save" />
-                <MenuItem Header="Exit" />
+                <MenuItem Header="Open" Command = "{Binding LoadFromFile}" IsEnabled= "False"/>
+                <MenuItem Header="Save" IsEnabled= "False"/>
+                <MenuItem Header="Exit" IsEnabled= "False"/>
             </MenuItem>
             <MenuItem Header="Edit" >
-                <MenuItem Header="Undo" Command = "{Binding UndoCommand}"/>
-                <MenuItem Header="Redo" Command = "{Binding RedoCommand}"/>
+                <MenuItem Header="{Binding undoMessage}" Command = "{Binding UndoCommand}" IsEnabled= "{Binding IsUndoReady, Mode=OneWay}"/>
+                <MenuItem Header="Redo" Command = "{Binding RedoCommand}" IsEnabled= "{Binding IsRedoReady, Mode=OneWay }"/>
             </MenuItem>
             <MenuItem Header="Cell" >
                 <MenuItem Header="Change background colors..." Command = "{Binding ColorPicker}"/>

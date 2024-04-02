@@ -71,9 +71,9 @@ public class Tests
     public void TestUndo()
     {
         _testSheet = new Spreadsheet(10,10);
-        _testSheet.Cells[0,1].Text = "=A1+1";
-        _testSheet.Cells[0,0].Text = "=1+1";
-        _testSheet.Cells[0,0].Text = "=1+2";
+        _testSheet.RequestTextChange(_testSheet.Cells[0,1],"=A1+1");
+        _testSheet.RequestTextChange(_testSheet.Cells[0,0],"=1+1");
+        _testSheet.RequestTextChange(_testSheet.Cells[0,0],"=1+2");
         _testSheet.Undo();
         Assert.That(_testSheet.Cells[0,1].Value, Is.EqualTo("3"));
     }
@@ -81,11 +81,30 @@ public class Tests
     public void TestRedo()
     {
         _testSheet = new Spreadsheet(10,10);
-        _testSheet.Cells[0,1].Text = "=A1+1";
-        _testSheet.Cells[0,0].Text = "=1+1";
-        _testSheet.Cells[0,0].Text = "=1+2";
+        _testSheet.RequestTextChange(_testSheet.Cells[0,1],"=A1+1");
+        _testSheet.RequestTextChange(_testSheet.Cells[0,0],"=1+1");
+        _testSheet.RequestTextChange(_testSheet.Cells[0,0],"=1+2");
         _testSheet.Undo();
         _testSheet.Redo();
-        Assert.That(_testSheet.Cells[0,1].Value, Is.EqualTo("3"));
+        Assert.That(_testSheet.Cells[0,1].Value, Is.EqualTo("4"));
     }
+    [Test]
+    public void TestColor()
+    {
+        _testSheet = new Spreadsheet(10,10);
+        List<Cell> firstChanged = new List<Cell>();
+        firstChanged.Add(_testSheet.Cells[0,1]);
+        List<Cell> secondChanged = new List<Cell>();
+        secondChanged.Add(_testSheet.Cells[0,1]);
+        secondChanged.Add(_testSheet.Cells[0,0]);
+        _testSheet.RequestColorChange(firstChanged,0xff3300df);
+        _testSheet.RequestColorChange(secondChanged,0xff3300df);
+        _testSheet.Undo();
+        Assert.That(_testSheet.Cells[0,1].BackgroundColor, Is.EqualTo(0xff3300df));
+        Assert.That(_testSheet.Cells[0,0].BackgroundColor, Is.Not.EqualTo(0xff3300df));
+        _testSheet.Redo();
+        Assert.That(_testSheet.Cells[0,0].BackgroundColor, Is.EqualTo(0xff3300df));
+        
+    }
+    
 }

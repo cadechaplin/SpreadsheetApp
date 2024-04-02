@@ -7,6 +7,7 @@ public class ColorChange : Command
     private List<Cell> affectedCells;
     private List<uint> prev;
     private uint next;
+    static string messageText = "color change";
 
     public ColorChange(List<Cell> cells, List<uint> prev, uint next)
     {
@@ -29,5 +30,10 @@ public class ColorChange : Command
         {
             affectedCells[i].BackgroundColor = prev[i];
         }
+    }
+
+    public string message()
+    {
+        return messageText;
     }
 }

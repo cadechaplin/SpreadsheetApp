@@ -30,6 +30,8 @@ public class Spreadsheet
     /// <param name="col"> Amount of columns to initiate.</param>
     public Spreadsheet(int row, int col)
     {
+        redo = new Stack<Command>();
+        undo = new Stack<Command>();
         if (row <= 0 || col <= 0)
         {
             throw new IndexOutOfRangeException("Row and column counts must be greater than zero.");
@@ -80,12 +82,49 @@ public class Spreadsheet
 
     public void Undo()
     {
-        throw new Exception("Not implemented");
+        if (undo.Count == 0)
+        {
+            return;
+        }
+
+        var temp = undo.Pop();
+        temp.unexecute();
+        redo.Push(temp);
     }
     public void Redo()
     {
-        throw new Exception("Not implemented");
+        if (redo.Count == 0)
+        {
+            return;
+        }
+
+        var temp = redo.Pop();
+        temp.execute();
+        undo.Push(temp);
     }
+
+    public void RequestColorChange(List<Cell> cellsChanged, uint next)
+    {
+        List<uint> prev = new List<uint>();
+        foreach (Cell cell in cellsChanged)
+        {
+            prev.Add(cell.BackgroundColor); //color.Value;
+        }
+        Command temp = new ColorChange(cellsChanged, prev, next);
+        temp.execute();
+        undo.Push(temp);
+        redo.Clear();
+    }
+
+    public void RequestTextChange(Cell cellChanged, string next)
+    {
+        string prev = cellChanged.Text;
+        Command temp = new textChange(cellChanged, prev, next);
+        temp.execute();
+        undo.Push(temp);
+        redo.Clear();
+    }
+
     private void EvaluateCellValue(Cell a)
     {
         ConcreteCell changeCell = (ConcreteCell)a;
@@ -187,6 +226,44 @@ public class Spreadsheet
         }
 
         return this.Cells[row, col];
+    }
+
+    public string getRedoMessage()
+    {
+        if (redo.TryPeek(out Command output))
+        {
+            return "Redo " + output.message();
+        }
+
+        return "Redo";
+    }
+    public string getUndoMessage()
+    {
+        if (undo.TryPeek(out Command output))
+        {
+            return "Undo " + output.message();
+        }
+
+        return "Undo";
+    }
+
+    public bool emptyUndo()
+    {
+        if (undo.Count == 0)
+        {
+            return true;
+        }
+
+        return false;
+    }
+    public bool emptyRedo()
+    {
+        if (redo.Count == 0)
+        {
+            return true;
+        }
+
+        return false;
     }
 
     /// <summary>

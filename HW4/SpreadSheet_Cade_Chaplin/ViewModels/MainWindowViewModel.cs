@@ -2,6 +2,7 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
+using System.ComponentModel;
 using System.IO;
 using System.Reactive;
 using System.Reactive.Linq;
@@ -27,24 +28,82 @@ using SpreadsheetEngine;
 
 public class MainWindowViewModel : ViewModelBase
 {
+    private Spreadsheet _spreadSheetOb;
     private List<RowViewModel> _spreadsheetData;
     private readonly List<CellViewModel> _selectedCells = new();
-    private Stack<Command> redo;
-    private Stack<Command> undo;
+    private bool _isUndoReady;
+    private bool _isRedoReady;
+    private string _uMessage;
+    private string _rMessage;
     /// <summary>
     /// Initializes a new instance of the <see cref="MainWindowViewModel"/> class.
     /// </summary>
     public MainWindowViewModel()
     {
-        redo = new Stack<Command>();
-        undo = new Stack<Command>();
         this.AskForFileToLoad = new Interaction<Unit, string?>();
         this.AskForAColor = new Interaction<Unit, uint?>();
+        IsUndoReady = false;
+        IsRedoReady = false;
+        _uMessage = "Undo";
+        _rMessage = "Redo";
+
     }
 
-    public void InitializeSpreadsheet(List<RowViewModel> sheet)
+    public bool IsUndoReady
     {
-        _spreadsheetData = sheet;
+        get { return _isUndoReady; }
+        set
+        {
+            if (_isUndoReady != value)
+            {
+                this.RaiseAndSetIfChanged(ref _isUndoReady, value); // Notify property changed
+            }
+        }
+    }
+    public string undoMessage
+    {
+        get { return _uMessage; }
+        set
+        {
+            if (_uMessage != value)
+            {
+                this.RaiseAndSetIfChanged(ref _uMessage, value); // Notify property changed
+            }
+        }
+    }
+
+    public void updateMessages()
+    {
+        undoMessage = _spreadSheetOb.getUndoMessage();
+        redoMessage = _spreadSheetOb.getRedoMessage();
+    }
+
+    public string redoMessage
+    {
+        get { return _rMessage; }
+        set
+        {
+            if (_rMessage != value)
+            {
+                this.RaiseAndSetIfChanged(ref _rMessage, value); // Notify property changed
+            }
+        }
+    }
+    public bool IsRedoReady
+    {
+        get { return _isRedoReady; }
+        set
+        {
+            if (_isRedoReady != value)
+            {
+                this.RaiseAndSetIfChanged(ref _isRedoReady, value);
+            }
+        }
+    }
+    public void InitializeSpreadsheet(List<RowViewModel> sheetRows, Spreadsheet sheet)
+    {
+        _spreadsheetData = sheetRows;
+        _spreadSheetOb = sheet;
     }
 
     public void SelectCell(int rowIndex, int columnIndex)
@@ -76,7 +135,7 @@ public class MainWindowViewModel : ViewModelBase
 
     public void ResetSelection()
     {
-// clear current selection
+        // clear current selection
         foreach (var cell in _selectedCells)
         {
             cell.IsSelected = false;
@@ -96,11 +155,10 @@ public class MainWindowViewModel : ViewModelBase
     }
     public void SetCellText(int row, int col, string val)
     {
-        string prev = _spreadsheetData[row][col].Text;
-        _spreadsheetData[row][col].Text = val;
-        string next = val;
-        undo.Push(new textChange(_spreadsheetData[row][col],prev,next));
-        redo.Clear();
+        _spreadSheetOb.RequestTextChange(this.GetCell(row,col).Cell,val);
+        this.IsRedoReady = false;
+        this.IsUndoReady = true;
+        this.updateMessages();
     }
     
     public Interaction<Unit, string?> AskForFileToLoad
@@ -130,55 +188,34 @@ public class MainWindowViewModel : ViewModelBase
             return;
         }
 
-        List<uint> prevColors = new List<uint>();
         
-        foreach (CellViewModel cell in this._selectedCells)
-        {
-            prevColors.Add(cell.BackgroundColor); //color.Value;
-        }
         // Wait for the user to select the file to load from.
         var color = await this.AskForAColor.Handle(default);
-        if (color == null)
+        if (color != null)
         {
-            return;
+            List<Cell> cells = this._selectedCells.Select(vm => vm.Cell).ToList();
+            _spreadSheetOb.RequestColorChange(cells,color.Value); // change to colo
+            IsRedoReady = false;
+            IsUndoReady = true;
+            updateMessages();
         }
-        else
-        {
-            
-            foreach (CellViewModel cell in this._selectedCells)
-            {
-                cell.BackgroundColor = 0xff3300df; //color.Value;
-            }
-
-            color = 0xff3300df;
-            undo.Push(new ColorChange(this._selectedCells, prevColors, color.Value));
-            redo.Clear();
-        }
-
-        // If the user selected a file, create the stream reader and load the text.
-        
     }
 
     public void UndoCommand()
     {
-        if (undo.Count > 0)
-        {
-            Command temp = undo.Pop();
-            temp.unexecute();
-            redo.Push(temp);
-        }
+        _spreadSheetOb.Undo();
+        IsUndoReady = !_spreadSheetOb.emptyUndo();
+        IsRedoReady = true;
+        this.updateMessages();
 
     }
 
     public void RedoCommand()
     {
-        if (redo.Count > 0)
-        {
-            Command temp = redo.Pop();
-            temp.execute();
-            undo.Push(temp);
-        }
-        
+        _spreadSheetOb.Redo();
+        IsRedoReady = !_spreadSheetOb.emptyRedo();
+        IsUndoReady = true;
+        this.updateMessages();
     }
 
 }

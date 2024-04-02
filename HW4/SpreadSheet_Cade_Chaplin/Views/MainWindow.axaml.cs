@@ -69,8 +69,9 @@ public partial class MainWindow : ReactiveWindow<MainWindowViewModel>
         {
             if (this.DataContext is MainWindowViewModel viewModel)
             {
-                viewModel.InitializeSpreadsheet(this.RowsView);
+                
                 this.InitializeDataGrid(this.MyDataGrid,viewModel);
+                viewModel.InitializeSpreadsheet(this.RowsView,_spreadsheet);
                 //viewModel.InitializeSpreadsheet(this.MyDataGrid);
             }
         };
@@ -191,8 +192,8 @@ public partial class MainWindow : ReactiveWindow<MainWindowViewModel>
         var topLevel = TopLevel.GetTopLevel(this);
         var colorPicker = new ColorPicker();
         colorPicker.DataContext = interaction.Input;
-        interaction.SetOutput(5);
-        RowsView[0][0].BackgroundColor += 152;
+        interaction.SetOutput(0xff3300df);
+        
         
         //var colorChoice = await dia;
 
