@@ -13,7 +13,7 @@ public abstract class Cell : INotifyPropertyChanged
 {
 #pragma warning disable SA1306
 #pragma warning disable SA1401
-    public uint BackgroundColor;
+    
     /// <summary>
     /// Stores the data of Text.
     /// </summary>
@@ -60,11 +60,31 @@ public abstract class Cell : INotifyPropertyChanged
 
         set
         {
+            if (this.StoredText == value)
+            {
+                return;
+            }
+
             this.StoredText = value;
             OnPropertyChanged(nameof(Text));
         }
     }
 
+    private uint backgroundColor;
+    public uint BackgroundColor
+    {
+        get => backgroundColor;
+
+        set
+        {
+            if (value == backgroundColor)
+            {
+                return;
+            }
+            backgroundColor = value;
+            OnPropertyChanged(nameof(BackgroundColor));
+        }
+    }
     /// <summary>
     /// Gets _rowIndex.
     /// </summary>
