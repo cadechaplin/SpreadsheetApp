@@ -3,108 +3,140 @@ using SpreadsheetEngine;
 
 public class Tests
 {
-    private Spreadsheet _testSheet = new Spreadsheet(10,10);
+    public Spreadsheet TestSheet = new Spreadsheet(10, 10);
+
     [SetUp]
     public void Setup()
     {
     }
+
+    /// <summary>
+    /// Tests invalid variable.
+    /// </summary>
     [Test]
     public void TestInvalidVar()
     {
-        _testSheet = new Spreadsheet(10,10);
-        _testSheet.Cells[0,0].Text = "=ABC";
-        Assert.That( _testSheet.Cells[0,0].Value, Is.EqualTo("Cell Reference Error"));
+        this.TestSheet = new Spreadsheet(10,10);
+        this.TestSheet.Cells[0, 0].Text = "=ABC";
+        Assert.That(this.TestSheet.Cells[0, 0].Value, Is.EqualTo("Cell Reference Error"));
     }
 
+    /// <summary>
+    /// Tests using a formula.
+    /// </summary>
     [Test]
     public void TestFormula()
     {
-        _testSheet = new Spreadsheet(10,10);
-        _testSheet.Cells[0,0].Text = "=1+1";
-        Assert.That( _testSheet.Cells[0,0].Value, Is.EqualTo("2"));
+        this.TestSheet = new Spreadsheet(10,10);
+        this.TestSheet.Cells[0, 0].Text = "=1+1";
+        Assert.That( this.TestSheet.Cells[0, 0].Value, Is.EqualTo("2"));
     }
+
+    /// <summary>
+    /// Tests a formula with a reference.
+    /// </summary>
     [Test]
     public void TestFormulaWithReference()
     {
-        _testSheet = new Spreadsheet(10,10);
-        _testSheet.Cells[0,0].Text = "=1+1";
-        _testSheet.Cells[1,0].Text = "=A1+1";
-        Assert.That( _testSheet.Cells[1,0].Value, Is.EqualTo("3"));
+        this.TestSheet = new Spreadsheet(10,10);
+        this.TestSheet.Cells[0, 0].Text = "=1+1";
+        this.TestSheet.Cells[1,0].Text = "=A1+1";
+        Assert.That( this.TestSheet.Cells[1,0].Value, Is.EqualTo("3"));
     }
+
+    /// <summary>
+    /// Tests updating after a change.
+    /// </summary>
     [Test]
     public void TestFormulaWithReferenceAfterChange()
     {
-        _testSheet = new Spreadsheet(10,10);
-        _testSheet.Cells[0,0].Text = "=1+1";
-        _testSheet.Cells[1,0].Text = "=A1+1";
-        _testSheet.Cells[0,0].Text = "=1+2";
-        Assert.That( _testSheet.Cells[1,0].Value, Is.EqualTo("4"));
+        this.TestSheet = new Spreadsheet(10,10);
+        this.TestSheet.Cells[0, 0].Text = "=1+1";
+        this.TestSheet.Cells[1,0].Text = "=A1+1";
+        this.TestSheet.Cells[0, 0].Text = "=1+2";
+        Assert.That( this.TestSheet.Cells[1,0].Value, Is.EqualTo("4"));
     }
+
+    /// <summary>
+    /// Tests formula with multiple tests.
+    /// </summary>
     [Test]
     public void TestMultipleCell()
     {
-        _testSheet = new Spreadsheet(10,10);
-        _testSheet.Cells[0,0].Text = "=1+1";
-        _testSheet.Cells[0,1].Text = "=1+1";
-        _testSheet.Cells[0,2].Text = "=A1+B1";
-        Assert.That( _testSheet.Cells[0,2].Value, Is.EqualTo("4"));
+        this.TestSheet = new Spreadsheet(10,10);
+        this.TestSheet.Cells[0, 0].Text = "=1+1";
+        this.TestSheet.Cells[0,1].Text = "=1+1";
+        this.TestSheet.Cells[0,2].Text = "=A1+B1";
+        Assert.That( this.TestSheet.Cells[0, 2].Value, Is.EqualTo("4"));
     }
+
+    /// <summary>
+    /// Test formula with constant and variable.
+    /// </summary>
     [Test]
     public void TestCellWithConstant()
     {
-        _testSheet = new Spreadsheet(10,10);
-        _testSheet.Cells[0,0].Text = "=1+1";
-        _testSheet.Cells[0,1].Text = "=A1+1";
-        Assert.That( _testSheet.Cells[0,1].Value, Is.EqualTo("3"));
+        this.TestSheet = new Spreadsheet(10,10);
+        this.TestSheet.Cells[0, 0].Text = "=1+1";
+        this.TestSheet.Cells[0, 1].Text = "=A1+1";
+        Assert.That( this.TestSheet.Cells[0,1].Value, Is.EqualTo("3"));
     }
+
     [Test]
     public void TestCellReferenceRemoval()
     {
         Assert.That(true);
-        _testSheet = new Spreadsheet(10,10);
-        _testSheet.Cells[0,0].Text = "=1+1";
-        _testSheet.Cells[0,1].Text = "=A1+1";
+        this.TestSheet = new Spreadsheet(10,10);
+        this.TestSheet.Cells[0, 0].Text = "=1+1";
+        this.TestSheet.Cells[0, 1].Text = "=A1+1";
         Assert.That(true);
     }
-    //HW8 tests.
+
+    // HW8 tests.
     [Test]
     public void TestUndo()
     {
-        _testSheet = new Spreadsheet(10,10);
-        _testSheet.RequestTextChange(_testSheet.Cells[0,1],"=A1+1");
-        _testSheet.RequestTextChange(_testSheet.Cells[0,0],"=1+1");
-        _testSheet.RequestTextChange(_testSheet.Cells[0,0],"=1+2");
-        _testSheet.Undo();
-        Assert.That(_testSheet.Cells[0,1].Value, Is.EqualTo("3"));
+        this.TestSheet = new Spreadsheet(10,10);
+        this.TestSheet.RequestTextChange(this.TestSheet.Cells[0,1], "=A1+1");
+        this.TestSheet.RequestTextChange(this.TestSheet.Cells[0, 0], "=1+1");
+        this.TestSheet.RequestTextChange(this.TestSheet.Cells[0, 0], "=1+2");
+        this.TestSheet.Undo();
+        Assert.That(this.TestSheet.Cells[0,1].Value, Is.EqualTo("3"));
     }
     [Test]
     public void TestRedo()
     {
-        _testSheet = new Spreadsheet(10,10);
-        _testSheet.RequestTextChange(_testSheet.Cells[0,1],"=A1+1");
-        _testSheet.RequestTextChange(_testSheet.Cells[0,0],"=1+1");
-        _testSheet.RequestTextChange(_testSheet.Cells[0,0],"=1+2");
-        _testSheet.Undo();
-        _testSheet.Redo();
-        Assert.That(_testSheet.Cells[0,1].Value, Is.EqualTo("4"));
+        this.TestSheet = new Spreadsheet(10,10);
+        this.TestSheet.RequestTextChange(this.TestSheet.Cells[0,1], "=A1+1");
+        this.TestSheet.RequestTextChange(this.TestSheet.Cells[0, 0], "=1+1");
+        this.TestSheet.RequestTextChange(this.TestSheet.Cells[0, 0], "=1+2");
+        this.TestSheet.Undo();
+        this.TestSheet.Redo();
+        Assert.That(this.TestSheet.Cells[0, 1].Value, Is.EqualTo("4"));
     }
+
+    /// <summary>
+    /// Testing color change.
+    /// </summary>
     [Test]
     public void TestColor()
     {
-        _testSheet = new Spreadsheet(10,10);
+        this.TestSheet = new Spreadsheet(10,10);
         List<Cell> firstChanged = new List<Cell>();
-        firstChanged.Add(_testSheet.Cells[0,1]);
+        firstChanged.Add(this.TestSheet.Cells[0,1]);
         List<Cell> secondChanged = new List<Cell>();
-        secondChanged.Add(_testSheet.Cells[0,1]);
-        secondChanged.Add(_testSheet.Cells[0,0]);
-        _testSheet.RequestColorChange(firstChanged,0xff3300df);
-        _testSheet.RequestColorChange(secondChanged,0xff3300df);
-        _testSheet.Undo();
-        Assert.That(_testSheet.Cells[0,1].BackgroundColor, Is.EqualTo(0xff3300df));
-        Assert.That(_testSheet.Cells[0,0].BackgroundColor, Is.Not.EqualTo(0xff3300df));
-        _testSheet.Redo();
-        Assert.That(_testSheet.Cells[0,0].BackgroundColor, Is.EqualTo(0xff3300df));
-        
+        secondChanged.Add(this.TestSheet.Cells[0, 1]);
+        secondChanged.Add(this.TestSheet.Cells[0, 0]);
+        this.TestSheet.RequestColorChange(firstChanged,0xff3300df);
+        this.TestSheet.RequestColorChange(secondChanged,0xff3300df);
+        this.TestSheet.Undo();
+        Assert.That(this.TestSheet.Cells[0,1].BackgroundColor, Is.EqualTo(0xff3300df));
+        Assert.That(this.TestSheet.Cells[0, 0].BackgroundColor, Is.Not.EqualTo(0xff3300df));
+        this.TestSheet.Redo();
+        Assert.That(this.TestSheet.Cells[0, 0].BackgroundColor, Is.EqualTo(0xff3300df));
+        Assert.That(this.TestSheet.GetUndoMessage(), Is.EqualTo("Undo color change"));
+        this.TestSheet.Undo();
+        this.TestSheet.Undo();
+        Assert.That(this.TestSheet.GetUndoMessage(), Is.EqualTo("Undo"));
     }
-    
 }

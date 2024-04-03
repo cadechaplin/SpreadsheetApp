@@ -13,7 +13,6 @@ public abstract class Cell : INotifyPropertyChanged
 {
 #pragma warning disable SA1306
 #pragma warning disable SA1401
-    
     /// <summary>
     /// Stores the data of Text.
     /// </summary>
@@ -27,6 +26,7 @@ public abstract class Cell : INotifyPropertyChanged
 #pragma warning restore SA1306
     private readonly int _rowIndex;
     private readonly int _columnIndex;
+    private uint _backgroundColor;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Cell"/> class.
@@ -45,15 +45,14 @@ public abstract class Cell : INotifyPropertyChanged
     /// Event to fire when changing a property.
     /// </summary>
     public event PropertyChangedEventHandler? PropertyChanged = (sender, e) => { };
-    
-    
+
     /// <summary>
     /// Gets or Sets property StoredText.
     /// </summary>
     public abstract string Value { get; set; }
 
     /// <summary>
-    /// Gets StoreText.
+    /// Gets or sets StoreText.
     /// </summary>
     public string Text
     {
@@ -67,25 +66,29 @@ public abstract class Cell : INotifyPropertyChanged
             }
 
             this.StoredText = value;
-            OnPropertyChanged(nameof(Text));
+            this.OnPropertyChanged(nameof(this.Text));
         }
     }
 
-    private uint backgroundColor;
+    /// <summary>
+    /// Gets or sets Background color.
+    /// </summary>
     public uint BackgroundColor
     {
-        get => backgroundColor;
+        get => this._backgroundColor;
 
         set
         {
-            if (value == backgroundColor)
+            if (value == this._backgroundColor)
             {
                 return;
             }
-            backgroundColor = value;
-            OnPropertyChanged(nameof(BackgroundColor));
+
+            this._backgroundColor = value;
+            this.OnPropertyChanged(nameof(this.BackgroundColor));
         }
     }
+
     /// <summary>
     /// Gets _rowIndex.
     /// </summary>
@@ -99,7 +102,7 @@ public abstract class Cell : INotifyPropertyChanged
     /// <summary>
     /// Function to call when changing a property.
     /// </summary>
-    /// /// /// <param name="propertyName">Name of changing property.</param>
+    /// <param name="propertyName">Name of changing property.</param>
     protected virtual void OnPropertyChanged(string propertyName)
     {
         this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));

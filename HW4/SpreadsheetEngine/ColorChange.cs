@@ -1,39 +1,53 @@
-
+// <copyright file="ColorChange.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
 
 namespace SpreadsheetEngine;
-
-public class ColorChange : Command
+#pragma warning disable SA1309
+/// <summary>
+/// Command for color change.
+/// </summary>
+public class ColorChange : ICommand
 {
-    private List<Cell> affectedCells;
-    private List<uint> prev;
-    private uint next;
-    static string messageText = "color change";
+    private static readonly string MessageText = "color change";
+    private readonly List<Cell> _affectedCells;
+    private readonly List<uint> _prev;
+    private readonly uint _next;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ColorChange"/> class.
+    /// </summary>
+    /// <param name="cells">Cells that are changed.</param>
+    /// <param name="prev">List of colors for all previous cells.</param>
+    /// <param name="next">Color they are all changing to.</param>
     public ColorChange(List<Cell> cells, List<uint> prev, uint next)
     {
-        this.prev = prev;
-        this.next = next;
-        affectedCells = new List<Cell>(cells);
+        this._prev = prev;
+        this._next = next;
+        this._affectedCells = new List<Cell>(cells);
     }
 
-    public void execute()
+    /// <inheritdoc/>
+    public void Execute()
     {
-        foreach (Cell item in affectedCells)
+        foreach (Cell item in this._affectedCells)
         {
-            item.BackgroundColor = next;
+            item.BackgroundColor = this._next;
         }
     }
 
-    public void unexecute()
+    /// <inheritdoc/>
+    public void Unexecute()
     {
-        for (int i = 0; i < affectedCells.Count; i++)
+        for (int i = 0; i < this._affectedCells.Count; i++)
         {
-            affectedCells[i].BackgroundColor = prev[i];
+            this._affectedCells[i].BackgroundColor = this._prev[i];
         }
     }
 
-    public string message()
+    /// <inheritdoc/>
+    public string Message()
     {
-        return messageText;
+        return MessageText;
     }
 }

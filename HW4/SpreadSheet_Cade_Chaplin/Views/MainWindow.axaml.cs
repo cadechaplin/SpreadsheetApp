@@ -2,30 +2,27 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
-using System.Reactive;
-using System.Threading.Tasks;
-using Avalonia.Controls.Converters;
-using Avalonia.Input;
-using Avalonia.Platform.Storage;
-using ReactiveUI;
-using Spreadsheet_GettingStarted.ViewModels;
-
 namespace SpreadSheet_Cade_Chaplin.Views;
 
-using Avalonia.ReactiveUI;
 #pragma warning disable SA1135
 // Contradictory warnings
-using ViewModels;
-using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reactive;
+using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
 using Avalonia.Data;
+using Avalonia.Input;
 using Avalonia.Layout;
 using Avalonia.Media;
+using Avalonia.Platform.Storage;
+using Avalonia.ReactiveUI;
+using ReactiveUI;
+using Spreadsheet_GettingStarted.ViewModels;
 using SpreadsheetEngine;
+using ViewModels;
 
 /// <summary>
 /// Joins a first name and a last name together into a single string.
@@ -49,41 +46,29 @@ public partial class MainWindow : ReactiveWindow<MainWindowViewModel>
         this._spreadsheet = new Spreadsheet(50, 'Z' - 'A' + 1);
         var rowCount = this._spreadsheet.RowCount;
         var columnCount = this._spreadsheet.ColumnCount;
-        //this.Rows = new Cell[columnCount][rowCount]();
-        
         this.Rows = Enumerable.Range(0, rowCount)
             .Select(row => Enumerable.Range(0, columnCount)
                 .Select(column => new CellViewModel(this._spreadsheet.Cells[row, column])).ToArray())
             .ToArray();
-        //this.Rows[0][0] = null;
         this.RowsView = new List<RowViewModel>();
-        foreach (var col in Rows)
+        foreach (var col in this.Rows)
         {
-            RowsView.Add(new RowViewModel(col.ToList()));
+            this.RowsView.Add(new RowViewModel(col.ToList()));
         }
-        
+
         this.InitializeComponent();
-        
-        
         this.DataContextChanged += (sender, args) =>
         {
             if (this.DataContext is MainWindowViewModel viewModel)
             {
-                
-                this.InitializeDataGrid(this.MyDataGrid,viewModel);
-                viewModel.InitializeSpreadsheet(this.RowsView,_spreadsheet);
-                //viewModel.InitializeSpreadsheet(this.MyDataGrid);
+                this.InitializeDataGrid(this.MyDataGrid, viewModel);
+                viewModel.InitializeSpreadsheet(this.RowsView, this._spreadsheet);
             }
         };
-        
     }
+
     public void InitializeDataGrid(DataGrid dataGrid, MainWindowViewModel viewModel)
     {
-        
-        //this._myGrid = dataGrid;
-        
-        
-
         // initialize A to Z columns headers since these are indexed this is not a behavior supported by default
         var columnCount = 'Z' - 'A' + 1;
         foreach (var columnIndex in Enumerable.Range(0, columnCount))
@@ -100,37 +85,42 @@ public partial class MainWindow : ReactiveWindow<MainWindowViewModel>
                         new TextBlock
                         {
                             [!TextBlock.TextProperty] =
-                                new Binding($"[{columnIndex}].Value"),//TODO changed
+                                new Binding($"[{columnIndex}].Value"),
                             TextAlignment = TextAlignment.Left,
                             VerticalAlignment = VerticalAlignment.Center,
-                            Padding = Thickness.Parse("5,0,5,0")
+                            Padding = Thickness.Parse("5,0,5,0"),
                         }),
                 CellEditingTemplate = new
                     FuncDataTemplate<RowViewModel>((value, namescope) =>
-                        new TextBox()
-                    ),
+                        new TextBox()),
             };
             dataGrid.Columns.Add(columnTemplate);
         }
 
-        dataGrid.ItemsSource = RowsView;
+        dataGrid.ItemsSource = this.RowsView;
         dataGrid.LoadingRow += (sender, args) => { args.Row.Header = (args.Row.GetIndex() + 1).ToString(); };
         this._isInitialized = true;
         dataGrid.PreparingCellForEdit += (sender, args) =>
         {
-            if (args.EditingElement is not TextBox textInput) return;
+            if (args.EditingElement is not TextBox textInput)
+            {
+                return;
+            }
+
             var rowIndex = args.Row.GetIndex();
             var columnIndex = args.Column.DisplayIndex;
-            textInput.Text = viewModel.GetCellText(rowIndex,
-                columnIndex);
+            textInput.Text = viewModel.GetCellText(rowIndex, columnIndex);
         };
         dataGrid.CellEditEnding += (sender, args) =>
         {
-            if (args.EditingElement is not TextBox textInput) return;
+            if (args.EditingElement is not TextBox textInput)
+            {
+                return;
+            }
+
             var rowIndex = args.Row.GetIndex();
             var columnIndex = args.Column.DisplayIndex;
-            viewModel.SetCellText(rowIndex, columnIndex,
-                textInput.Text);
+            viewModel.SetCellText(rowIndex, columnIndex, textInput.Text);
         };
         dataGrid.CellPointerPressed += (sender, args) =>
         {
@@ -155,7 +145,7 @@ public partial class MainWindow : ReactiveWindow<MainWindowViewModel>
             var rowIndex = args.Row.GetIndex();
             var columnIndex = args.Column.DisplayIndex;
             var cell = viewModel.GetCell(rowIndex, columnIndex);
-            if (false == cell.CanEdit)
+            if (cell.CanEdit == false)
             {
                 args.Cancel = true;
             }
@@ -165,7 +155,7 @@ public partial class MainWindow : ReactiveWindow<MainWindowViewModel>
             }
         };
     }
-    
+
     private async Task DoOpenFile(InteractionContext<Unit, string?> interaction)
     {
         // Get top level from the current control. Alternatively, you can use Window reference instead.
@@ -187,22 +177,20 @@ public partial class MainWindow : ReactiveWindow<MainWindowViewModel>
         interaction.SetOutput(filePath.Count == 1 ? filePath[0].Path.AbsolutePath :
             null);
     }
+
     private async Task PickColor(InteractionContext<Unit, uint?> interaction)
     {
-        var topLevel = TopLevel.GetTopLevel(this);
         var colorPicker = new ColorPicker();
-        colorPicker.DataContext = interaction.Input;
-        interaction.SetOutput(0xff3300df);
-        
-        
-        //var colorChoice = await dia;
-
-        // Show the color picker dialog as a modal dialog
-        //var color = await colorPicker.
-        // Get top level from the current control. Alternatively, you can use Window reference instead.
-
+        var stackPanel = new StackPanel();
+        stackPanel.Children.Add(colorPicker);
+        Window dialog = new Window
+        {
+            Content = stackPanel,
+            Title = "Choose background color",
+            Width = 300,
+            Height = 200,
+        };
+        await dialog.ShowDialog(this);
+        interaction.SetOutput(colorPicker.Color.ToUint32());
     }
-
-
-    
 }

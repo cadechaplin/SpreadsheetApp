@@ -13,7 +13,6 @@
     <Window.Resources>
         <utils:RowViewModelToIBrushConverter x:Key="RowBrushConverter" />
     </Window.Resources>
-
     <Design.DataContext>
         <!-- This only sets the DataContext for the previewer in an IDE,
              to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
@@ -32,7 +31,7 @@
             </MenuItem>
             <MenuItem Header="Edit" >
                 <MenuItem Header="{Binding undoMessage}" Command = "{Binding UndoCommand}" IsEnabled= "{Binding IsUndoReady, Mode=OneWay}"/>
-                <MenuItem Header="Redo" Command = "{Binding RedoCommand}" IsEnabled= "{Binding IsRedoReady, Mode=OneWay }"/>
+                <MenuItem Header="{Binding RedoMessage}"  Command = "{Binding RedoCommand}" IsEnabled= "{Binding IsRedoReady, Mode=OneWay }"/>
             </MenuItem>
             <MenuItem Header="Cell" >
                 <MenuItem Header="Change background colors..." Command = "{Binding ColorPicker}"/>

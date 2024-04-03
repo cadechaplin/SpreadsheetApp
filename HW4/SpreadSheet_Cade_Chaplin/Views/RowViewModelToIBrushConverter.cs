@@ -13,10 +13,10 @@ public class RowViewModelToIBrushConverter : IValueConverter
     public object? Convert(object? value, Type targetType, object? parameter,
         CultureInfo culture)
     {
-// if the converter used for the wrong type throw an exception
+        // if the converter used for the wrong type throw an exception
         if (value is not RowViewModel row)
             return new BindingNotification(new InvalidCastException(), BindingErrorType.Error);
-// NOTE: Rows are rendered from column 0 to n and in order
+        // NOTE: Rows are rendered from column 0 to n and in order
         if (currentRow != row)
         {
             currentRow = row;

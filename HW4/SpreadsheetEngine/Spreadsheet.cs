@@ -19,8 +19,8 @@ public class Spreadsheet
 #pragma warning disable SA1401
     // Want to be able to access this from outside the class.
     public readonly Cell[,] Cells;
-    private Stack<Command> redo;
-    private Stack<Command> undo;
+    private Stack<ICommand> _redo;
+    private Stack<ICommand> _undo;
 #pragma warning restore SA1401
 
     /// <summary>
@@ -30,8 +30,8 @@ public class Spreadsheet
     /// <param name="col"> Amount of columns to initiate.</param>
     public Spreadsheet(int row, int col)
     {
-        redo = new Stack<Command>();
-        undo = new Stack<Command>();
+        this._redo = new Stack<ICommand>();
+        this._undo = new Stack<ICommand>();
         if (row <= 0 || col <= 0)
         {
             throw new IndexOutOfRangeException("Row and column counts must be greater than zero.");
@@ -64,65 +64,146 @@ public class Spreadsheet
     public int RowCount { get; }
 
     /// <summary>
+    /// Undo on spreadsheet.
+    /// </summary>
+    public void Undo()
+    {
+        if (this._undo.Count == 0)
+        {
+            return;
+        }
+
+        var temp = this._undo.Pop();
+        temp.Unexecute();
+        this._redo.Push(temp);
+    }
+
+    /// <summary>
+    /// Redo on spreadsheet.
+    /// </summary>
+    public void Redo()
+    {
+        // Should be impossible for count to be 0, since I disable the button is the stack is empty.
+        if (this._redo.Count == 0)
+        {
+            return;
+        }
+
+        var temp = this._redo.Pop();
+        temp.Execute();
+        this._undo.Push(temp);
+    }
+
+    /// <summary>
+    /// Color change for a list of cells. Empty lists should be
+    /// handled before this method is called so that a command
+    /// that changes no cells is not called.
+    /// </summary>
+    /// /// <param name="cellsChanged">List of cells to be changed.</param>
+    /// /// <param name="next">Color to change to.</param>
+    public void RequestColorChange(List<Cell> cellsChanged, uint next)
+    {
+        List<uint> prev = new List<uint>();
+        foreach (Cell cell in cellsChanged)
+        {
+            prev.Add(cell.BackgroundColor);
+        }
+
+        ICommand temp = new ColorChange(cellsChanged, prev, next);
+        temp.Execute();
+        this._undo.Push(temp);
+        this._redo.Clear();
+    }
+
+    /// <summary>
+    /// Creates text change and executes command.
+    /// </summary>
+    /// /// <param name="cellChanged">Cell to be changed.</param>
+    /// /// <param name="next">Color to change to.</param>
+    public void RequestTextChange(Cell cellChanged, string next)
+    {
+        string prev = cellChanged.Text;
+        ICommand temp = new TextChange(cellChanged, prev, next);
+        temp.Execute();
+        this._undo.Push(temp);
+        this._redo.Clear();
+    }
+
+    /// <summary>
+    /// Gets message from command at top of redo stack.
+    /// </summary>
+    /// <returns>Message from command at top of stack, if nothing in stack returns just redo.</returns>>
+    public string GetRedoMessage()
+    {
+        if (this._redo.TryPeek(out ICommand? output))
+        {
+            return "Redo " + output.Message();
+        }
+
+        return "Redo";
+    }
+
+    /// <summary>
+    /// Gets message from command at top of undo stack.
+    /// </summary>
+    /// <returns>Message from command at top of stack, if nothing in stack returns just Undo.</returns>>
+    public string GetUndoMessage()
+    {
+        if (this._undo.TryPeek(out ICommand? output))
+        {
+            return "Undo " + output.Message();
+        }
+
+        return "Undo";
+    }
+
+    /// <summary>
+    /// Check if undo stack is empty.
+    /// </summary>
+    /// <returns>True if stack is empty, otherwise false..</returns>>
+    public bool EmptyUndo()
+    {
+        if (this._undo.Count == 0)
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    /// <summary>
+    /// Check if redo stack is empty.
+    /// </summary>
+    /// <returns>True if stack is empty, otherwise false..</returns>>
+    public bool EmptyRedo()
+    {
+        if (this._redo.Count == 0)
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    /// <summary>
     /// Gets the column count.
     /// </summary>
     /// <param name="sender"> Integer to use for indexing the Cell row.</param>
     /// <param name="e"> Integer to use for indexing the Cell .</param>
     protected virtual void OnCellPropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
-        this.EvaluateCellValue((Cell)sender);
+        if (sender is Cell)
+        {
+            this.EvaluateCellValue((Cell)sender);
+        }
+
         if (sender is ConcreteCell cell)
         {
             foreach (var item in cell.ReferencedBy)
             {
-                    this.EvaluateCellValue(item);
+                this.EvaluateCellValue(item);
             }
         }
-    }
-
-    public void Undo()
-    {
-        if (undo.Count == 0)
-        {
-            return;
-        }
-
-        var temp = undo.Pop();
-        temp.unexecute();
-        redo.Push(temp);
-    }
-    public void Redo()
-    {
-        if (redo.Count == 0)
-        {
-            return;
-        }
-
-        var temp = redo.Pop();
-        temp.execute();
-        undo.Push(temp);
-    }
-
-    public void RequestColorChange(List<Cell> cellsChanged, uint next)
-    {
-        List<uint> prev = new List<uint>();
-        foreach (Cell cell in cellsChanged)
-        {
-            prev.Add(cell.BackgroundColor); //color.Value;
-        }
-        Command temp = new ColorChange(cellsChanged, prev, next);
-        temp.execute();
-        undo.Push(temp);
-        redo.Clear();
-    }
-
-    public void RequestTextChange(Cell cellChanged, string next)
-    {
-        string prev = cellChanged.Text;
-        Command temp = new textChange(cellChanged, prev, next);
-        temp.execute();
-        undo.Push(temp);
-        redo.Clear();
     }
 
     private void EvaluateCellValue(Cell a)
@@ -228,44 +309,6 @@ public class Spreadsheet
         return this.Cells[row, col];
     }
 
-    public string getRedoMessage()
-    {
-        if (redo.TryPeek(out Command output))
-        {
-            return "Redo " + output.message();
-        }
-
-        return "Redo";
-    }
-    public string getUndoMessage()
-    {
-        if (undo.TryPeek(out Command output))
-        {
-            return "Undo " + output.message();
-        }
-
-        return "Undo";
-    }
-
-    public bool emptyUndo()
-    {
-        if (undo.Count == 0)
-        {
-            return true;
-        }
-
-        return false;
-    }
-    public bool emptyRedo()
-    {
-        if (redo.Count == 0)
-        {
-            return true;
-        }
-
-        return false;
-    }
-
     /// <summary>
     /// Cell that can be used to create an instance of Cell.
     /// </summary>
@@ -291,14 +334,7 @@ public class Spreadsheet
             : base(rowIndex, columnIndex)
         {
         }
-        /*
-        public event PropertyChangedEventHandler? ValuePropertyChanged = (sender, e) => { };
-        
-        protected virtual void OnValuePropertyChanged(string propertyName)
-        {
-            this.ValuePropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-        */
+
         /// <summary>
         /// Gets or Sets value.
         /// </summary>

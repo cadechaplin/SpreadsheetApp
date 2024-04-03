@@ -2,25 +2,15 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
-using System.ComponentModel;
-using System.IO;
+namespace SpreadSheet_Cade_Chaplin.ViewModels;
+
+using System.Collections.Generic;
+using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 using ReactiveUI;
 using Spreadsheet_GettingStarted.ViewModels;
-
-namespace SpreadSheet_Cade_Chaplin.ViewModels;
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using Avalonia;
-using Avalonia.Controls;
-using Avalonia.Controls.Templates;
-using Avalonia.Data;
-using Avalonia.Layout;
-using Avalonia.Media;
 using SpreadsheetEngine;
 
 // disabling underscore warnings
@@ -28,13 +18,14 @@ using SpreadsheetEngine;
 
 public class MainWindowViewModel : ViewModelBase
 {
+    private readonly List<CellViewModel> _selectedCells = new();
     private Spreadsheet _spreadSheetOb;
     private List<RowViewModel> _spreadsheetData;
-    private readonly List<CellViewModel> _selectedCells = new();
     private bool _isUndoReady;
     private bool _isRedoReady;
     private string _uMessage;
     private string _rMessage;
+
     /// <summary>
     /// Initializes a new instance of the <see cref="MainWindowViewModel"/> class.
     /// </summary>
@@ -42,145 +33,222 @@ public class MainWindowViewModel : ViewModelBase
     {
         this.AskForFileToLoad = new Interaction<Unit, string?>();
         this.AskForAColor = new Interaction<Unit, uint?>();
-        IsUndoReady = false;
-        IsRedoReady = false;
-        _uMessage = "Undo";
-        _rMessage = "Redo";
-
+        this.IsUndoReady = false;
+        this.IsRedoReady = false;
+        this._uMessage = "Undo";
+        this._rMessage = "Redo";
     }
 
+    /// <summary>
+    /// Gets or sets a value indicating whether undo can be preformed.
+    /// </summary>
     public bool IsUndoReady
     {
-        get { return _isUndoReady; }
-        set
+        get
         {
-            if (_isUndoReady != value)
-            {
-                this.RaiseAndSetIfChanged(ref _isUndoReady, value); // Notify property changed
-            }
+            return this._isUndoReady;
         }
-    }
-    public string undoMessage
-    {
-        get { return _uMessage; }
+
         set
         {
-            if (_uMessage != value)
+            if (this._isUndoReady != value)
             {
-                this.RaiseAndSetIfChanged(ref _uMessage, value); // Notify property changed
+                this.RaiseAndSetIfChanged(ref this._isUndoReady, value); // Notify property changed
             }
         }
     }
 
-    public void updateMessages()
-    {
-        undoMessage = _spreadSheetOb.getUndoMessage();
-        redoMessage = _spreadSheetOb.getRedoMessage();
-    }
-
-    public string redoMessage
-    {
-        get { return _rMessage; }
-        set
-        {
-            if (_rMessage != value)
-            {
-                this.RaiseAndSetIfChanged(ref _rMessage, value); // Notify property changed
-            }
-        }
-    }
+    /// <summary>
+    /// Gets or sets a value indicating whether redo can be preformed.
+    /// </summary>
     public bool IsRedoReady
     {
-        get { return _isRedoReady; }
+        get
+        {
+            return this._isRedoReady;
+        }
+
         set
         {
-            if (_isRedoReady != value)
+            if (this._isRedoReady != value)
             {
-                this.RaiseAndSetIfChanged(ref _isRedoReady, value);
+                this.RaiseAndSetIfChanged(ref this._isRedoReady, value);
             }
         }
     }
+
+    /// <summary>
+    /// Gets or sets message to display in undo menu header.
+    /// </summary>
+    public string undoMessage
+    {
+        get => this._uMessage;
+
+        set
+        {
+            if (this._uMessage != value)
+            {
+                this.RaiseAndSetIfChanged(ref this._uMessage, value); // Notify property changed
+            }
+        }
+    }
+
+    /// <summary>
+    /// Gets or sets message to display in undo menu header.
+    /// </summary>
+    private void UpdateMessages()
+    {
+        this.undoMessage = this._spreadSheetOb.GetUndoMessage();
+        this.RedoMessage = this._spreadSheetOb.GetRedoMessage();
+    }
+
+    /// <summary>
+    /// Gets or sets message to display in redo menu header.
+    /// </summary>
+    private string RedoMessage
+    {
+        get => this._rMessage;
+
+        set
+        {
+            if (this._rMessage != value)
+            {
+                this.RaiseAndSetIfChanged(ref this._rMessage, value); // Notify property changed
+            }
+        }
+    }
+
+    /// <summary>
+    /// Initializes spreadsheet objects with objects already created.
+    /// </summary>
+    /// <param name="sheetRows"> Used for RowViewModel.</param>
+    /// <param name="sheet"> Used for spreadsheet object.</param>
     public void InitializeSpreadsheet(List<RowViewModel> sheetRows, Spreadsheet sheet)
     {
-        _spreadsheetData = sheetRows;
-        _spreadSheetOb = sheet;
+        this._spreadsheetData = sheetRows;
+        this._spreadSheetOb = sheet;
     }
 
+    /// <summary>
+    /// Method for adding cell to selected cell list.
+    /// </summary>
+    /// <param name="rowIndex"> Row of cell added.</param>
+    /// <param name="columnIndex"> column of cell added.</param>
     public void SelectCell(int rowIndex, int columnIndex)
     {
-        var clickedCell = GetCell(rowIndex, columnIndex);
+        var clickedCell = this.GetCell(rowIndex, columnIndex);
         var shouldEditCell = clickedCell.IsSelected;
-        ResetSelection();
-// add the pressed cell back to the list
-        _selectedCells.Add(clickedCell);
+        this.ResetSelection();
+        this._selectedCells.Add(clickedCell);
         clickedCell.IsSelected = true;
         if (shouldEditCell)
+        {
             clickedCell.CanEdit = true;
+        }
     }
 
+    /// <summary>
+    /// Method for toggling cell selection.
+    /// </summary>
+    /// <param name="rowIndex"> Row of cell added.</param>
+    /// <param name="columnIndex"> column of cell added.</param>
     public void ToggleCellSelection(int rowIndex, int columnIndex)
     {
-        var clickedCell = GetCell(rowIndex, columnIndex);
-        if (false == clickedCell.IsSelected)
+        var clickedCell = this.GetCell(rowIndex, columnIndex);
+        if (clickedCell.IsSelected == false)
         {
-            _selectedCells.Add(clickedCell);
+            this._selectedCells.Add(clickedCell);
             clickedCell.IsSelected = true;
         }
         else
         {
-            _selectedCells.Remove(clickedCell);
+            this._selectedCells.Remove(clickedCell);
             clickedCell.IsSelected = false;
         }
     }
 
+    /// <summary>
+    /// Clears currently selected cells.
+    /// </summary>
     public void ResetSelection()
     {
         // clear current selection
-        foreach (var cell in _selectedCells)
+        foreach (var cell in this._selectedCells)
         {
             cell.IsSelected = false;
             cell.CanEdit = false;
         }
 
-        _selectedCells.Clear();
+        this._selectedCells.Clear();
     }
 
+    /// <summary>
+    /// Gets cell at row and col.
+    /// </summary>
+    /// <returns>Cell at index.</returns>
+    /// <param name="row"> Row of cell added.</param>
+    /// <param name="col"> column of cell added.</param>
     public CellViewModel GetCell(int row, int col)
     {
-        return _spreadsheetData[row][col];
+        return this._spreadsheetData[row][col];
     }
+
+    /// <summary>
+    /// Gets cell text at row and col.
+    /// </summary>
+    /// <returns>Cell at index.</returns>
+    /// <param name="row"> Row of cell added.</param>
+    /// <param name="col"> column of cell added.</param>
     public string GetCellText(int row, int col)
     {
-        return _spreadsheetData[row][col].Text;
+        return this._spreadsheetData[row][col].Text;
     }
+
+    /// <summary>
+    /// Gets cell at row and col.
+    /// </summary>
+    /// <param name="row"> Row of cell added.</param>
+    /// <param name="col"> column of cell added.</param>
+    /// <param name="val"> string that text should be set to.</param>
     public void SetCellText(int row, int col, string val)
     {
-        _spreadSheetOb.RequestTextChange(this.GetCell(row,col).Cell,val);
+        this._spreadSheetOb.RequestTextChange(this.GetCell(row, col).Cell, val);
         this.IsRedoReady = false;
         this.IsUndoReady = true;
-        this.updateMessages();
+        this.UpdateMessages();
     }
-    
+
+    /// <summary>
+    /// Gets Interaction for asking a file to load.
+    /// </summary>
     public Interaction<Unit, string?> AskForFileToLoad
     {
         get;
     }
+
+    /// <summary>
+    /// Task for asking a file to load.
+    /// </summary>
+    /// <returns> Nothing.</returns>
     public async Task LoadFromFile()
     {
         // Wait for the user to select the file to load from.
-        var filePath = await this.AskForFileToLoad.Handle(default);
-        if (filePath == null)
-        {
-            return;
-        }
-
-        // If the user selected a file, create the stream reader and load the text.
-        
+        await this.AskForFileToLoad.Handle(default);
     }
+
+    /// <summary>
+    /// Gets for asking for a color.
+    /// </summary>
+    /// <returns> uint describing color.</returns>
     public Interaction<Unit, uint?> AskForAColor
     {
         get;
     }
+
+    /// <summary>
+    /// Task for asking for a color.
+    /// </summary>
+    /// <returns> Nothing.</returns>
     public async Task ColorPicker()
     {
         if (this._selectedCells.Count == 0)
@@ -188,34 +256,38 @@ public class MainWindowViewModel : ViewModelBase
             return;
         }
 
-        
         // Wait for the user to select the file to load from.
         var color = await this.AskForAColor.Handle(default);
         if (color != null)
         {
             List<Cell> cells = this._selectedCells.Select(vm => vm.Cell).ToList();
-            _spreadSheetOb.RequestColorChange(cells,color.Value); // change to colo
-            IsRedoReady = false;
-            IsUndoReady = true;
-            updateMessages();
+            this._spreadSheetOb.RequestColorChange(cells, color.Value); // change to colo
+            this.IsRedoReady = false;
+            this.IsUndoReady = true;
+            this.UpdateMessages();
         }
     }
 
+    /// <summary>
+    /// Undoes the last command given to the spreadsheet.
+    /// </summary>
     public void UndoCommand()
     {
-        _spreadSheetOb.Undo();
-        IsUndoReady = !_spreadSheetOb.emptyUndo();
-        IsRedoReady = true;
-        this.updateMessages();
+        this._spreadSheetOb.Undo();
+        this.IsUndoReady = !this._spreadSheetOb.EmptyUndo();
+        this.IsRedoReady = true;
+        this.UpdateMessages();
 
     }
 
+    /// <summary>
+    /// Redoes the last command undone to the spreadsheet.
+    /// </summary>
     public void RedoCommand()
     {
-        _spreadSheetOb.Redo();
-        IsRedoReady = !_spreadSheetOb.emptyRedo();
-        IsUndoReady = true;
-        this.updateMessages();
+        this._spreadSheetOb.Redo();
+        this.IsRedoReady = !this._spreadSheetOb.EmptyRedo();
+        this.IsUndoReady = true;
+        this.UpdateMessages();
     }
-
 }
