@@ -6,6 +6,7 @@ namespace SpreadSheet_Cade_Chaplin.Views;
 
 #pragma warning disable SA1135
 // Contradictory warnings
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reactive;
@@ -23,22 +24,22 @@ using ReactiveUI;
 using Spreadsheet_GettingStarted.ViewModels;
 using SpreadsheetEngine;
 using ViewModels;
-
+#pragma warning disable SA1309
 /// <summary>
 /// Joins a first name and a last name together into a single string.
 /// </summary>
 public partial class MainWindow : ReactiveWindow<MainWindowViewModel>
 {
     private readonly Spreadsheet _spreadsheet;
+    private readonly List<RowViewModel> _rowsView;
     private bool _isInitialized;
-    private DataGrid _myGrid;
-    private List<RowViewModel> RowsView;
-    private CellViewModel[][] Rows { get; }
+
     /// <summary>
     /// Initializes a new instance of the <see cref="MainWindow"/> class.
     /// </summary>
     public MainWindow()
     {
+        Spreadsheet spreadsheet;
         this.WhenActivated(d =>
             d(this.ViewModel!.AskForFileToLoad.RegisterHandler(this.DoOpenFile)));
         this.WhenActivated(d =>
@@ -50,10 +51,10 @@ public partial class MainWindow : ReactiveWindow<MainWindowViewModel>
             .Select(row => Enumerable.Range(0, columnCount)
                 .Select(column => new CellViewModel(this._spreadsheet.Cells[row, column])).ToArray())
             .ToArray();
-        this.RowsView = new List<RowViewModel>();
+        this._rowsView = new List<RowViewModel>();
         foreach (var col in this.Rows)
         {
-            this.RowsView.Add(new RowViewModel(col.ToList()));
+            this._rowsView.Add(new RowViewModel(col.ToList()));
         }
 
         this.InitializeComponent();
@@ -62,13 +63,25 @@ public partial class MainWindow : ReactiveWindow<MainWindowViewModel>
             if (this.DataContext is MainWindowViewModel viewModel)
             {
                 this.InitializeDataGrid(this.MyDataGrid, viewModel);
-                viewModel.InitializeSpreadsheet(this.RowsView, this._spreadsheet);
+                viewModel.InitializeSpreadsheet(this._rowsView, this._spreadsheet);
             }
         };
     }
 
+    private CellViewModel[][] Rows { get; }
+
+    /// <summary>
+    /// Initializes the datagrid.
+    /// </summary>
+    /// <param name="dataGrid">dataGrid object.</param>
+    /// <param name="viewModel">viewModel object.</param>
     public void InitializeDataGrid(DataGrid dataGrid, MainWindowViewModel viewModel)
     {
+        if (this._isInitialized)
+        {
+            return;
+        }
+
         // initialize A to Z columns headers since these are indexed this is not a behavior supported by default
         var columnCount = 'Z' - 'A' + 1;
         foreach (var columnIndex in Enumerable.Range(0, columnCount))
@@ -97,7 +110,7 @@ public partial class MainWindow : ReactiveWindow<MainWindowViewModel>
             dataGrid.Columns.Add(columnTemplate);
         }
 
-        dataGrid.ItemsSource = this.RowsView;
+        dataGrid.ItemsSource = this._rowsView;
         dataGrid.LoadingRow += (sender, args) => { args.Row.Header = (args.Row.GetIndex() + 1).ToString(); };
         this._isInitialized = true;
         dataGrid.PreparingCellForEdit += (sender, args) =>
@@ -178,6 +191,7 @@ public partial class MainWindow : ReactiveWindow<MainWindowViewModel>
             null);
     }
 
+    [Obsolete("Obsolete")]
     private async Task PickColor(InteractionContext<Unit, uint?> interaction)
     {
         var colorPicker = new ColorPicker();

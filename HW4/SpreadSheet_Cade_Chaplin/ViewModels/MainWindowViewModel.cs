@@ -15,7 +15,9 @@ using SpreadsheetEngine;
 
 // disabling underscore warnings
 #pragma warning disable SA1309
-
+/// <summary>
+/// Main Window class.
+/// </summary>
 public class MainWindowViewModel : ViewModelBase
 {
     private readonly List<CellViewModel> _selectedCells = new();
@@ -80,7 +82,7 @@ public class MainWindowViewModel : ViewModelBase
     /// <summary>
     /// Gets or sets message to display in undo menu header.
     /// </summary>
-    public string undoMessage
+    public string UndoMessage
     {
         get => this._uMessage;
 
@@ -94,18 +96,9 @@ public class MainWindowViewModel : ViewModelBase
     }
 
     /// <summary>
-    /// Gets or sets message to display in undo menu header.
-    /// </summary>
-    private void UpdateMessages()
-    {
-        this.undoMessage = this._spreadSheetOb.GetUndoMessage();
-        this.RedoMessage = this._spreadSheetOb.GetRedoMessage();
-    }
-
-    /// <summary>
     /// Gets or sets message to display in redo menu header.
     /// </summary>
-    private string RedoMessage
+    public string RedoMessage
     {
         get => this._rMessage;
 
@@ -116,6 +109,23 @@ public class MainWindowViewModel : ViewModelBase
                 this.RaiseAndSetIfChanged(ref this._rMessage, value); // Notify property changed
             }
         }
+    }
+
+    /// <summary>
+    /// Gets Interaction for asking a file to load.
+    /// </summary>
+    public Interaction<Unit, string?> AskForFileToLoad
+    {
+        get;
+    }
+
+    /// <summary>
+    /// Gets for asking for a color.
+    /// </summary>
+    /// <returns> uint describing color.</returns>
+    public Interaction<Unit, uint?> AskForAColor
+    {
+        get;
     }
 
     /// <summary>
@@ -219,14 +229,6 @@ public class MainWindowViewModel : ViewModelBase
     }
 
     /// <summary>
-    /// Gets Interaction for asking a file to load.
-    /// </summary>
-    public Interaction<Unit, string?> AskForFileToLoad
-    {
-        get;
-    }
-
-    /// <summary>
     /// Task for asking a file to load.
     /// </summary>
     /// <returns> Nothing.</returns>
@@ -234,15 +236,6 @@ public class MainWindowViewModel : ViewModelBase
     {
         // Wait for the user to select the file to load from.
         await this.AskForFileToLoad.Handle(default);
-    }
-
-    /// <summary>
-    /// Gets for asking for a color.
-    /// </summary>
-    /// <returns> uint describing color.</returns>
-    public Interaction<Unit, uint?> AskForAColor
-    {
-        get;
     }
 
     /// <summary>
@@ -277,7 +270,6 @@ public class MainWindowViewModel : ViewModelBase
         this.IsUndoReady = !this._spreadSheetOb.EmptyUndo();
         this.IsRedoReady = true;
         this.UpdateMessages();
-
     }
 
     /// <summary>
@@ -289,5 +281,14 @@ public class MainWindowViewModel : ViewModelBase
         this.IsRedoReady = !this._spreadSheetOb.EmptyRedo();
         this.IsUndoReady = true;
         this.UpdateMessages();
+    }
+
+    /// <summary>
+    /// Gets or sets message to display in undo menu header.
+    /// </summary>
+    private void UpdateMessages()
+    {
+        this.UndoMessage = this._spreadSheetOb.GetUndoMessage();
+        this.RedoMessage = this._spreadSheetOb.GetRedoMessage();
     }
 }
