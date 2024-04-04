@@ -39,7 +39,6 @@ public partial class MainWindow : ReactiveWindow<MainWindowViewModel>
     /// </summary>
     public MainWindow()
     {
-        Spreadsheet spreadsheet;
         this.WhenActivated(d =>
             d(this.ViewModel!.AskForFileToLoad.RegisterHandler(this.DoOpenFile)));
         this.WhenActivated(d =>
@@ -137,10 +136,11 @@ public partial class MainWindow : ReactiveWindow<MainWindowViewModel>
         };
         dataGrid.CellPointerPressed += (sender, args) =>
         {
-// get the pressed cell
+            // get the pressed cell
             var rowIndex = args.Row.GetIndex();
             var columnIndex = args.Column.DisplayIndex;
-// are we selected multiple cells
+
+            // are we selected multiple cells
             var multipleSelection =
                 args.PointerPressedEventArgs.KeyModifiers != KeyModifiers.None;
             if (multipleSelection == false)
@@ -154,7 +154,7 @@ public partial class MainWindow : ReactiveWindow<MainWindowViewModel>
         };
         dataGrid.BeginningEdit += (sender, args) =>
         {
-// get the pressed cell
+            // get the pressed cell
             var rowIndex = args.Row.GetIndex();
             var columnIndex = args.Column.DisplayIndex;
             var cell = viewModel.GetCell(rowIndex, columnIndex);
