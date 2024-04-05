@@ -1,6 +1,9 @@
 // <copyright file="Spreadsheet.cs" company="PlaceholderCompany">
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
+
+using System.Xml.Linq;
+
 namespace SpreadsheetEngine;
 
 using System.ComponentModel;
@@ -144,6 +147,8 @@ public class Spreadsheet
     /// <param name="filepath"> Path in which file needs to be loaded from.</param>
     public void SaveFile(string filepath)
     {
+        XDocument file = new XDocument();
+        file.Add("root");
         throw new Exception("Not implemented");
     }
 

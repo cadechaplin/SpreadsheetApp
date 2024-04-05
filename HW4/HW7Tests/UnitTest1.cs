@@ -143,12 +143,25 @@ public class Tests
     [Test]
     public void testSaveToFile()
     {
+        this.TestSheet = new Spreadsheet(10,10);
+        TestSheet.Cells[0, 0].Text = "example";
+        TestSheet.SaveFile("filepath");
+
+        // Asserts that we did not crash. Not really a way to know saving worked without loading
         Assert.That(true);
     }
 
     [Test]
     public void testLoadFromFile()
     {
-        Assert.That(true);
+        string filepath = "not implemented yet";
+        this.TestSheet = new Spreadsheet(10, 10);
+        this.TestSheet.Cells[0, 0].Text = "example";
+        this.TestSheet.SaveFile(filepath);
+        this.TestSheet.Cells[0, 0].Text = string.Empty;
+        this.TestSheet.LoadFile(filepath);
+
+        // If file is loaded correctly, then the cell should be restored.
+        Assert.That(this.TestSheet.Cells[0, 0].Text == "example");
     }
 }
