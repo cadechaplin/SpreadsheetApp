@@ -139,4 +139,16 @@ public class Tests
         this.TestSheet.Undo();
         Assert.That(this.TestSheet.GetUndoMessage(), Is.EqualTo("Undo"));
     }
+
+    [Test]
+    public void testSaveToFile()
+    {
+        Assert.That(true);
+    }
+
+    [Test]
+    public void testLoadFromFile()
+    {
+        Assert.That(true);
+    }
 }

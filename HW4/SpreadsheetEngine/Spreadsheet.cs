@@ -130,6 +130,24 @@ public class Spreadsheet
     }
 
     /// <summary>
+    /// Save to a file.
+    /// </summary>
+    /// <param name="filepath"> Path in which file needs to be saved to.</param>
+    public void LoadFile(string filepath)
+    {
+        throw new Exception("Not implemented");
+    }
+
+    /// <summary>
+    /// Load from a file.
+    /// </summary>
+    /// <param name="filepath"> Path in which file needs to be loaded from.</param>
+    public void SaveFile(string filepath)
+    {
+        throw new Exception("Not implemented");
+    }
+
+    /// <summary>
     /// Gets message from command at top of redo stack.
     /// </summary>
     /// <returns>Message from command at top of stack, if nothing in stack returns just redo.</returns>>
