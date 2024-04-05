@@ -97,7 +97,7 @@ public class Tests
     public void TestUndo()
     {
         this.TestSheet = new Spreadsheet(10,10);
-        this.TestSheet.RequestTextChange(this.TestSheet.Cells[0,1], "=A1+1");
+        this.TestSheet.RequestTextChange(this.TestSheet.Cells[0, 1], "=A1+1");
         this.TestSheet.RequestTextChange(this.TestSheet.Cells[0, 0], "=1+1");
         this.TestSheet.RequestTextChange(this.TestSheet.Cells[0, 0], "=1+2");
         this.TestSheet.Undo();
