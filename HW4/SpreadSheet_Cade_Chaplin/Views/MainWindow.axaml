@@ -25,9 +25,10 @@
         <DockPanel>
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="File" >
-                <MenuItem Header="Open" Command = "{Binding LoadFromFile}" IsEnabled= "False"/>
-                <MenuItem Header="Save" IsEnabled= "False"/>
-                <MenuItem Header="Exit" IsEnabled= "False"/>
+                <MenuItem Header="New" Command = "{Binding NewDoc}"/>
+                <MenuItem Header="Open" Command = "{Binding LoadFromFile}"/>
+                <MenuItem Header="Save As" Command = "{Binding SaveToFile}"/>
+                
             </MenuItem>
             <MenuItem Header="Edit" >
                 <MenuItem Header="{Binding UndoMessage}" Command = "{Binding UndoCommand}" IsEnabled= "{Binding IsUndoReady, Mode=OneWay}"/>

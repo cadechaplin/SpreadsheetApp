@@ -3,6 +3,9 @@
 // </copyright>
 
 using System.Xml.Linq;
+using System;
+using System.IO;
+using System.Xml;
 
 namespace SpreadsheetEngine;
 
@@ -136,20 +139,79 @@ public class Spreadsheet
     /// Save to a file.
     /// </summary>
     /// <param name="filepath"> Path in which file needs to be saved to.</param>
-    public void LoadFile(string filepath)
+    public void LoadFile(string filePath)
     {
-        throw new Exception("Not implemented");
+        // First clear spreadsheet.
+        this.clearSpreadSheet();
+        XmlDocument xmlDoc = new XmlDocument();
+        xmlDoc.Load(filePath);
+
+        XmlNodeList cellNodes = xmlDoc.SelectNodes("//Cells/Cell");
+
+        int index = 0;
+        foreach (XmlNode cellNode in cellNodes)
+        {
+            int row = int.Parse(cellNode.SelectSingleNode("Row").InnerText);
+            int column = int.Parse(cellNode.SelectSingleNode("Column").InnerText);
+            string text = cellNode.SelectSingleNode("Text").InnerText;
+            string backgroundColor = cellNode.SelectSingleNode("BackgroundColor").InnerText;
+            try
+            {
+                this.Cells[row, column].Text = text;
+                this.Cells[row, column].BackgroundColor = uint.Parse(backgroundColor);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+            index++;
+        }
+        //throw new Exception("Not implemented");
+    }
+
+    public void clearSpreadSheet()
+    {
+        foreach (var cell in this.Cells)
+        {
+            cell.Text = string.Empty;
+            cell.BackgroundColor = 0;
+        }
+
+        this._redo = new Stack<ICommand>();
+        this._undo = new Stack<ICommand>();
     }
 
     /// <summary>
     /// Load from a file.
     /// </summary>
     /// <param name="filepath"> Path in which file needs to be loaded from.</param>
-    public void SaveFile(string filepath)
+    public void SaveFile(string filePath)
     {
-        XDocument file = new XDocument();
-        file.Add("root");
-        throw new Exception("Not implemented");
+        XmlDocument xmlDoc = new XmlDocument();
+        XmlDeclaration xmlDeclaration = xmlDoc.CreateXmlDeclaration("1.0", "UTF-8", null);
+        xmlDoc.AppendChild(xmlDeclaration);
+
+        XmlNode spreadsheetNode = xmlDoc.CreateElement("Spreadsheet");
+
+        XmlNode cellsNode = xmlDoc.CreateElement("Cells");
+        spreadsheetNode.AppendChild(cellsNode);
+
+        for (int i = 0; i < Cells.GetLength(0); i++)
+        {
+            for (int j = 0; j < Cells.GetLength(1); j++)
+            {
+                Cell cell = Cells[i, j];
+                XmlNode cellNode = cell.ToXMLNode(xmlDoc);
+                cellsNode.AppendChild(cellNode);
+            }
+        }
+
+        spreadsheetNode.AppendChild(cellsNode);
+        xmlDoc.AppendChild(spreadsheetNode);
+
+        //string example = xmlDoc.OuterXml; // Use OuterXml to get the XML string representation
+        xmlDoc.Save(filePath);
     }
 
     /// <summary>

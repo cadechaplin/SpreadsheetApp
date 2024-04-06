@@ -34,6 +34,7 @@ public class MainWindowViewModel : ViewModelBase
     public MainWindowViewModel()
     {
         this.AskForFileToLoad = new Interaction<Unit, string?>();
+        this.AskForFileToSave = new Interaction<Unit, string?>();
         this.AskForAColor = new Interaction<Unit, uint?>();
         this.IsUndoReady = false;
         this.IsRedoReady = false;
@@ -115,6 +116,14 @@ public class MainWindowViewModel : ViewModelBase
     /// Gets Interaction for asking a file to load.
     /// </summary>
     public Interaction<Unit, string?> AskForFileToLoad
+    {
+        get;
+    }
+
+    /// <summary>
+    /// Gets Interaction for asking a file to save.
+    /// </summary>
+    public Interaction<Unit, string?> AskForFileToSave
     {
         get;
     }
@@ -235,8 +244,45 @@ public class MainWindowViewModel : ViewModelBase
     public async Task LoadFromFile()
     {
         // Wait for the user to select the file to load from.
-        await this.AskForFileToLoad.Handle(default);
+        var filePath = await this.AskForFileToLoad.Handle(default);
+        if (filePath == null)
+        {
+            return;
+        }
+        this._spreadSheetOb.LoadFile(filePath);
+        this.UpdateMessages();
     }
+
+    /// <summary>
+    /// Task for asking a file to load.
+    /// </summary>
+    public void NewDoc()
+    {
+        this._spreadSheetOb.clearSpreadSheet();
+        this.UpdateMessages();
+    }
+
+    /// <summary>
+    /// This method will be executed when the user wants to save content to a file.
+    /// </summary>
+    /// <remarks>
+    /// If the user cancels the operation or if an error occurs while saving, no action is taken.
+    /// </remarks>
+    /// /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    public async Task SaveToFile()
+    {
+        // Wait for the user to select the file to load from.
+        var filePath = await this.AskForFileToSave.Handle(default);
+        if (filePath == null)
+        {
+            return;
+        }
+
+        this._spreadSheetOb.SaveFile(filePath);
+        this.UpdateMessages();
+    }
+
+
 
     /// <summary>
     /// Task for asking for a color.

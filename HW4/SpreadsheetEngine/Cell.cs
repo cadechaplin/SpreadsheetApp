@@ -1,6 +1,9 @@
 ﻿// <copyright file="Cell.cs" company="PlaceholderCompany">
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
+
+using System.Xml;
+
 namespace SpreadsheetEngine;
 
 #pragma warning disable SA1309
@@ -98,6 +101,28 @@ public abstract class Cell : INotifyPropertyChanged
     /// Gets _columnIndex.
     /// </summary>
     public int ColumnIndex => this._columnIndex;
+
+    public XmlNode ToXMLNode(XmlDocument xmlDoc)
+    {
+        XmlNode cellNode = xmlDoc.CreateElement("Cell");
+        XmlNode rowNode = xmlDoc.CreateElement("Row");
+        rowNode.InnerText = this.RowIndex.ToString();
+        cellNode.AppendChild(rowNode);
+
+        XmlNode columnNode = xmlDoc.CreateElement("Column");
+        columnNode.InnerText = this.ColumnIndex.ToString();
+        cellNode.AppendChild(columnNode);
+
+        XmlNode textNode = xmlDoc.CreateElement("Text");
+        textNode.InnerText = Text;
+        cellNode.AppendChild(textNode);
+
+        XmlNode backgroundColorNode = xmlDoc.CreateElement("BackgroundColor");
+        backgroundColorNode.InnerText = this.BackgroundColor.ToString();
+        cellNode.AppendChild(backgroundColorNode);
+
+        return cellNode;
+    }
 
     /// <summary>
     /// Function to call when changing a property.

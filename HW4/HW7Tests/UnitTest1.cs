@@ -154,12 +154,13 @@ public class Tests
     [Test]
     public void testLoadFromFile()
     {
-        string filepath = "not implemented yet";
+        string currentDirectory = Directory.GetCurrentDirectory();
+        string filePath = Path.Combine(currentDirectory, "Spreadsheet.xml");
         this.TestSheet = new Spreadsheet(10, 10);
         this.TestSheet.Cells[0, 0].Text = "example";
-        this.TestSheet.SaveFile(filepath);
+        this.TestSheet.SaveFile(filePath);
         this.TestSheet.Cells[0, 0].Text = string.Empty;
-        this.TestSheet.LoadFile(filepath);
+        this.TestSheet.LoadFile(filePath);
 
         // If file is loaded correctly, then the cell should be restored.
         Assert.That(this.TestSheet.Cells[0, 0].Text == "example");

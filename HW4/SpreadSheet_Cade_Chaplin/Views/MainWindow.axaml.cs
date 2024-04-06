@@ -42,6 +42,8 @@ public partial class MainWindow : ReactiveWindow<MainWindowViewModel>
         this.WhenActivated(d =>
             d(this.ViewModel!.AskForFileToLoad.RegisterHandler(this.DoOpenFile)));
         this.WhenActivated(d =>
+            d(this.ViewModel!.AskForFileToSave.RegisterHandler(this.DoSaveFile)));
+        this.WhenActivated(d =>
             d(this.ViewModel!.AskForAColor.RegisterHandler(this.PickColor)));
         this._spreadsheet = new Spreadsheet(50, 'Z' - 'A' + 1);
         var rowCount = this._spreadsheet.RowCount;
@@ -190,6 +192,22 @@ public partial class MainWindow : ReactiveWindow<MainWindowViewModel>
         interaction.SetOutput(filePath.Count == 1 ? filePath[0].Path.AbsolutePath :
             null);
     }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="interaction"></param>
+    private async Task DoSaveFile(InteractionContext<Unit, string?> interaction)
+    {
+        var topLevel = TopLevel.GetTopLevel(this);
+        var file = await topLevel.StorageProvider.SaveFilePickerAsync(new FilePickerSaveOptions
+        {
+            Title = "Save Text File",
+        });
+        string? filePath = file.Path.AbsolutePath;
+        interaction.SetOutput(filePath);
+    }
+
 
     [Obsolete("Obsolete")]
     private async Task PickColor(InteractionContext<Unit, uint?> interaction)
