@@ -138,7 +138,7 @@ public class Spreadsheet
     /// <summary>
     /// Save to a file.
     /// </summary>
-    /// <param name="filepath"> Path in which file needs to be saved to.</param>
+    /// <param name="filePath"> Path in which file needs to be loaded to.</param>
     public void LoadFile(string filePath)
     {
         // First clear spreadsheet.
@@ -167,7 +167,6 @@ public class Spreadsheet
             }
             index++;
         }
-        //throw new Exception("Not implemented");
     }
 
     public void clearSpreadSheet()
