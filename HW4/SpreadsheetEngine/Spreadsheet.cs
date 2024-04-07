@@ -2,15 +2,11 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
-using System.Xml.Linq;
-using System;
-using System.IO;
-using System.Xml;
-
 namespace SpreadsheetEngine;
 
 using System.ComponentModel;
 using System.Globalization;
+using System.Xml;
 
 // disabling underscore warnings
 #pragma warning disable SA1309
@@ -142,13 +138,17 @@ public class Spreadsheet
     public void LoadFile(string filePath)
     {
         // First clear spreadsheet.
-        this.clearSpreadSheet();
+        this.ClearSpreadSheet();
         XmlDocument xmlDoc = new XmlDocument();
         xmlDoc.Load(filePath);
 
-        XmlNodeList cellNodes = xmlDoc.SelectNodes("//Cells/Cell");
+        XmlNodeList? cellNodes = xmlDoc.SelectNodes("//Cells/Cell");
 
-        int index = 0;
+        if (cellNodes == null)
+        {
+            return;
+        }
+
         foreach (XmlNode cellNode in cellNodes)
         {
             int row = int.Parse(cellNode.SelectSingleNode("Row").InnerText);
@@ -162,14 +162,17 @@ public class Spreadsheet
             }
             catch (Exception e)
             {
+                this.ClearSpreadSheet();
                 Console.WriteLine(e);
                 throw;
             }
-            index++;
         }
     }
 
-    public void clearSpreadSheet()
+    /// <summary>
+    /// Clears all the values and colors from the spreadsheet.
+    /// </summary>
+    public void ClearSpreadSheet()
     {
         foreach (var cell in this.Cells)
         {
@@ -184,7 +187,7 @@ public class Spreadsheet
     /// <summary>
     /// Load from a file.
     /// </summary>
-    /// <param name="filepath"> Path in which file needs to be loaded from.</param>
+    /// <param name="filePath"> Path in which file needs to be loaded from.</param>
     public void SaveFile(string filePath)
     {
         XmlDocument xmlDoc = new XmlDocument();
@@ -196,20 +199,18 @@ public class Spreadsheet
         XmlNode cellsNode = xmlDoc.CreateElement("Cells");
         spreadsheetNode.AppendChild(cellsNode);
 
-        for (int i = 0; i < Cells.GetLength(0); i++)
+        for (int i = 0; i < this.Cells.GetLength(0); i++)
         {
-            for (int j = 0; j < Cells.GetLength(1); j++)
+            for (int j = 0; j < this.Cells.GetLength(1); j++)
             {
-                Cell cell = Cells[i, j];
-                XmlNode cellNode = cell.ToXMLNode(xmlDoc);
+                Cell cell = this.Cells[i, j];
+                XmlNode cellNode = cell.ToXmlNode(xmlDoc);
                 cellsNode.AppendChild(cellNode);
             }
         }
 
         spreadsheetNode.AppendChild(cellsNode);
         xmlDoc.AppendChild(spreadsheetNode);
-
-        //string example = xmlDoc.OuterXml; // Use OuterXml to get the XML string representation
         xmlDoc.Save(filePath);
     }
 
@@ -318,10 +319,10 @@ public class Spreadsheet
             {
                 if (!tree.GetVariables().Contains((char)(item.ColumnIndex + 'A') + (item.RowIndex + 1).ToString()))
                 {
-                    // Remove the reference from the refrencedTo list of changeCell
+                    // Remove the reference from the referencedTo list of changeCell
                     changeCell.RefrencedTo.Remove(item);
 
-                    // Remove changeCell from the refrencedBy list of the item in the tree
+                    // Remove changeCell from the referencedBy list of the item in the tree
                     if (item is ConcreteCell concreteItem)
                     {
                         concreteItem.ReferencedBy.Remove(changeCell);

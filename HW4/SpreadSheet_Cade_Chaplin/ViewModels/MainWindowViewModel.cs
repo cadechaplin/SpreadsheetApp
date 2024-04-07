@@ -249,6 +249,7 @@ public class MainWindowViewModel : ViewModelBase
         {
             return;
         }
+
         this._spreadSheetOb.LoadFile(filePath);
         this.UpdateMessages();
     }
@@ -258,7 +259,7 @@ public class MainWindowViewModel : ViewModelBase
     /// </summary>
     public void NewDoc()
     {
-        this._spreadSheetOb.clearSpreadSheet();
+        this._spreadSheetOb.ClearSpreadSheet();
         this.UpdateMessages();
     }
 
@@ -281,8 +282,6 @@ public class MainWindowViewModel : ViewModelBase
         this._spreadSheetOb.SaveFile(filePath);
         this.UpdateMessages();
     }
-
-
 
     /// <summary>
     /// Task for asking for a color.

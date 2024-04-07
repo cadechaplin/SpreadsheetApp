@@ -2,9 +2,9 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
-using System.Xml;
-
 namespace SpreadsheetEngine;
+
+using System.Xml;
 
 #pragma warning disable SA1309
 using System.ComponentModel;
@@ -102,7 +102,12 @@ public abstract class Cell : INotifyPropertyChanged
     /// </summary>
     public int ColumnIndex => this._columnIndex;
 
-    public XmlNode ToXMLNode(XmlDocument xmlDoc)
+    /// <summary>
+    /// Converts to xml.
+    /// </summary>
+    /// <param name="xmlDoc">Document in which cell data will be added.</param>
+    /// <returns>Xml notation of the cell.</returns>
+    public XmlNode ToXmlNode(XmlDocument xmlDoc)
     {
         XmlNode cellNode = xmlDoc.CreateElement("Cell");
         XmlNode rowNode = xmlDoc.CreateElement("Row");
@@ -114,7 +119,7 @@ public abstract class Cell : INotifyPropertyChanged
         cellNode.AppendChild(columnNode);
 
         XmlNode textNode = xmlDoc.CreateElement("Text");
-        textNode.InnerText = Text;
+        textNode.InnerText = this.Text;
         cellNode.AppendChild(textNode);
 
         XmlNode backgroundColorNode = xmlDoc.CreateElement("BackgroundColor");

@@ -194,9 +194,9 @@ public partial class MainWindow : ReactiveWindow<MainWindowViewModel>
     }
 
     /// <summary>
-    /// 
+    /// Saves file.
     /// </summary>
-    /// <param name="interaction"></param>
+    /// <param name="interaction"> Interaction that calls the task.</param>
     private async Task DoSaveFile(InteractionContext<Unit, string?> interaction)
     {
         var topLevel = TopLevel.GetTopLevel(this);
@@ -204,10 +204,14 @@ public partial class MainWindow : ReactiveWindow<MainWindowViewModel>
         {
             Title = "Save Text File",
         });
-        string? filePath = file.Path.AbsolutePath;
+        if (file == null)
+        {
+            return;
+        }
+
+        string filePath = file.Path.AbsolutePath;
         interaction.SetOutput(filePath);
     }
-
 
     [Obsolete("Obsolete")]
     private async Task PickColor(InteractionContext<Unit, uint?> interaction)
