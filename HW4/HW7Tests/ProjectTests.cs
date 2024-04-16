@@ -191,4 +191,40 @@ public class ProjectTests
         // If file is loaded correctly, then the cell should be restored.
         Assert.That(this._testSheet.Cells[0, 0].Text == "example");
     }
+
+    /// Homework 10 tests.
+    /// <summary>
+    /// Tests when a circular reference occurs.
+    /// </summary>
+    [Test]
+    public void TestCircularReference()
+    {
+        this._testSheet = new Spreadsheet(10, 10);
+        this._testSheet.RequestTextChange(this._testSheet.Cells[0, 0], "=A1");
+        Assert.That(this._testSheet.Cells[0, 0].Value, Is.EqualTo("!(self reference)"));
+    }
+
+    /// <summary>
+    /// Tests when a cell references itself.
+    /// </summary>
+    [Test]
+    public void TestSelfReference()
+    {
+        this._testSheet = new Spreadsheet(10, 10);
+        this._testSheet.RequestTextChange(this._testSheet.Cells[0, 0], "=A2");
+        this._testSheet.RequestTextChange(this._testSheet.Cells[0, 1], "=A3");
+        this._testSheet.RequestTextChange(this._testSheet.Cells[0, 2], "=A1");
+        Assert.That(this._testSheet.Cells[0, 2].Value, Is.EqualTo("!(circular reference)"));
+    }
+
+    /// <summary>
+    /// Tests when a cell references a non existent cell.
+    /// </summary>
+    [Test]
+    public void TestReferenceToInvalidCell()
+    {
+        this._testSheet = new Spreadsheet(10, 10);
+        this._testSheet.RequestTextChange(this._testSheet.Cells[0, 0], "=A200");
+        Assert.That(this._testSheet.Cells[0, 2].Value, Is.EqualTo("!(bad reference)"));
+    }
 }
