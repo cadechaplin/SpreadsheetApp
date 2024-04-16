@@ -340,6 +340,11 @@ public class Spreadsheet
                         throw new ArgumentOutOfRangeException();
                     }
 
+                    if (ab == changeCell)
+                    {
+                        throw new ArgumentNullException();
+                    }
+
                     string test = ab.Value;
                     if (ab is ConcreteCell ex)
                     {
@@ -360,10 +365,9 @@ public class Spreadsheet
                     changeCell.Value = "!(bad reference)";
                     return;
                 }
-                catch (Exception)
+                catch (ArgumentNullException)
                 {
-                    // Error in finding the cell, cell reference must be wrong or some string is input that is not a cell.
-                    changeCell.Value = "Cell Reference Error";
+                    changeCell.Value = "!(self reference)";
                     return;
                 }
             }
