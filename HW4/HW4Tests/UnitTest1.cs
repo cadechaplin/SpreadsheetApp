@@ -39,7 +39,7 @@ public class Tests
     public void SpreadsheetCellReferenceOutOfRange()
     {
         _testSheet.Cells[1, 1].Text = "=A12";
-        Assert.That("Cell Reference Error" == _testSheet.Cells[1, 1].Value);
+        Assert.That("!(bad reference)" == _testSheet.Cells[1, 1].Value);
         
     }
     [Test]

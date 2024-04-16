@@ -6,6 +6,7 @@ namespace SpreadsheetEngine;
 
 using System.ComponentModel;
 using System.Globalization;
+using System.Runtime.InteropServices;
 using System.Xml;
 
 // disabling underscore warnings
@@ -335,6 +336,11 @@ public class Spreadsheet
                 try
                 {
                     Cell? ab = this.GetCell(int.Parse(item.Substring(1)) - 1, item[0] - 'A') ?? null;
+                    if (ab is ConcreteCell cab)
+                    {
+                        ab = cab;
+                    }
+
                     if (ab == null)
                     {
                         throw new ArgumentOutOfRangeException();
@@ -343,6 +349,11 @@ public class Spreadsheet
                     if (ab == changeCell)
                     {
                         throw new ArgumentNullException();
+                    }
+
+                    if (changeCell.HasCircularReference())
+                    {
+                        throw new ExternalException();
                     }
 
                     string test = ab.Value;
@@ -365,9 +376,19 @@ public class Spreadsheet
                     changeCell.Value = "!(bad reference)";
                     return;
                 }
+                catch (FormatException)
+                {
+                    changeCell.Value = "!(bad reference)";
+                    return;
+                }
                 catch (ArgumentNullException)
                 {
                     changeCell.Value = "!(self reference)";
+                    return;
+                }
+                catch (ExternalException)
+                {
+                    changeCell.Value = "!(circular reference)";
                     return;
                 }
             }
@@ -446,6 +467,37 @@ public class Spreadsheet
                 this.StoredValue = value;
                 this.OnPropertyChanged(nameof(this.Value));
             }
+        }
+
+        /// <summary>
+        /// Checks for a circular reference.
+        /// </summary>
+        /// <returns>True if contains a circular reference.</returns>
+        public bool HasCircularReference()
+        {
+            HashSet<Cell> visited = new HashSet<Cell>();
+            return this.HasCircularReferenceHelper(visited);
+        }
+
+        private bool HasCircularReferenceHelper(HashSet<Cell> visited)
+        {
+            if (visited.Contains(this))
+            {
+                return true;
+            }
+
+            visited.Add(this);
+
+            foreach (var cell in this.RefrencedTo)
+            {
+                var item = (ConcreteCell)cell;
+                if (item.HasCircularReferenceHelper(visited))
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
     }
 }

@@ -29,7 +29,7 @@ public class ProjectTests
     {
         this._testSheet = new Spreadsheet(10, 10);
         this._testSheet.Cells[0, 0].Text = "=ABC";
-        Assert.That(this._testSheet.Cells[0, 0].Value, Is.EqualTo("Cell Reference Error"));
+        Assert.That(this._testSheet.Cells[0, 0].Value, Is.EqualTo("!(bad reference)"));
     }
 
     /// <summary>
@@ -212,9 +212,27 @@ public class ProjectTests
     {
         this._testSheet = new Spreadsheet(10, 10);
         this._testSheet.RequestTextChange(this._testSheet.Cells[0, 0], "=A2");
-        this._testSheet.RequestTextChange(this._testSheet.Cells[0, 1], "=A3");
-        this._testSheet.RequestTextChange(this._testSheet.Cells[0, 2], "=A1");
-        Assert.That(this._testSheet.Cells[0, 2].Value, Is.EqualTo("!(circular reference)"));
+        this._testSheet.RequestTextChange(this._testSheet.Cells[1, 0], "=A3");
+        this._testSheet.RequestTextChange(this._testSheet.Cells[2, 0], "=A1");
+        Assert.That(this._testSheet.Cells[2, 0].Value, Is.EqualTo("!(circular reference)"));
+        Assert.That(this._testSheet.Cells[1, 0].Value, Is.EqualTo("!(circular reference)"));
+        Assert.That(this._testSheet.Cells[0, 0].Value, Is.EqualTo("!(circular reference)"));
+    }
+
+    /// <summary>
+    /// Tests when a cell references itself.
+    /// </summary>
+    [Test]
+    public void TestSelfReference2()
+    {
+        this._testSheet = new Spreadsheet(10, 10);
+        this._testSheet.RequestTextChange(this._testSheet.Cells[0, 0], "=A2");
+        this._testSheet.RequestTextChange(this._testSheet.Cells[1, 0], "=A3");
+        this._testSheet.RequestTextChange(this._testSheet.Cells[2, 0], "=A1");
+        this._testSheet.RequestTextChange(this._testSheet.Cells[1, 0], "=3");
+        Assert.That(this._testSheet.Cells[2, 0].Value, Is.EqualTo("3"));
+        Assert.That(this._testSheet.Cells[1, 0].Value, Is.EqualTo("3"));
+        Assert.That(this._testSheet.Cells[0, 0].Value, Is.EqualTo("3"));
     }
 
     /// <summary>
