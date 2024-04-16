@@ -225,6 +225,6 @@ public class ProjectTests
     {
         this._testSheet = new Spreadsheet(10, 10);
         this._testSheet.RequestTextChange(this._testSheet.Cells[0, 0], "=A200");
-        Assert.That(this._testSheet.Cells[0, 2].Value, Is.EqualTo("!(bad reference)"));
+        Assert.That(this._testSheet.Cells[0, 0].Value, Is.EqualTo("!(bad reference)"));
     }
 }

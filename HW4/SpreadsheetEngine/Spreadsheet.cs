@@ -337,7 +337,7 @@ public class Spreadsheet
                     Cell? ab = this.GetCell(int.Parse(item.Substring(1)) - 1, item[0] - 'A') ?? null;
                     if (ab == null)
                     {
-                        throw new Exception();
+                        throw new ArgumentOutOfRangeException();
                     }
 
                     string test = ab.Value;
@@ -354,6 +354,11 @@ public class Spreadsheet
                     {
                         tree.SetVariable(item, value);
                     }
+                }
+                catch (ArgumentOutOfRangeException)
+                {
+                    changeCell.Value = "!(bad reference)";
+                    return;
                 }
                 catch (Exception)
                 {
